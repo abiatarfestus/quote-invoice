@@ -1,0 +1,3 @@
+set window/widgets minimum size
+window.minsize(200,100)
+window.maxsize(500,500)
