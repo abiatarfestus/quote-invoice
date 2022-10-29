@@ -9,6 +9,8 @@ app = MainWindow(root)
 app.setup_home_tab()
 app.setup_customer_list_tab()
 app.setup_customer_form_tab()
+app.setup_quotations_tab()
+app.setup_orders_tab()
 app.configure_rows_columns()
 
 # root.columnconfigure(0, weight=1)

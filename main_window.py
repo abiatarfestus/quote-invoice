@@ -310,7 +310,7 @@ class MainWindow():
         )
         type_lbl = ttk.Label(
             mid_frame,
-            text="Customer Tpe",
+            text="Customer Type",
             anchor=W,
             # style="heading.TLabel",
         )
@@ -484,18 +484,18 @@ class MainWindow():
             # style="heading.TLabel",
         )
 
-        id_ent.grid(column=1, row=1)
-        type_cbx.grid(column=1, row=2)
-        f_name_ent.grid(column=1, row=3)
-        l_name_ent.grid(column=1, row=4)
-        entity_ent.grid(column=1, row=5)
-        email_ent.grid(column=1, row=6)
-        phone_ent.grid(column=1, row=7)
-        address_ent.grid(column=1, row=8)
-        town_ent.grid(column=1, row=9)
-        country_ent.grid(column=1, row=10)
-        since_ent.grid(column=1, row=11)
-        notes_txt.grid(column=2, columnspan=3,row=1, rowspan=5)
+        id_ent.grid(column=1, row=1, sticky=(N, S, E, W))
+        type_cbx.grid(column=1, row=2, sticky=(N, S, E, W))
+        f_name_ent.grid(column=1, row=3, sticky=(N, S, E, W))
+        l_name_ent.grid(column=1, row=4, sticky=(N, S, E, W))
+        entity_ent.grid(column=1, row=5, sticky=(N, S, E, W))
+        email_ent.grid(column=1, row=6, sticky=(N, S, E, W))
+        phone_ent.grid(column=1, row=7, sticky=(N, S, E, W))
+        address_ent.grid(column=1, row=8, sticky=(N, S, E, W))
+        town_ent.grid(column=1, row=9, sticky=(N, S, E, W))
+        country_ent.grid(column=1, row=10, sticky=(N, S, E, W))
+        since_ent.grid(column=1, row=11, sticky=(N, S, E, W))
+        notes_txt.grid(column=2, columnspan=3,row=1, rowspan=5, sticky=(N, S, E, W))
 
         # Buttons
         save_btn = ttk.Button(
@@ -552,6 +552,528 @@ class MainWindow():
         for child in mid_frame.winfo_children():
             child.grid_configure(padx=2, pady=5)
 
+    def setup_quotations_tab(self):
+        # Frames
+        top_frame = ttk.Frame(
+            self.quotations_frame,
+            borderwidth=5, 
+            relief="solid"
+        )
+        mid_frame = ttk.Frame(
+            self.quotations_frame, 
+            borderwidth=5, 
+            # relief="solid"
+        )
+        bottom_frame = ttk.Frame(
+            self.quotations_frame,
+            borderwidth=5, 
+            relief="solid"
+        )
+
+        top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W, E, S))
+        bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E))
+
+        # LABELS
+        heading_lbl = ttk.Label(
+            top_frame,
+            text="Quotation Details",
+            anchor="center",
+            style="heading.TLabel",
+        )
+        id_lbl = ttk.Label(
+            mid_frame,
+            text="Quote ID",
+            anchor=W,
+            # style="heading.TLabel",
+        )
+        date_lbl = ttk.Label(
+            mid_frame,
+            text="Quote Date",
+            anchor=W,
+            # style="heading.TLabel",
+        )
+        quote_description_lbl = ttk.Label(
+            mid_frame,
+            text="Quote Description",
+            anchor=W,
+            # style="heading.TLabel",
+        )
+        customer_lbl = ttk.Label(
+            mid_frame,
+            text="Customer",
+            anchor=W,
+            # style="heading.TLabel",
+        )
+        notes_lbl = ttk.Label(
+            mid_frame,
+            text="Notes",
+            anchor=E,
+            # style="heading.TLabel",
+        )
+        # product_description_lbl = ttk.Label(
+        #     bottom_frame,
+        #     text="Product Description",
+        #     anchor=E,
+        #     # style="heading.TLabel",
+        # )
+        total_lbl = ttk.Label(
+            mid_frame,
+            text="Total Cost:",
+            anchor=E,
+            # style="heading.TLabel",
+        )
+        amount_lbl = ttk.Label(
+            mid_frame,
+            text="N$50,555.00",
+            anchor=E,
+            # style="heading.TLabel",
+        )
+
+        heading_lbl.grid(row=0, sticky=(N, S, W, E))
+        id_lbl.grid(column=0, row=0, sticky=(W, ))
+        date_lbl.grid(column=0, row=1, sticky=(W, ))
+        quote_description_lbl.grid(column=0, row=2, sticky=(W, ))
+        customer_lbl.grid(column=0, row=3, sticky=(W, ))
+        notes_lbl.grid(column=3, row=0, sticky=(E, ))
+        # product_description_lbl.grid(column=0, row=0, sticky=(W, ))
+        total_lbl.grid(column=3, row=6, sticky=(N, S, W, E))
+        amount_lbl.grid(column=4, row=6, sticky=(N, S, W, E))
+
+        # Entries
+        id_ent = ttk.Entry(
+            mid_frame,
+            width=40,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+        id_ent.state(["disabled"])
+
+        date_ent = ttk.Entry(
+            mid_frame,
+            width=40,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+        quote_description_ent = ttk.Entry(
+            mid_frame,
+            width=40,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+
+        # Comboboxes
+        customer_cbx = ttk.Combobox(
+            mid_frame,
+            width=38,
+            values=("Abiatar", "Mumbala")
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+        customer_cbx.state(["readonly"])
+
+        # Texts
+        notes_txt = Text(
+            mid_frame,
+            width=50, 
+            height=3,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+        # product_description_txt = Text(
+        #     bottom_frame,
+        #     width=85, 
+        #     height=2,
+        #     # textvariable="",
+        #     # style="heading.TLabel",
+        # )
+
+        # Checkboxes
+        accepted_chk = ttk.Checkbutton(
+            mid_frame,
+            text='Is Accepted', 
+	        # command=metricChanged, 
+            # variable=measureSystem,
+	        onvalue='accepted', 
+            offvalue='not accepted',
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+
+        id_ent.grid(column=1, row=0, sticky=(S, N, E, W))
+        date_ent.grid(column=1, row=1, sticky=(S, N, E, W))
+        quote_description_ent.grid(column=1, row=2, sticky=(S, N, E, W))
+        customer_cbx.grid(column=1, row=3, sticky=(S, N, E, W))
+        accepted_chk.grid(column=2, row=0, sticky=(S, N, E, W))
+        notes_txt.grid(column=2, columnspan=2, row=1, rowspan=3, sticky=(S, N, E, W))
+        # product_description_txt.grid(column=1, row=0, sticky=(W))
+
+        # Buttons
+        preview_btn = ttk.Button(
+            mid_frame,
+            text="Print/Preview Quotation",
+            # style="home_btns.TButton",
+            padding=(0, 10)
+        )
+        add_quote_btn = ttk.Button(
+            mid_frame,
+            text="Add a New Quotation",
+            # style="home_btns.TButton",
+            padding=10
+        )
+        save_btn = ttk.Button(
+            mid_frame, 
+            text="Save Quotation",
+            # style="home_btns.TButton",
+            padding=5
+        )
+
+
+        preview_btn.grid(column=4, row=0, rowspan=2, sticky=(N, W, E, S))
+        add_quote_btn.grid(column=4, row=2, rowspan=2, sticky=(N,W, E, S))
+        save_btn.grid(column=0, columnspan=3, row=6, sticky=(N, S, W, E))
+
+        # Treeview
+        tree = ttk.Treeview(mid_frame, show='headings', height=5)
+        
+        # Scrollbar
+        y_scroll = ttk.Scrollbar(mid_frame, orient=VERTICAL, command=tree.yview)
+        x_scroll = ttk.Scrollbar(mid_frame, orient=HORIZONTAL, command=tree.xview)
+        y_scroll.grid(column=5, row=4, sticky=(N, S, W))
+        x_scroll.grid(column=0, columnspan=5, row=5, sticky=(E, W))
+        tree['yscrollcommand'] = y_scroll.set
+        tree['xscrollcommand'] = x_scroll.set
+
+
+        # Define Our Columns
+        tree['columns'] = (
+            "Product", 
+            "Description", 
+            "Qty", 
+            "Unit Price", 
+            "Ext Price",
+        )
+
+        # Format Our Columns
+        tree.column("Product", anchor=W)
+        tree.column("Description", anchor=W)
+        tree.column("Qty", anchor=E)
+        tree.column("Unit Price", anchor=E)
+        tree.column("Ext Price", anchor=E)
+
+        # Create Headings
+        tree.heading("Product", text="Product", anchor=W)
+        tree.heading("Description", text="Description", anchor=W)
+        tree.heading("Qty", text="Qty", anchor=E)
+        tree.heading("Unit Price", text="Unit Price", anchor=E)
+        tree.heading("Ext Price", text="Ext Price", anchor=E)
+
+        # Insert the data in Treeview widget
+        tree.insert('', 'end', values=('Chairs', 'Golden chairs…', 10, "N$10", "N$100.00"))
+        tree.insert('', 'end', values=('Tables', 'Tables with covering cloth…', 2, "N$50", "N$100.00"))
+        tree.insert('', 'end', values=('Serving Dish', 'Silver and dioamond', 4, "N$15", "N$60.00"))
+        tree.insert('', 'end', values=('Interior Decor', 'Meal and one juice/soft drink (serve 50 people)', 1, "N$450", "N$450.00"))
+        tree.insert('', 'end', values=('Food and Drinks', 'Xyz', 50, "N$50", "N$5000.00"))
+        tree.insert('', 'end', values=('Tent', 'Open', 1, "N$100", "N$100"))
+        
+
+        tree.grid(column=0, columnspan=5, row=4, sticky=(N, S, W, E))
+
+        
+
+        # Configure rows and columns
+        top_frame.columnconfigure(0, weight=1)
+        top_frame.rowconfigure(0, weight=1)
+
+        mid_frame.columnconfigure(0, weight=1)
+        mid_frame.columnconfigure(1, weight=1)
+        mid_frame.columnconfigure(2, weight=1)
+        mid_frame.columnconfigure(3, weight=1)
+        mid_frame.columnconfigure(4, weight=1)
+        mid_frame.columnconfigure(5, weight=1)
+        mid_frame.rowconfigure(0, weight=1)
+        mid_frame.rowconfigure(1, weight=1)
+        mid_frame.rowconfigure(2, weight=1)
+        mid_frame.rowconfigure(3, weight=1)
+        mid_frame.rowconfigure(4, weight=1)
+        mid_frame.rowconfigure(5, weight=1)
+        mid_frame.rowconfigure(6, weight=1)
+
+        bottom_frame.columnconfigure(0, weight=1)
+        bottom_frame.columnconfigure(1, weight=1)
+        bottom_frame.columnconfigure(2, weight=1)
+        bottom_frame.rowconfigure(0, weight=1)
+
+        for child in mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=3)
+
+    def setup_orders_tab(self):
+        # Frames
+        top_frame = ttk.Frame(
+            self.orders_frame,
+            borderwidth=5, 
+            relief="solid"
+        )
+        mid_frame = ttk.Frame(
+            self.orders_frame, 
+            borderwidth=5, 
+            # relief="solid"
+        )
+        bottom_frame = ttk.Frame(
+            self.orders_frame,
+            borderwidth=5, 
+            relief="solid"
+        )
+
+        top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W, E, S))
+        bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E))
+
+        # LABELS
+        heading_lbl = ttk.Label(
+            top_frame,
+            text="Order Details",
+            anchor="center",
+            style="heading.TLabel",
+        )
+        id_lbl = ttk.Label(
+            mid_frame,
+            text="Order ID",
+            anchor=W,
+            # style="heading.TLabel",
+        )
+        date_lbl = ttk.Label(
+            mid_frame,
+            text="Order Date",
+            anchor=W,
+            # style="heading.TLabel",
+        )
+        order_description_lbl = ttk.Label(
+            mid_frame,
+            text="Order Description",
+            anchor=W,
+            # style="heading.TLabel",
+        )
+        customer_lbl = ttk.Label(
+            mid_frame,
+            text="Customer",
+            anchor=W,
+            # style="heading.TLabel",
+        )
+        notes_lbl = ttk.Label(
+            mid_frame,
+            text="Notes",
+            anchor=E,
+            # style="heading.TLabel",
+        )
+        # product_description_lbl = ttk.Label(
+        #     bottom_frame,
+        #     text="Product Description",
+        #     anchor=E,
+        #     # style="heading.TLabel",
+        # )
+        total_lbl = ttk.Label(
+            mid_frame,
+            text="Total Cost:",
+            anchor=E,
+            # style="heading.TLabel",
+        )
+        amount_lbl = ttk.Label(
+            mid_frame,
+            text="N$50,555.00",
+            anchor=E,
+            # style="heading.TLabel",
+        )
+
+        heading_lbl.grid(row=0, sticky=(N, S, W, E))
+        id_lbl.grid(column=0, row=0, sticky=(W, ))
+        date_lbl.grid(column=0, row=1, sticky=(W, ))
+        order_description_lbl.grid(column=0, row=2, sticky=(W, ))
+        customer_lbl.grid(column=0, row=3, sticky=(W, ))
+        notes_lbl.grid(column=3, row=0, sticky=(E, ))
+        # product_description_lbl.grid(column=0, row=0, sticky=(W, ))
+        total_lbl.grid(column=3, row=6, sticky=(N, S, W, E))
+        amount_lbl.grid(column=4, row=6, sticky=(N, S, W, E))
+
+        # Entries
+        id_ent = ttk.Entry(
+            mid_frame,
+            width=40,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+        id_ent.state(["disabled"])
+
+        date_ent = ttk.Entry(
+            mid_frame,
+            width=40,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+        order_description_ent = ttk.Entry(
+            mid_frame,
+            width=40,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+
+        # Comboboxes
+        customer_cbx = ttk.Combobox(
+            mid_frame,
+            width=38,
+            values=("Abiatar", "Mumbala")
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+        customer_cbx.state(["readonly"])
+
+        # Texts
+        notes_txt = Text(
+            mid_frame,
+            width=50, 
+            height=3,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+        # product_description_txt = Text(
+        #     bottom_frame,
+        #     width=85, 
+        #     height=2,
+        #     # textvariable="",
+        #     # style="heading.TLabel",
+        # )
+
+        # Checkboxes
+        paid_chk = ttk.Checkbutton(
+            mid_frame,
+            text='Is Paid', 
+	        # command=metricChanged, 
+            # variable=measureSystem,
+	        onvalue='paid', 
+            offvalue='not paid',
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+
+        id_ent.grid(column=1, row=0, sticky=(S, N, E, W))
+        date_ent.grid(column=1, row=1, sticky=(S, N, E, W))
+        order_description_ent.grid(column=1, row=2, sticky=(S, N, E, W))
+        customer_cbx.grid(column=1, row=3, sticky=(S, N, E, W))
+        paid_chk.grid(column=2, row=0, sticky=(S, N, E, W))
+        notes_txt.grid(column=2, columnspan=2, row=1, rowspan=3, sticky=(S, N, E, W))
+        # product_description_txt.grid(column=1, row=0, sticky=(W))
+
+        # Buttons
+        preview_btn = ttk.Button(
+            mid_frame,
+            text="Print/Preview Invoice",
+            # style="home_btns.TButton",
+            padding=(0, 10)
+        )
+        add_order_btn = ttk.Button(
+            mid_frame,
+            text="Add a New Order",
+            # style="home_btns.TButton",
+            padding=10
+        )
+        save_btn = ttk.Button(
+            mid_frame, 
+            text="Save Order",
+            # style="home_btns.TButton",
+            padding=5
+        )
+
+
+        preview_btn.grid(column=4, row=0, rowspan=2, sticky=(N, W, E, S))
+        add_order_btn.grid(column=4, row=2, rowspan=2, sticky=(N,W, E, S))
+        save_btn.grid(column=0, columnspan=3, row=6, sticky=(N, S, W, E))
+
+        # Treeview
+        tree = ttk.Treeview(mid_frame, show='headings', height=5)
+        
+        # Scrollbar
+        y_scroll = ttk.Scrollbar(mid_frame, orient=VERTICAL, command=tree.yview)
+        x_scroll = ttk.Scrollbar(mid_frame, orient=HORIZONTAL, command=tree.xview)
+        y_scroll.grid(column=5, row=4, sticky=(N, S, W))
+        x_scroll.grid(column=0, columnspan=5, row=5, sticky=(E, W))
+        tree['yscrollcommand'] = y_scroll.set
+        tree['xscrollcommand'] = x_scroll.set
+
+
+        # Define Our Columns
+        tree['columns'] = (
+            "Product", 
+            "Description", 
+            "Qty", 
+            "Unit Price", 
+            "Ext Price",
+        )
+
+        # Format Our Columns
+        tree.column("Product", anchor=W)
+        tree.column("Description", anchor=W)
+        tree.column("Qty", anchor=E)
+        tree.column("Unit Price", anchor=E)
+        tree.column("Ext Price", anchor=E)
+
+        # Create Headings
+        tree.heading("Product", text="Product", anchor=W)
+        tree.heading("Description", text="Description", anchor=W)
+        tree.heading("Qty", text="Qty", anchor=E)
+        tree.heading("Unit Price", text="Unit Price", anchor=E)
+        tree.heading("Ext Price", text="Ext Price", anchor=E)
+
+        # Insert the data in Treeview widget
+        tree.insert('', 'end', values=('Chairs', 'Golden chairs…', 10, "N$10", "N$100.00"))
+        tree.insert('', 'end', values=('Tables', 'Tables with covering cloth…', 2, "N$50", "N$100.00"))
+        tree.insert('', 'end', values=('Serving Dish', 'Silver and dioamond', 4, "N$15", "N$60.00"))
+        tree.insert('', 'end', values=('Interior Decor', 'Meal and one juice/soft drink (serve 50 people)', 1, "N$450", "N$450.00"))
+        tree.insert('', 'end', values=('Food and Drinks', 'Xyz', 50, "N$50", "N$5000.00"))
+        tree.insert('', 'end', values=('Tent', 'Open', 1, "N$100", "N$100"))
+        
+
+        tree.grid(column=0, columnspan=5, row=4, sticky=(N, S, W, E))
+
+        
+
+        # Configure rows and columns
+        top_frame.columnconfigure(0, weight=1)
+        top_frame.rowconfigure(0, weight=1)
+
+        mid_frame.columnconfigure(0, weight=1)
+        mid_frame.columnconfigure(1, weight=1)
+        mid_frame.columnconfigure(2, weight=1)
+        mid_frame.columnconfigure(3, weight=1)
+        mid_frame.columnconfigure(4, weight=1)
+        mid_frame.columnconfigure(5, weight=1)
+        mid_frame.rowconfigure(0, weight=1)
+        mid_frame.rowconfigure(1, weight=1)
+        mid_frame.rowconfigure(2, weight=1)
+        mid_frame.rowconfigure(3, weight=1)
+        mid_frame.rowconfigure(4, weight=1)
+        mid_frame.rowconfigure(5, weight=1)
+        mid_frame.rowconfigure(6, weight=1)
+
+        bottom_frame.columnconfigure(0, weight=1)
+        bottom_frame.columnconfigure(1, weight=1)
+        bottom_frame.columnconfigure(2, weight=1)
+        bottom_frame.rowconfigure(0, weight=1)
+
+        for child in mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=3)
+
     def configure_rows_columns(self):
         # Root
         self.root.columnconfigure(0, weight=1)
@@ -579,3 +1101,15 @@ class MainWindow():
         self.customer_form_frame.rowconfigure(0, weight=1)
         self.customer_form_frame.rowconfigure(1, weight=1)
         self.customer_form_frame.rowconfigure(2, weight=1)
+
+        self.quotations_frame.columnconfigure(0, weight=1)
+        self.quotations_frame.columnconfigure(1, weight=1)
+        self.quotations_frame.rowconfigure(0, weight=1)
+        self.quotations_frame.rowconfigure(1, weight=1)
+        self.quotations_frame.rowconfigure(2, weight=1)
+
+        self.orders_frame.columnconfigure(0, weight=1)
+        self.orders_frame.columnconfigure(1, weight=1)
+        self.orders_frame.rowconfigure(0, weight=1)
+        self.orders_frame.rowconfigure(1, weight=1)
+        self.orders_frame.rowconfigure(2, weight=1)
