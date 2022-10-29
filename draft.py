@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from turtle import bgcolor
 
 
 class MainWindow:
@@ -7,9 +8,49 @@ class MainWindow:
 
         root.title("Quote & Invoice")
 
+        self.top_frame = ttk.Frame(
+            root, 
+            # padding="3 3 12 12", 
+            borderwidth=5, 
+            # relief="solid"
+        )
+        self.mid_frame = ttk.Frame(
+            root, 
+            # padding="3 3 12 12", 
+            borderwidth=5, 
+            relief="solid"
+        )
+        self.bottom_frame = ttk.Frame(
+            root, 
+            # padding="3 3 12 12", 
+            borderwidth=5, 
+            # relief="solid"
+        )
+        self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        self.mid_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
+        self.bottom_frame.grid(column=0, row=4, columnspan=2, sticky=(N, W, E, S))
+        root.columnconfigure(0, weight=1)
+        root.columnconfigure(1, weight=1)
+        root.rowconfigure(0, weight=1)
+        root.rowconfigure(1, weight=1)
+        root.rowconfigure(2, weight=1)
+        root.rowconfigure(3, weight=1)
+        root.rowconfigure(4, weight=1)
+
+        # self.feet = StringVar()
+        # feet_entry = ttk.Entry(mainframe, width=7, textvariable=self.feet)
+        # feet_entry.grid(column=2, row=1, sticky=(W, E))
+        # self.meters = StringVar()
+
+        # ttk.Button(mainframe, text="Calculate", command=self.calculate).grid(column=3, row=3, sticky=W)
+        # ttk.Label(mainframe, text="feet").grid(column=3, row=1, sticky=W)
+        # ttk.Label(mainframe, text="is equivalent to").grid(column=1, row=2, sticky=E)
+        # ttk.Label(mainframe, text="meters").grid(column=3, row=2, sticky=W)
+
+        
+
         # Styles
         s = ttk.Style()
-        s.configure("notebook.TNotebook.Tab", padding=10, font=(None, 16))
         s.configure("home_btns.TButton", font=(None, 24))
         s.configure("heading.TLabel", font=(None, 31))
         s.configure(
@@ -19,71 +60,8 @@ class MainWindow:
             foreground="white"
         )
 
-        # Notebook and Frames
-        self.notebook = ttk.Notebook(root, style="notebook.TNotebook",)
-        self.home_frame = ttk.Frame(self.notebook)   # first page, which would get widgets gridded into it
-        self.customer_list_frame = ttk.Frame(self.notebook)
-        self.customer_form_frame = ttk.Frame(self.notebook)
-        self.quotations_frame = ttk.Frame(self.notebook)
-        self.orders_frame = ttk.Frame(self.notebook)
-
-        self.notebook.add(self.home_frame, text="Home")
-        self.notebook.add(self.customer_list_frame, text="Customer List")
-        self.notebook.add(self.customer_form_frame, text="Customer Form")
-        self.notebook.add(self.quotations_frame, text="Quotations")
-        self.notebook.add(self.orders_frame, text="Orders/Invoices")
-        
-        self.notebook.grid(column=0, row=0, columnspan=2, rowspan=11, sticky=(N, W, E, S))
-
-        # Inside Home Frame
-        self.top_frame = ttk.Frame(
-            self.home_frame, 
-            # padding="3 3 12 12", 
-            borderwidth=5, 
-            # relief="solid"
-        )
-        self.mid_frame = ttk.Frame(
-            self.home_frame, 
-            # padding="3 3 12 12", 
-            borderwidth=5, 
-            relief="solid"
-        )
-        self.bottom_frame = ttk.Frame(
-            self.home_frame, 
-            # padding="3 3 12 12", 
-            borderwidth=5, 
-            relief="solid"
-        )
-
-        self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
-        self.mid_frame.grid(column=0, row=2, columnspan=2, sticky=(SW))
-        self.bottom_frame.grid(column=0, row=4, columnspan=2, sticky=(N, W, E, S))
-
-        root.columnconfigure(0, weight=1)
-        root.columnconfigure(1, weight=1)
-        root.rowconfigure(0, weight=1)
-        root.rowconfigure(1, weight=1)
-        root.rowconfigure(2, weight=1)
-        root.rowconfigure(3, weight=1)
-        root.rowconfigure(4, weight=1)
-
-        self.home_frame.columnconfigure(0, weight=1)
-        self.home_frame.columnconfigure(1, weight=1)
-        self.home_frame.rowconfigure(0, weight=1)
-        self.home_frame.rowconfigure(1, weight=1)
-        self.home_frame.rowconfigure(2, weight=1)
-        self.home_frame.rowconfigure(3, weight=1)
-        self.home_frame.rowconfigure(4, weight=1)
-
-        self.mid_frame.columnconfigure(0, weight=1)
-        self.mid_frame.columnconfigure(1, weight=1)
-        self.mid_frame.rowconfigure(0, weight=1)
-        self.mid_frame.rowconfigure(1, weight=1)
-        self.mid_frame.rowconfigure(2, weight=1)
-        self.mid_frame.rowconfigure(3, weight=1)
-        self.mid_frame.rowconfigure(4, weight=1)
-
         # LABELS
+        # ttk.Label(mainframe, textvariable=self.meters).grid(column=2, row=2, sticky=(W, E))
         self.heading_lbl = ttk.Label(
             self.top_frame,
             text="Quote & Invoice v0.0.1",
@@ -97,12 +75,6 @@ class MainWindow:
             anchor="center",
             style="main_menu.TLabel",
             padding=(180,2)
-        )
-
-        self.creator_lbl = ttk.Label(
-            self.bottom_frame,
-            text="Created by Festus Abiatar",
-            anchor="center",
         )
 
         # Buttons
@@ -134,7 +106,6 @@ class MainWindow:
         # Placement
         self.heading_lbl.grid(row=0)
         self.main_menu_lbl.grid(column=0, row=0, columnspan=2)
-        self.creator_lbl.grid(row=0, columnspan=12, sticky=E)
         self.customer_list_btn.grid(column=0, row=1, sticky=E)
         self.customer_form_btn.grid(column=0, row=2, sticky=E)
         self.quotations_btn.grid(column=1, row=1, sticky=W)
