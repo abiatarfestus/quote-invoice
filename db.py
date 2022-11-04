@@ -1,131 +1,39 @@
+from models import *
 from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy.orm import sessionmaker
 
-# Global Variables
-SQLITE                  = 'sqlite'
-# MYSQL                   = 'mysql'
-# POSTGRESQL              = 'postgresql'
-# MICROSOFT_SQL_SERVER    = 'mssqlserver'
+# Connect to the database using SQLAlchemy
+with resources.path(
+    "project.data", "app_db.db"
+) as sqlite_filepath:
+    engine = create_engine(f"sqlite:///{sqlite_filepath}")
+Session = sessionmaker()
+Session.configure(bind=engine)
+session = Session()
 
-# Table Names
-USERS           = 'users'
-ADDRESSES       = 'addresses'
+# Get the number of books printed by each publisher
+books_by_publisher = get_books_by_publishers(session, ascending=False)
+for row in books_by_publisher:
+    print(f"Publisher: {row.name}, total books: {row.total_books}")
+print()
 
+# Get the number of authors each publisher publishes
+authors_by_publisher = get_authors_by_publishers(session)
+for row in authors_by_publisher:
+    print(f"Publisher: {row.name}, total authors: {row.total_authors}")
+print()
 
-class MyDatabase:
-    # http://docs.sqlalchemy.org/en/latest/core/engines.html
-    DB_ENGINE = {
-        SQLITE: 'sqlite:///{DB}',
-        # MYSQL: 'mysql://scott:tiger@localhost/{DB}',
-        # POSTGRESQL: 'postgresql://scott:tiger@localhost/{DB}',
-        # MICROSOFT_SQL_SERVER: 'mssql+pymssql://scott:tiger@hostname:port/{DB}'
-    }
+# Output hierarchical author data
+authors = get_authors(session)
+output_author_hierarchy(authors)
 
-    # Main DB Connection Ref Obj
-    db_engine = None
-
-    def __init__(self, dbtype, username='', password='', dbname=''):
-        dbtype = dbtype.lower()
-
-        if dbtype in self.DB_ENGINE.keys():
-            engine_url = self.DB_ENGINE[dbtype].format(DB=dbname)
-
-            self.db_engine = create_engine(engine_url)
-            print(self.db_engine)
-
-        else:
-            print("DBType is not found in DB_ENGINE")
-
-    def create_db_tables(self):
-        metadata = MetaData()
-        users = Table(USERS, metadata,
-                      Column('id', Integer, primary_key=True),
-                      Column('first_name', String),
-                      Column('last_name', String)
-                      )
-
-        address = Table(ADDRESSES, metadata,
-                        Column('id', Integer, primary_key=True),
-                        Column('user_id', None, ForeignKey('users.id')),
-                        Column('email', String, nullable=False),
-                        Column('address', String)
-                        )
-
-        try:
-            metadata.create_all(self.db_engine)
-            print("Tables created")
-        except Exception as e:
-            print("Error occurred during Table creation!")
-            print(e)
-
-    # Insert, Update, Delete
-    def execute_query(self, query=''):
-        if query == '' : return
-
-        print (query)
-        with self.db_engine.connect() as connection:
-            try:
-                connection.execute(query)
-            except Exception as e:
-                print(e)
-
-
-    def print_all_data(self, table='', query=''):
-        query = query if query != '' else "SELECT * FROM '{}';".format(table)
-        print(query)
-
-        with self.db_engine.connect() as connection:
-            try:
-                result = connection.execute(query)
-            except Exception as e:
-                print(e)
-            else:
-                for row in result:
-                    print(row) # print(row[0], row[1], row[2])
-                result.close()
-
-        print("\n")
-
-    # Examples
-
-    def sample_query(self):
-        # Sample Query
-        query = "SELECT first_name, last_name FROM {TBL_USR} WHERE " \
-                "last_name LIKE 'M%';".format(TBL_USR=USERS)
-        self.print_all_data(query=query)
-
-        # Sample Query Joining
-        query = "SELECT u.last_name as last_name, " \
-                "a.email as email, a.address as address " \
-                "FROM {TBL_USR} AS u " \
-                "LEFT JOIN {TBL_ADDR} as a " \
-                "WHERE u.id=a.user_id AND u.last_name LIKE 'M%';" \
-            .format(TBL_USR=USERS, TBL_ADDR=ADDRESSES)
-        self.print_all_data(query=query)
-
-    def sample_delete(self):
-        # Delete Data by Id
-        query = "DELETE FROM {} WHERE id=3".format(USERS)
-        self.execute_query(query)
-        self.print_all_data(USERS)
-
-        # Delete All Data
-        '''
-        query = "DELETE FROM {}".format(USERS)
-        self.execute_query(query)
-        self.print_all_data(USERS)
-        '''
-
-    def sample_insert(self):
-        # Insert Data
-        query = "INSERT INTO {}(id, first_name, last_name) " \
-                "VALUES (3, 'Terrence','Jordan');".format(USERS)
-        self.execute_query(query)
-        self.print_all_data(USERS)
-
-    def sample_update(self):
-        # Update Data
-        query = "UPDATE {} set first_name='XXXX' WHERE id={id}"\
-            .format(USERS, id=3)
-        self.execute_query(query)
-        self.print_all_data(USERS)
+# Add a new book
+add_new_book(
+    session,
+    author_name="Stephen King",
+    book_title="The Stand",
+    publisher_name="Random House",
+)
+# Output the updated hierarchical author data
+authors = get_authors(session)
+output_author_hierarchy(authors)

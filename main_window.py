@@ -3,6 +3,7 @@ from tkinter import ttk
 
 
 class MainWindow():
+    """ Initialize the main window of the application"""
     def __init__(self, root):
         self.root = root
         self.root.title("Quote & Invoice")
@@ -40,6 +41,7 @@ class MainWindow():
 
 
     def setup_home_tab(self):
+        """Configure the home tab page"""
         # Frames
         top_frame = ttk.Frame(
             self.home_frame,
@@ -136,6 +138,7 @@ class MainWindow():
             child.grid_configure(padx=5, pady=5)
 
     def setup_customer_list_tab(self):
+        """Configure the customer list tab"""
         # Frames
         top_frame = ttk.Frame(
             self.customer_list_frame,
@@ -274,6 +277,7 @@ class MainWindow():
         mid_frame.rowconfigure(1, weight=1)
 
     def setup_customer_form_tab(self):
+        """Configure the customer form tab"""
         # Frames
         top_frame = ttk.Frame(
             self.customer_form_frame,
@@ -553,6 +557,7 @@ class MainWindow():
             child.grid_configure(padx=2, pady=5)
 
     def setup_quotations_tab(self):
+        """Configure the quotations tab"""
         # Frames
         top_frame = ttk.Frame(
             self.quotations_frame,
@@ -814,6 +819,7 @@ class MainWindow():
             child.grid_configure(padx=2, pady=3)
 
     def setup_orders_tab(self):
+        """configure the orders tab"""
         # Frames
         top_frame = ttk.Frame(
             self.orders_frame,
@@ -1075,6 +1081,7 @@ class MainWindow():
             child.grid_configure(padx=2, pady=3)
 
     def configure_rows_columns(self):
+        """Configure the rows and columns resizing behaviour"""
         # Root
         self.root.columnconfigure(0, weight=1)
         self.root.columnconfigure(1, weight=1)
