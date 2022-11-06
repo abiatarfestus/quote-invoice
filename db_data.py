@@ -44,7 +44,7 @@ session = Session()
 #         notes=fake.sentence(nb_words=10)
 #     )
 
-# Add quotations-------------------------------------------
+# # # Add quotations-------------------------------------------
 # customer_ids = [random.randint(1, 10) for i in range(5)]
 # for i in range(5):
 #     add_quotation(
@@ -52,18 +52,49 @@ session = Session()
 #         quote_date=datetime.strptime(fake.date(), '%Y-%m-%d').date(),
 #         description=fake.sentence(nb_words=3), 
 #         customer_id=customer_ids[i], 
-#         is_accepted=False, 
+#         is_accepted=False,  
+#         is_closed=False, 
 #         notes=fake.sentence(nb_words=10)
 #     )
 
-# Add orders-------------------------------------------
-customer_ids = [random.randint(1, 10) for i in range(5)]
-for i in range(5):
-    add_order(
+# # Add orders-------------------------------------------
+# customer_ids = [random.randint(1, 10) for i in range(5)]
+# for i in range(5):
+#     add_order(
+#         session, 
+#         order_date=datetime.strptime(fake.date(), '%Y-%m-%d').date(),
+#         description=fake.sentence(nb_words=3), 
+#         customer_id=customer_ids[i], 
+#         is_paid=random.choice([False, True]), 
+#         notes=fake.sentence(nb_words=10)
+#     )
+
+# Add product-------------------------------------------
+for i in range(20):
+    add_product(
         session, 
-        order_date=datetime.strptime(fake.date(), '%Y-%m-%d').date(),
-        description=fake.sentence(nb_words=3), 
-        customer_id=customer_ids[i], 
-        is_paid=random.choice([False, True]), 
-        notes=fake.sentence(nb_words=10)
+        sku=f"SKU{fake.random_number(digits=5, fix_len=False)}",
+        barcode=fake.ean(length=13), 
+        product_name=fake.word(part_of_speech="noun"),
+        description=fake.sentence(nb_words=10),
+        price=float(fake.pricetag()[1:].replace(",", "")),
+        quantity=random.randint(1,200)
     )
+
+# Add quotation item-------------------------------------------
+# customer_ids = [random.randint(1, 10) for i in range(5)]
+# for i in range(5):
+#     add_quotation_item(
+#         session, 
+#         order_date=datetime.strptime(fake.date(), '%Y-%m-%d').date(),
+#         description=fake.sentence(nb_words=3), 
+#         customer_id=customer_ids[i], 
+#         is_paid=random.choice([False, True]), 
+#         notes=fake.sentence(nb_words=10)
+#     )
+
+# Delete quotations--------------------------------------
+# quotations = get_quotations(session)
+# for q in quotations:
+#     session.delete(q)
+# session.commit()

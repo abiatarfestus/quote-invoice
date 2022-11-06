@@ -49,19 +49,20 @@ class Quotation(Base):
     description = Column(String)
     customer_id = Column(Integer, ForeignKey("customer.customer_id"))
     is_accepted = Column(Boolean)
+    is_closed = Column(Boolean)
     notes = Column(String)
-    quotation_details = relationship("QuotationDetail", backref=backref("quotation"))
+    quotation_items = relationship("QuotationItem", backref=backref("quotation"))
     # publishers = relationship(
     #     "Publisher", secondary=book_publisher, back_populates="books"
     # )
 
-class QuotationDetail(Base):
-    __tablename__ = "quotation_detail"
-    quote_detail_id = Column(Integer, primary_key=True)
+class QuotationItem(Base):
+    __tablename__ = "quotation_item"
+    quote_item_id = Column(Integer, primary_key=True)
     quote_id = Column(Integer, ForeignKey("quotation.quote_id"))
-    product_name = Column(String)
+    product_id = Column(Integer, ForeignKey("product.product_id"))
     quantity = Column(Integer)
-    unit_price = Column(Float)
+    # unit_price = Column(Float)
     notes = Column(String)
     # publishers = relationship(
     #     "Publisher", secondary=book_publisher, back_populates="books"
@@ -75,22 +76,30 @@ class Order(Base):
     customer_id = Column(Integer, ForeignKey("customer.customer_id"))
     is_paid = Column(Boolean)
     notes = Column(String)
-    order_details = relationship("OrderDetail", backref=backref("order"))
+    order_items = relationship("OrderItem", backref=backref("order"))
     # publishers = relationship(
     #     "Publisher", secondary=book_publisher, back_populates="books"
     # )
 
-class OrderDetail(Base):
-    __tablename__ = "order_detail"
-    order_detail_id = Column(Integer, primary_key=True)
+class OrderItem(Base):
+    __tablename__ = "order_item"
+    order_item_id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey("order.order_id"))
-    product_name = Column(String)
+    product_id = Column(Integer, ForeignKey("product.product_id"))
     quantity = Column(Integer)
-    unit_price = Column(Float)
+    # unit_price = Column(Float)
     notes = Column(String)
-    # publishers = relationship(
-    #     "Publisher", secondary=book_publisher, back_populates="books"
-    # )
+
+class Product(Base):
+    __tablename__ = "product"
+    product_id = Column(Integer, primary_key=True)
+    sku = Column(String)
+    barcode = Column(String)
+    product_name = Column(String)
+    description = Column(String)
+    price = Column(Float)
+    quantity = Column(Integer)
+
 
 
 # engine = get_connection()
