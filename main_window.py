@@ -201,9 +201,9 @@ class MainWindow():
 
         # Define Our Columns
         tree['columns'] = (
-            "ID", 
-            "First Name", 
+            "ID",  
             "Last Name", 
+            "First Name",
             "Entity Name", 
             "Locality", 
             "Customer Since"
@@ -211,16 +211,16 @@ class MainWindow():
 
         # Format Our Columns
         tree.column("ID", anchor=CENTER)
-        tree.column("First Name", anchor=W)
         tree.column("Last Name", anchor=W)
+        tree.column("First Name", anchor=W)
         tree.column("Entity Name", anchor=W)
         tree.column("Locality", anchor=W)
         tree.column("Customer Since", anchor=E)
 
         # Create Headings
         tree.heading("ID", text="ID", anchor=CENTER)
-        tree.heading("First Name", text="First Name", anchor=W)
         tree.heading("Last Name", text="Last Name", anchor=W)
+        tree.heading("First Name", text="First Name", anchor=W)
         tree.heading("Entity Name", text="Entity Name", anchor=W)
         tree.heading("Locality", text="Locality", anchor=W)
         tree.heading("Customer Since", text="Customr Since", anchor=E)

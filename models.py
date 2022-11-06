@@ -1,22 +1,26 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Date, Boolean, Float
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table, Date, Boolean, Float
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-author_publisher = Table(
-    "author_publisher",
-    Base.metadata,
-    Column("author_id", Integer, ForeignKey("author.author_id")),
-    Column("publisher_id", Integer, ForeignKey("publisher.publisher_id")),
-)
+def get_connection():
+    return create_engine(f"sqlite:///app_database.db")
 
-book_publisher = Table(
-    "book_publisher",
-    Base.metadata,
-    Column("book_id", Integer, ForeignKey("book.book_id")),
-    Column("publisher_id", Integer, ForeignKey("publisher.publisher_id")),
-)
+
+# author_publisher = Table(
+#     "author_publisher",
+#     Base.metadata,
+#     Column("author_id", Integer, ForeignKey("author.author_id")),
+#     Column("publisher_id", Integer, ForeignKey("publisher.publisher_id")),
+# )
+
+# book_publisher = Table(
+#     "book_publisher",
+#     Base.metadata,
+#     Column("book_id", Integer, ForeignKey("book.book_id")),
+#     Column("publisher_id", Integer, ForeignKey("publisher.publisher_id")),
+# )
 
 class Customer(Base):
     __tablename__ = "customer"
@@ -33,7 +37,7 @@ class Customer(Base):
     customer_since = Column(Date)
     notes = Column(String)
     quotations = relationship("Quotation", backref=backref("customer"))
-    orders = relationship("Quotation", backref=backref("customer"))
+    orders = relationship("Order", backref=backref("customer"))
     # publishers = relationship(
     #     "Publisher", secondary=author_publisher, back_populates="authors"
     # )
@@ -46,7 +50,7 @@ class Quotation(Base):
     customer_id = Column(Integer, ForeignKey("customer.customer_id"))
     is_accepted = Column(Boolean)
     notes = Column(String)
-    order_details = relationship("QuotationDetail", backref=backref("quotation"))
+    quotation_details = relationship("QuotationDetail", backref=backref("quotation"))
     # publishers = relationship(
     #     "Publisher", secondary=book_publisher, back_populates="books"
     # )
@@ -71,7 +75,7 @@ class Order(Base):
     customer_id = Column(Integer, ForeignKey("customer.customer_id"))
     is_paid = Column(Boolean)
     notes = Column(String)
-    order_details = relationship("QuotationDetail", backref=backref("order"))
+    order_details = relationship("OrderDetail", backref=backref("order"))
     # publishers = relationship(
     #     "Publisher", secondary=book_publisher, back_populates="books"
     # )
@@ -87,4 +91,8 @@ class OrderDetail(Base):
     # publishers = relationship(
     #     "Publisher", secondary=book_publisher, back_populates="books"
     # )
+
+
+# engine = get_connection()
+# Base.metadata.create_all(engine)
 

@@ -2,17 +2,26 @@ from tkinter import *
 from tkinter import ttk
 # from main_window import MainWindow
 from main_window import MainWindow
+from models import get_connection, Base
 
-root = Tk()
-# root.geometry("500x500")
-app = MainWindow(root)
-app.setup_home_tab()
-app.setup_customer_list_tab()
-app.setup_customer_form_tab()
-app.setup_quotations_tab()
-app.setup_orders_tab()
-app.configure_rows_columns()
+def main():
+    engine = get_connection()
+    Base.metadata.create_all(engine)
+    
+    root = Tk()
+    # root.geometry("500x500")
 
-# root.columnconfigure(0, weight=1)
-# root.rowconfigure(0, weight=1)
-root.mainloop()
+    app = MainWindow(root)
+    app.setup_home_tab()
+    app.setup_customer_list_tab()
+    app.setup_customer_form_tab()
+    app.setup_quotations_tab()
+    app.setup_orders_tab()
+    app.configure_rows_columns()
+
+    # root.columnconfigure(0, weight=1)
+    # root.rowconfigure(0, weight=1)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
