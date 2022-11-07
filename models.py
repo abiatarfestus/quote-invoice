@@ -38,9 +38,7 @@ class Customer(Base):
     notes = Column(String)
     quotations = relationship("Quotation", backref=backref("customer"))
     orders = relationship("Order", backref=backref("customer"))
-    # publishers = relationship(
-    #     "Publisher", secondary=author_publisher, back_populates="authors"
-    # )
+    
 
 class Quotation(Base):
     __tablename__ = "quotation"
@@ -52,9 +50,7 @@ class Quotation(Base):
     is_closed = Column(Boolean)
     notes = Column(String)
     quotation_items = relationship("QuotationItem", backref=backref("quotation"))
-    # publishers = relationship(
-    #     "Publisher", secondary=book_publisher, back_populates="books"
-    # )
+    
 
 class QuotationItem(Base):
     __tablename__ = "quotation_item"
@@ -62,11 +58,7 @@ class QuotationItem(Base):
     quote_id = Column(Integer, ForeignKey("quotation.quote_id"))
     product_id = Column(Integer, ForeignKey("product.product_id"))
     quantity = Column(Integer)
-    # unit_price = Column(Float)
     notes = Column(String)
-    # publishers = relationship(
-    #     "Publisher", secondary=book_publisher, back_populates="books"
-    # )
 
 class Order(Base):
     __tablename__ = "order"
@@ -77,9 +69,7 @@ class Order(Base):
     is_paid = Column(Boolean)
     notes = Column(String)
     order_items = relationship("OrderItem", backref=backref("order"))
-    # publishers = relationship(
-    #     "Publisher", secondary=book_publisher, back_populates="books"
-    # )
+    
 
 class OrderItem(Base):
     __tablename__ = "order_item"
@@ -87,7 +77,6 @@ class OrderItem(Base):
     order_id = Column(Integer, ForeignKey("order.order_id"))
     product_id = Column(Integer, ForeignKey("product.product_id"))
     quantity = Column(Integer)
-    # unit_price = Column(Float)
     notes = Column(String)
 
 class Product(Base):

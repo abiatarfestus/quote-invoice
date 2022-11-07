@@ -305,7 +305,7 @@ def add_quotation_item(
     session, 
     quote_id=None,
     product_id=None, 
-    quantity=0,
+    quantity=1,
     notes=""
 ):
     """Adds a new item to the quotation"""
@@ -360,6 +360,78 @@ def delete_quotation_item(session, pk):
     try:
         quote_item = session.query(QuotationItem).get(pk)
         session.delete(quote_item)
+        session.commit()
+    except Exception as e:
+        print(e)
+
+# Order items -----------------------------------------------
+def get_order_items(session, pk=None, order_id=None):
+        if pk:
+            return session.query(OrderItem).get(pk)
+        else:
+            return session.query(OrderItem).filter(
+                OrderItem.order_id == order_id
+            ).order_by(OrderItem.order_item_id).all()
+            
+def add_order_item(
+    session, 
+    order_id=None,
+    product_id=None, 
+    quantity=1,
+    notes=""
+):
+    """Adds a new item to the order"""
+
+    if order_id and product_id:
+        order = session.query(Order).get(order_id)
+        if order.is_paid:
+            print("THIS ORDER IS HAS CLOSED")
+            return
+        else:
+            # Check if the product is already in the order
+            order_item = session.query(OrderItem).filter(OrderItem.product_id == product_id).one_or_none()
+            if order_item:
+                # order_item.quantity += 1
+                print("THE SELECTED PRODUCT IS ALREADY ON THE ORDER")
+                return
+            try:
+                order_item = OrderItem(
+                    order_id=order_id,
+                    product_id=product_id, 
+                    quantity=quantity,
+                    notes=notes
+                )
+                session.add(order_item)
+                session.commit()
+            except Exception as e:
+                print(e)      
+    
+
+def update_order_item(
+    session, 
+    pk=None,
+    order_id=None,
+    product_id=None, 
+    quantity=0,
+    notes=""
+):
+    try:
+        session.query(OrderItem).get(pk).update({
+            OrderItem.order_id:order_id,
+            OrderItem.product_id:product_id, 
+            OrderItem.quantity:quantity,
+            OrderItem.notes:notes
+        }, synchronize_session = False
+        )
+        session.commit()
+    except Exception as e:
+        print(e)
+    
+
+def delete_order_item(session, pk):
+    try:
+        order_item = session.query(OrderItem).get(pk)
+        session.delete(order_item)
         session.commit()
     except Exception as e:
         print(e)

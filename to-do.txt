@@ -3,3 +3,6 @@ window.minsize(200,100)
 window.maxsize(500,500)
 Add unique constrations to quotations
 Add clumn attributes (unique, nullable, auto_add_date)
+Review the update methods
+Add check for item quantity is >0
+Add check when order is marked Paid: warn that no new items will be added
