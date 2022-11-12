@@ -25,31 +25,35 @@ def get_connection():
 class Customer(Base):
     __tablename__ = "customer"
     customer_id = Column(Integer, primary_key=True)
-    customer_type = Column(String)
-    first_name = Column(String)
-    last_name = Column(String)
-    entity_name = Column(String)
-    email = Column(String)
-    phone = Column(String)
-    address = Column(String)
-    town = Column(String)
-    country = Column(String)
+    customer_type = Column(String(6), nullable=False)
+    first_name = Column(String(25))
+    last_name = Column(String(25))
+    entity_name = Column(String(50))
+    email = Column(String(50), unique=True)
+    phone = Column(String(10), nullable=False)
+    address = Column(String(50))
+    town = Column(String(25), nullable=False)
+    country = Column(String(60))
     customer_since = Column(Date)
-    notes = Column(String)
-    quotations = relationship("Quotation", backref=backref("customer"))
-    orders = relationship("Order", backref=backref("customer"))
+    notes = Column(String(250))
+    quotations = relationship("Quotation", back_populates="customer")
+    orders = relationship("Order", back_populates="customer")
     
 
 class Quotation(Base):
     __tablename__ = "quotation"
     quote_id = Column(Integer, primary_key=True)
     quote_date = Column(Date)
-    description = Column(String)
+    description = Column(String(250))
     customer_id = Column(Integer, ForeignKey("customer.customer_id"))
     is_accepted = Column(Boolean)
     is_closed = Column(Boolean)
-    notes = Column(String)
-    quotation_items = relationship("QuotationItem", backref=backref("quotation"))
+    notes = Column(String(250))
+    customer = relationship("Customer", back_populates="quotations")
+    quotation_items = relationship("QuotationItem", back_populates="quotation", cascade="all, delete, delete-orphan")
+
+    def __repr__(self):
+        return f"Quotation {self.quote_id}: {self.description}"
     
 
 class QuotationItem(Base):
@@ -58,17 +62,25 @@ class QuotationItem(Base):
     quote_id = Column(Integer, ForeignKey("quotation.quote_id"))
     product_id = Column(Integer, ForeignKey("product.product_id"))
     quantity = Column(Integer)
-    notes = Column(String)
+    notes = Column(String(250))
+    quotation = relationship("Quotation", back_populates="quotation_items")
+
+    def __repr__(self):
+        return f"Item {self.quote_item_id}: x{self.quantity} of Product: {self.product_id}"
 
 class Order(Base):
     __tablename__ = "order"
     order_id = Column(Integer, primary_key=True)
     order_date = Column(Date)
-    description = Column(String)
+    description = Column(String(250))
     customer_id = Column(Integer, ForeignKey("customer.customer_id"))
     is_paid = Column(Boolean)
-    notes = Column(String)
-    order_items = relationship("OrderItem", backref=backref("order"))
+    notes = Column(String(250))
+    customer = relationship("Customer", back_populates="orders")
+    order_items = relationship("OrderItem", back_populates="order", cascade="all, delete, delete-orphan")
+
+    def __repr__(self):
+        return f"Order {self.order_id}: {self.description}"
     
 
 class OrderItem(Base):
@@ -77,15 +89,19 @@ class OrderItem(Base):
     order_id = Column(Integer, ForeignKey("order.order_id"))
     product_id = Column(Integer, ForeignKey("product.product_id"))
     quantity = Column(Integer)
-    notes = Column(String)
+    notes = Column(String(250))
+    order = relationship("Order", back_populates="order_items")
+
+    def __repr__(self):
+        return f"Item {self.order_item_id}: x{self.quantity} of Product: {self.product_id}"
 
 class Product(Base):
     __tablename__ = "product"
     product_id = Column(Integer, primary_key=True)
-    sku = Column(String)
-    barcode = Column(String)
-    product_name = Column(String)
-    description = Column(String)
+    sku = Column(String(50), unique=True)
+    barcode = Column(String(50), unique=True)
+    product_name = Column(String(50), unique=True)
+    description = Column(String(250))
     price = Column(Float)
     quantity = Column(Integer)
 

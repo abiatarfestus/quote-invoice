@@ -69,7 +69,7 @@ session = Session()
 #         notes=fake.sentence(nb_words=10)
 #     )
 
-# Add product-------------------------------------------
+# # Add product-------------------------------------------
 # for i in range(20):
 #     add_product(
 #         session, 
@@ -81,7 +81,7 @@ session = Session()
 #         quantity=random.randint(1,200)
 #     )
 
-# Add quotation item-------------------------------------------
+# # Add quotation item-------------------------------------------
 # product_ids = [i for i in range(1,21)]
 # for i in range(10):
 #     add_quotation_item(
@@ -92,16 +92,16 @@ session = Session()
 #         notes=fake.sentence(nb_words=10)
 #     )
 
-# Add order item-------------------------------------------
-product_ids = [i for i in range(1,21)]
-for i in range(10):
-    add_order_item(
-        session, 
-        order_id=random.randint(1,3),
-        product_id=i, 
-        quantity=random.randint(1,100), 
-        notes=fake.sentence(nb_words=10)
-    )
+# # Add order item-------------------------------------------
+# product_ids = [i for i in range(1,21)]
+# for i in range(10):
+#     add_order_item(
+#         session, 
+#         order_id=random.randint(1,3),
+#         product_id=i, 
+#         quantity=random.randint(1,100), 
+#         notes=fake.sentence(nb_words=10)
+#     )
 
 # Delete quotations--------------------------------------
 # quotations = get_quotations(session)

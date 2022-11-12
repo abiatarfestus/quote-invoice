@@ -6,3 +6,4 @@ Add clumn attributes (unique, nullable, auto_add_date)
 Review the update methods
 Add check for item quantity is >0
 Add check when order is marked Paid: warn that no new items will be added
+entity person
