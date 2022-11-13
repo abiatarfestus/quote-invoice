@@ -1,5 +1,10 @@
+from datetime import datetime
+import random
 from tkinter import *
 from tkinter import ttk
+from faker import Faker
+
+fake = Faker()
 
 
 class MainWindow():
@@ -25,16 +30,20 @@ class MainWindow():
         self.notebook = ttk.Notebook(self.root, style="notebook.TNotebook",)
         self.home_frame = ttk.Frame(self.notebook)
         self.customer_list_frame = ttk.Frame(self.notebook)
-        self.customer_form_frame = ttk.Frame(self.notebook)
+        self.customer_frame = ttk.Frame(self.notebook)
+        self.quotation_list_frame = ttk.Frame(self.notebook)
         self.quotations_frame = ttk.Frame(self.notebook)
+        self.order_list_frame = ttk.Frame(self.notebook)
         self.orders_frame = ttk.Frame(self.notebook)
 
         # Add tabs/pages to the Notebook
         self.notebook.add(self.home_frame, text="Home")
         self.notebook.add(self.customer_list_frame, text="Customer List")
-        self.notebook.add(self.customer_form_frame, text="Customer Form")
-        self.notebook.add(self.quotations_frame, text="Quotations")
-        self.notebook.add(self.orders_frame, text="Orders/Invoices")
+        self.notebook.add(self.customer_frame, text="Customer Details")
+        self.notebook.add(self.quotation_list_frame, text="Quotation List")
+        self.notebook.add(self.quotations_frame, text="Quote Details")
+        self.notebook.add(self.order_list_frame, text="Order List")
+        self.notebook.add(self.orders_frame, text="Order Details")
         
         # Grid Notebook
         self.notebook.grid(column=0, row=0, columnspan=2, rowspan=12, sticky=(N, W, E, S))
@@ -96,9 +105,9 @@ class MainWindow():
             style="home_btns.TButton",
             padding=26
         )
-        customer_form_btn = ttk.Button(
+        customer_btn = ttk.Button(
             mid_frame, 
-            text="Customer Form",
+            text="Customer Details",
             style="home_btns.TButton",
             padding=(15, 26)
         )
@@ -116,7 +125,7 @@ class MainWindow():
         )
 
         customer_list_btn.grid(column=0, row=1, sticky=E)
-        customer_form_btn.grid(column=0, row=2, sticky=E)
+        customer_btn.grid(column=0, row=2, sticky=E)
         quotations_btn.grid(column=1, row=1, sticky=W)
         orders_invoies_btn.grid(column=1, row=2, sticky=W)
 
@@ -276,21 +285,21 @@ class MainWindow():
         mid_frame.rowconfigure(0, weight=1)
         mid_frame.rowconfigure(1, weight=1)
 
-    def setup_customer_form_tab(self):
+    def setup_customer_tab(self):
         """Configure the customer form tab"""
         # Frames
         top_frame = ttk.Frame(
-            self.customer_form_frame,
+            self.customer_frame,
             borderwidth=5, 
             # relief="solid"
         )
         mid_frame = ttk.Frame(
-            self.customer_form_frame, 
+            self.customer_frame, 
             borderwidth=5, 
             relief="solid"
         )
         bottom_frame = ttk.Frame(
-            self.customer_form_frame,
+            self.customer_frame,
             borderwidth=5, 
             # relief="solid"
         )
@@ -556,6 +565,119 @@ class MainWindow():
         for child in mid_frame.winfo_children():
             child.grid_configure(padx=2, pady=5)
 
+    def setup_quotation_list_tab(self):
+        """Configure the quotation list tab"""
+        # Frames
+        top_frame = ttk.Frame(
+            self.quotation_list_frame,
+            borderwidth=5, 
+            relief="solid"
+        )
+        mid_frame = ttk.Frame(
+            self.quotation_list_frame, 
+            borderwidth=5, 
+            relief="solid"
+        )
+        bottom_frame = ttk.Frame(
+            self.quotation_list_frame,
+            borderwidth=5, 
+            relief="solid"
+        )
+
+        top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W, E, S))
+        bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
+
+        # LABELS
+        heading_lbl = ttk.Label(
+            top_frame,
+            text="Quotation List",
+            anchor="center",
+            style="heading.TLabel",
+        )
+
+        heading_lbl.grid(row=0)
+
+        # Buttons
+        open_quotation_btn = ttk.Button(
+            bottom_frame,
+            text="Open Selected Record",
+            # style="home_btns.TButton",
+            padding=21
+        )
+        add_quotation_btn = ttk.Button(
+            bottom_frame, 
+            text="Add New Quotation",
+            # style="home_btns.TButton",
+            padding=(10, 21)
+        )
+
+        open_quotation_btn.grid(column=0, row=1, sticky=E)
+        add_quotation_btn.grid(column=1, row=1, sticky=E)
+
+        # Treeview
+        tree = ttk.Treeview(mid_frame, show='headings', height=20)
+        
+        # Scrollbar
+        y_scroll = ttk.Scrollbar(mid_frame, orient=VERTICAL, command=tree.yview)
+        x_scroll = ttk.Scrollbar(mid_frame, orient=HORIZONTAL, command=tree.xview)
+        y_scroll.grid(column=1, row=0, sticky=(N, S, W, E))
+        x_scroll.grid(column=0, row=1, sticky=(E, W))
+        tree['yscrollcommand'] = y_scroll.set
+        tree['xscrollcommand'] = x_scroll.set
+
+
+        # Define Our Columns
+        tree['columns'] = (
+            "ID",
+            "Customer",
+            "Description",
+            "Quote Date",
+            "Accepted", 
+            "Closed"
+        )
+
+        # Format Our Columns
+        tree.column("ID", anchor=CENTER)
+        tree.column("Customer", anchor=W)
+        tree.column("Description", anchor=W)
+        tree.column("Quote Date", anchor=E)
+        tree.column("Accepted", anchor=CENTER)
+        tree.column("Closed", anchor=CENTER)
+
+        # Create Headings
+        tree.heading("ID", text="ID", anchor=CENTER)
+        tree.heading("Customer", text="Customer", anchor=W)
+        tree.heading("Description", text="Description", anchor=W)
+        tree.heading("Quote Date", text="Quote Date", anchor=E)
+        tree.heading("Accepted", text="Accepted", anchor=CENTER)
+        tree.heading("Closed", text="Closed", anchor=CENTER)
+
+        # Insert the data in Treeview widget
+        for i in range(1,21):
+            tree.insert('', 'end', values=(
+                f"{i}",
+                fake.name(),
+                fake.sentence(nb_words=3),
+                datetime.strptime(fake.date(), '%Y-%m-%d').date(),
+                random.choice(["Yes", "No"]),
+                random.choice(["Yes", "No"]),
+                )
+            )
+
+        tree.grid(column=0, row=0, sticky=(N, S, W, E))
+
+        
+
+        # Configure rows and columns
+        top_frame.columnconfigure(0, weight=1)
+        top_frame.rowconfigure(0, weight=1)
+
+        mid_frame.columnconfigure(0, weight=1)
+        mid_frame.columnconfigure(1, weight=1)
+        mid_frame.rowconfigure(0, weight=1)
+        mid_frame.rowconfigure(1, weight=1)
+
     def setup_quotations_tab(self):
         """Configure the quotations tab"""
         # Frames
@@ -817,6 +939,118 @@ class MainWindow():
 
         for child in mid_frame.winfo_children():
             child.grid_configure(padx=2, pady=3)
+
+    
+    def setup_order_list_tab(self):
+        """Configure the order list tab"""
+        # Frames
+        top_frame = ttk.Frame(
+            self.order_list_frame,
+            borderwidth=5, 
+            relief="solid"
+        )
+        mid_frame = ttk.Frame(
+            self.order_list_frame, 
+            borderwidth=5, 
+            relief="solid"
+        )
+        bottom_frame = ttk.Frame(
+            self.order_list_frame,
+            borderwidth=5, 
+            relief="solid"
+        )
+
+        top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W, E, S))
+        bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
+
+        # LABELS
+        heading_lbl = ttk.Label(
+            top_frame,
+            text="Order List",
+            anchor="center",
+            style="heading.TLabel",
+        )
+
+        heading_lbl.grid(row=0)
+
+        # Buttons
+        open_order_btn = ttk.Button(
+            bottom_frame,
+            text="Open Selected Record",
+            # style="home_btns.TButton",
+            padding=21
+        )
+        add_order_btn = ttk.Button(
+            bottom_frame, 
+            text="Add New Order",
+            # style="home_btns.TButton",
+            padding=(10, 21)
+        )
+
+        open_order_btn.grid(column=0, row=1, sticky=E)
+        add_order_btn.grid(column=1, row=1, sticky=E)
+
+        # Treeview
+        tree = ttk.Treeview(mid_frame, show='headings', height=20)
+        
+        # Scrollbar
+        y_scroll = ttk.Scrollbar(mid_frame, orient=VERTICAL, command=tree.yview)
+        x_scroll = ttk.Scrollbar(mid_frame, orient=HORIZONTAL, command=tree.xview)
+        y_scroll.grid(column=1, row=0, sticky=(N, S, W, E))
+        x_scroll.grid(column=0, row=1, sticky=(E, W))
+        tree['yscrollcommand'] = y_scroll.set
+        tree['xscrollcommand'] = x_scroll.set
+
+
+        # Define Our Columns
+        tree['columns'] = (
+            "ID",
+            "Customer",
+            "Description",
+            "Order Date",
+            "Paid"
+        )
+
+        # Format Our Columns
+        tree.column("ID", anchor=CENTER)
+        tree.column("Customer", anchor=W)
+        tree.column("Description", anchor=W)
+        tree.column("Order Date", anchor=E)
+        tree.column("Paid", anchor=CENTER)
+
+        # Create Headings
+        tree.heading("ID", text="ID", anchor=CENTER)
+        tree.heading("Customer", text="Customer", anchor=W)
+        tree.heading("Description", text="Description", anchor=W)
+        tree.heading("Order Date", text="Order Date", anchor=E)
+        tree.heading("Paid", text="Paid", anchor=CENTER)
+
+        # Insert the data in Treeview widget
+        for i in range(1,21):
+            tree.insert('', 'end', values=(
+                f"{i}",
+                fake.name(),
+                fake.sentence(nb_words=3),
+                datetime.strptime(fake.date(), '%Y-%m-%d').date(),
+                random.choice(["Yes", "No"])
+                )
+            )
+
+        tree.grid(column=0, row=0, sticky=(N, S, W, E))
+
+        
+
+        # Configure rows and columns
+        top_frame.columnconfigure(0, weight=1)
+        top_frame.rowconfigure(0, weight=1)
+
+        mid_frame.columnconfigure(0, weight=1)
+        mid_frame.columnconfigure(1, weight=1)
+        mid_frame.rowconfigure(0, weight=1)
+        mid_frame.rowconfigure(1, weight=1)
+
+
 
     def setup_orders_tab(self):
         """configure the orders tab"""
@@ -1103,17 +1337,29 @@ class MainWindow():
         self.customer_list_frame.rowconfigure(1, weight=1)
         self.customer_list_frame.rowconfigure(2, weight=1)
 
-        self.customer_form_frame.columnconfigure(0, weight=1)
-        self.customer_form_frame.columnconfigure(1, weight=1)
-        self.customer_form_frame.rowconfigure(0, weight=1)
-        self.customer_form_frame.rowconfigure(1, weight=1)
-        self.customer_form_frame.rowconfigure(2, weight=1)
+        self.customer_frame.columnconfigure(0, weight=1)
+        self.customer_frame.columnconfigure(1, weight=1)
+        self.customer_frame.rowconfigure(0, weight=1)
+        self.customer_frame.rowconfigure(1, weight=1)
+        self.customer_frame.rowconfigure(2, weight=1)
+
+        self.quotation_list_frame.columnconfigure(0, weight=1)
+        self.quotation_list_frame.columnconfigure(1, weight=1)
+        self.quotation_list_frame.rowconfigure(0, weight=1)
+        self.quotation_list_frame.rowconfigure(1, weight=1)
+        self.quotation_list_frame.rowconfigure(2, weight=1)
 
         self.quotations_frame.columnconfigure(0, weight=1)
         self.quotations_frame.columnconfigure(1, weight=1)
         self.quotations_frame.rowconfigure(0, weight=1)
         self.quotations_frame.rowconfigure(1, weight=1)
         self.quotations_frame.rowconfigure(2, weight=1)
+
+        self.order_list_frame.columnconfigure(0, weight=1)
+        self.order_list_frame.columnconfigure(1, weight=1)
+        self.order_list_frame.rowconfigure(0, weight=1)
+        self.order_list_frame.rowconfigure(1, weight=1)
+        self.order_list_frame.rowconfigure(2, weight=1)
 
         self.orders_frame.columnconfigure(0, weight=1)
         self.orders_frame.columnconfigure(1, weight=1)
