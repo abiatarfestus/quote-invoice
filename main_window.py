@@ -192,9 +192,16 @@ class MainWindow():
             # style="home_btns.TButton",
             padding=(10, 21)
         )
+        search_customer_btn = ttk.Button(
+            bottom_frame, 
+            text="Search Customer",
+            # style="home_btns.TButton",
+            padding=(10, 21)
+        )
 
         open_customer_btn.grid(column=0, row=1, sticky=E)
         add_customer_btn.grid(column=1, row=1, sticky=E)
+        search_customer_btn.grid(column=2, row=1, sticky=E)
 
         # Treeview
         tree = ttk.Treeview(mid_frame, show='headings', height=20)
@@ -235,42 +242,16 @@ class MainWindow():
         tree.heading("Customer Since", text="Customr Since", anchor=E)
 
         # Insert the data in Treeview widget
-        tree.insert('', 'end', values=('1', 'Joe', 'Nash', "Tomarx", "Windhoek", "26/10/2022"))
-        tree.insert('', 'end', values=('2', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('3', 'Estilla', 'Roffe'))
-        tree.insert('', 'end', values=('4', 'Percy', 'Andrews'))
-        tree.insert('', 'end', values=('5', 'Stephan', 'Heyward'))
-        tree.insert('', 'end', values=('6', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('1', 'Joe', 'Nash', "Tomarx", "Windhoek", "26/10/2022"))
-        tree.insert('', 'end', values=('2', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('3', 'Estilla', 'Roffe'))
-        tree.insert('', 'end', values=('4', 'Percy', 'Andrews'))
-        tree.insert('', 'end', values=('5', 'Stephan', 'Heyward'))
-        tree.insert('', 'end', values=('6', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('1', 'Joe', 'Nash', "Tomarx", "Windhoek", "26/10/2022"))
-        tree.insert('', 'end', values=('2', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('3', 'Estilla', 'Roffe'))
-        tree.insert('', 'end', values=('4', 'Percy', 'Andrews'))
-        tree.insert('', 'end', values=('5', 'Stephan', 'Heyward'))
-        tree.insert('', 'end', values=('6', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('1', 'Joe', 'Nash', "Tomarx", "Windhoek", "26/10/2022"))
-        tree.insert('', 'end', values=('2', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('3', 'Estilla', 'Roffe'))
-        tree.insert('', 'end', values=('4', 'Percy', 'Andrews'))
-        tree.insert('', 'end', values=('5', 'Stephan', 'Heyward'))
-        tree.insert('', 'end', values=('6', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('1', 'Joe', 'Nash', "Tomarx", "Windhoek", "26/10/2022"))
-        tree.insert('', 'end', values=('2', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('3', 'Estilla', 'Roffe'))
-        tree.insert('', 'end', values=('4', 'Percy', 'Andrews'))
-        tree.insert('', 'end', values=('5', 'Stephan', 'Heyward'))
-        tree.insert('', 'end', values=('6', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('1', 'Joe', 'Nash', "Tomarx", "Windhoek", "26/10/2022"))
-        tree.insert('', 'end', values=('2', 'Emily', 'Mackmohan'))
-        tree.insert('', 'end', values=('3', 'Estilla', 'Roffe'))
-        tree.insert('', 'end', values=('4', 'Percy', 'Andrews'))
-        tree.insert('', 'end', values=('5', 'Stephan', 'Heyward'))
-        tree.insert('', 'end', values=('6', 'Emily', 'Mackmohan'))
+        for i in range(1,21):
+            tree.insert('', 'end', values=(
+                f"{i}",
+                fake.last_name(),
+                fake.first_name(),
+                fake.city(),
+                fake.company(),
+                datetime.strptime(fake.date(), '%Y-%m-%d').date()
+                )
+            )
 
         tree.grid(column=0, row=0, sticky=(N, S, W, E))
 
@@ -611,9 +592,16 @@ class MainWindow():
             # style="home_btns.TButton",
             padding=(10, 21)
         )
+        search_quotation_btn = ttk.Button(
+            bottom_frame, 
+            text="Search Quotation",
+            # style="home_btns.TButton",
+            padding=(10, 21)
+        )
 
         open_quotation_btn.grid(column=0, row=1, sticky=E)
         add_quotation_btn.grid(column=1, row=1, sticky=E)
+        search_quotation_btn.grid(column=2, row=1, sticky=E)
 
         # Treeview
         tree = ttk.Treeview(mid_frame, show='headings', height=20)
@@ -756,6 +744,24 @@ class MainWindow():
             anchor=E,
             # style="heading.TLabel",
         )
+        input_product_lbl = ttk.Label(
+            bottom_frame,
+            text="Product",
+            anchor=CENTER,
+            # style="heading.TLabel",
+        )
+        input_description_lbl = ttk.Label(
+            bottom_frame,
+            text="Description",
+            anchor=CENTER,
+            # style="heading.TLabel",
+        )
+        input_quantity_lbl = ttk.Label(
+            bottom_frame,
+            text="Quantity",
+            anchor=CENTER,
+            # style="heading.TLabel",
+        )
 
         heading_lbl.grid(row=0, sticky=(N, S, W, E))
         id_lbl.grid(column=0, row=0, sticky=(W, ))
@@ -766,6 +772,9 @@ class MainWindow():
         # product_description_lbl.grid(column=0, row=0, sticky=(W, ))
         total_lbl.grid(column=3, row=6, sticky=(N, S, W, E))
         amount_lbl.grid(column=4, row=6, sticky=(N, S, W, E))
+        input_product_lbl.grid(column=0, row=0, sticky=(N, S, W, E))
+        input_description_lbl.grid(column=1, row=0, sticky=(N, S, W, E))
+        input_quantity_lbl.grid(column=2, row=0, sticky=(N, S, W, E))
 
         # Entries
         id_ent = ttk.Entry(
@@ -791,6 +800,20 @@ class MainWindow():
             # anchor="",
             # style="heading.TLabel",
         )
+        input_description_ent = ttk.Entry(
+            bottom_frame,
+            width=40,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+
+        # Spinboxes
+        input_quantity_spx = ttk.Spinbox(
+            bottom_frame,
+            from_=1,
+            to=500000,
+        )
 
         # Comboboxes
         customer_cbx = ttk.Combobox(
@@ -802,6 +825,14 @@ class MainWindow():
             # style="heading.TLabel",
         )
         customer_cbx.state(["readonly"])
+        input_product_cbx = ttk.Combobox(
+            bottom_frame,
+            width=40,
+            values=("Chair", "Table")
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
 
         # Texts
         notes_txt = Text(
@@ -840,6 +871,30 @@ class MainWindow():
         accepted_chk.grid(column=2, row=0, sticky=(S, N, E, W))
         notes_txt.grid(column=2, columnspan=2, row=1, rowspan=3, sticky=(S, N, E, W))
         # product_description_txt.grid(column=1, row=0, sticky=(W))
+        input_product_cbx.grid(column=0, row=1, rowspan=2, sticky=(S, N, E, W))
+        input_description_ent.grid(column=1, row=1, rowspan=2, sticky=(S, N, E, W))
+        input_quantity_spx.grid(column=2, row=1, rowspan=2, sticky=(S, N, E, W))
+        
+        def add_item():
+            product = input_product_cbx.get(),
+            description = input_description_ent.get(),
+            quantity = input_quantity_spx.get()
+            print(f"PRODUCT: {product[0]}")
+            print(f"DESCRIPTION: {description[0]}")
+            print(f"QUANTITY: {quantity}")
+            if product[0] == "" or description[0] == "":
+                print("INVALID ITEM")
+                return
+            tree.insert('', 'end', values=(
+                product[0],
+                description[0],
+                quantity
+                )
+            )
+            input_product_cbx.set("")
+            input_description_ent.delete(0,END)
+            input_quantity_spx.delete(0,END)
+            return
 
         # Buttons
         preview_btn = ttk.Button(
@@ -860,11 +915,19 @@ class MainWindow():
             # style="home_btns.TButton",
             padding=5
         )
+        input_add_btn = ttk.Button(
+            bottom_frame, 
+            text="Add Item",
+            # style="home_btns.TButton",
+            padding=5,
+            command=add_item
+        )
 
 
         preview_btn.grid(column=4, row=0, rowspan=2, sticky=(N, W, E, S))
         add_quote_btn.grid(column=4, row=2, rowspan=2, sticky=(N,W, E, S))
         save_btn.grid(column=0, columnspan=3, row=6, sticky=(N, S, W, E))
+        input_add_btn.grid(column=3, row=1, rowspan=2, sticky=(N, S, W, E))
 
         # Treeview
         tree = ttk.Treeview(mid_frame, show='headings', height=5)
@@ -902,12 +965,15 @@ class MainWindow():
         tree.heading("Ext Price", text="Ext Price", anchor=E)
 
         # Insert the data in Treeview widget
-        tree.insert('', 'end', values=('Chairs', 'Golden chairs…', 10, "N$10", "N$100.00"))
-        tree.insert('', 'end', values=('Tables', 'Tables with covering cloth…', 2, "N$50", "N$100.00"))
-        tree.insert('', 'end', values=('Serving Dish', 'Silver and dioamond', 4, "N$15", "N$60.00"))
-        tree.insert('', 'end', values=('Interior Decor', 'Meal and one juice/soft drink (serve 50 people)', 1, "N$450", "N$450.00"))
-        tree.insert('', 'end', values=('Food and Drinks', 'Xyz', 50, "N$50", "N$5000.00"))
-        tree.insert('', 'end', values=('Tent', 'Open', 1, "N$100", "N$100"))
+        for i in range(1,6):
+            tree.insert('', 'end', values=(
+                fake.word(part_of_speech="noun"),
+                fake.sentence(nb_words=3),
+                random.randint(1,100),
+                f"N${float(fake.pricetag()[1:].replace(',', ''))}",
+                f"N${float(fake.pricetag()[1:].replace(',', ''))}"
+                )
+            )
         
 
         tree.grid(column=0, columnspan=5, row=4, sticky=(N, S, W, E))
@@ -987,9 +1053,16 @@ class MainWindow():
             # style="home_btns.TButton",
             padding=(10, 21)
         )
+        search_order_btn = ttk.Button(
+            bottom_frame, 
+            text="Search Order",
+            # style="home_btns.TButton",
+            padding=(10, 21)
+        )
 
         open_order_btn.grid(column=0, row=1, sticky=E)
         add_order_btn.grid(column=1, row=1, sticky=E)
+        search_order_btn.grid(column=2, row=1, sticky=E)
 
         # Treeview
         tree = ttk.Treeview(mid_frame, show='headings', height=20)
@@ -1276,18 +1349,20 @@ class MainWindow():
         tree.heading("Ext Price", text="Ext Price", anchor=E)
 
         # Insert the data in Treeview widget
-        tree.insert('', 'end', values=('Chairs', 'Golden chairs…', 10, "N$10", "N$100.00"))
-        tree.insert('', 'end', values=('Tables', 'Tables with covering cloth…', 2, "N$50", "N$100.00"))
-        tree.insert('', 'end', values=('Serving Dish', 'Silver and dioamond', 4, "N$15", "N$60.00"))
-        tree.insert('', 'end', values=('Interior Decor', 'Meal and one juice/soft drink (serve 50 people)', 1, "N$450", "N$450.00"))
-        tree.insert('', 'end', values=('Food and Drinks', 'Xyz', 50, "N$50", "N$5000.00"))
-        tree.insert('', 'end', values=('Tent', 'Open', 1, "N$100", "N$100"))
+        for i in range(1,6):
+            tree.insert('', 'end', values=(
+                fake.word(part_of_speech="noun"),
+                fake.sentence(nb_words=3),
+                random.randint(1,100),
+                f"N${float(fake.pricetag()[1:].replace(',', ''))}",
+                f"N${float(fake.pricetag()[1:].replace(',', ''))}"
+                )
+            )
         
 
         tree.grid(column=0, columnspan=5, row=4, sticky=(N, S, W, E))
 
         
-
         # Configure rows and columns
         top_frame.columnconfigure(0, weight=1)
         top_frame.rowconfigure(0, weight=1)

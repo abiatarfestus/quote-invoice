@@ -21,7 +21,7 @@ session = Session()
 #         session, 
 #         first_name=fake.first_name(), 
 #         last_name=fake.last_name(), 
-#         # entity_name=fake.first_name(), 
+#         # entity_name=fake.company(), 
 #         email=fake.ascii_free_email(), 
 #         phone=fake.msisdn(), 
 #         address=fake.address(), 
