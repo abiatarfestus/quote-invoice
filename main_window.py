@@ -2,9 +2,22 @@ from datetime import datetime
 import random
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from faker import Faker
+from sqlalchemy import and_, or_, create_engine
+from sqlalchemy.orm import sessionmaker
+from models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
 
 fake = Faker()
+
+def get_connection():
+    return create_engine(f"sqlite:///app_database.db")
+
+# class DatabaseOps():
+engine = get_connection()
+Session = sessionmaker()
+Session.configure(bind=engine)
+session = Session()
 
 
 class MainWindow():
@@ -12,6 +25,9 @@ class MainWindow():
     def __init__(self, root):
         self.root = root
         self.root.title("Quote & Invoice")
+        self.selected_customer = None
+        self.selected_quote = None
+        self.selected_order = None
 
         # Styles
         style = ttk.Style()
@@ -179,18 +195,72 @@ class MainWindow():
 
         heading_lbl.grid(row=0)
 
+        def select_record(event):
+            print("Record selected")
+            record = tree.focus()
+            self.selected_customer = tree.item(record)
+        
+        def add_new_customer():
+            self.id_ent.state(["!disabled"])
+            self.id_ent.delete(0, END)
+            self.id_ent.state(["disabled"])
+            self.type_cbx.set("")
+            self.first_name_ent.delete(0, END)
+            self.last_name_ent.delete(0, END)
+            self.entity_ent.delete(0, END)
+            self.email_ent.delete(0, END)
+            self.phone_ent.delete(0, END)
+            self.address_ent.delete(0, END)
+            self.town_ent.delete(0, END)
+            self.country_ent.delete(0, END)
+            self.since_ent.delete(0, END)
+            self.notes_txt.delete("1.0", END)
+            self.notebook.select(self.customer_frame)
+        
+        def view_customer():
+            print(f"SELECTED RECORD: {self.selected_customer}")
+            customer = self.selected_customer
+            self.id_ent.state(["!disabled"])
+            self.id_ent.delete(0, END)
+            self.id_ent.insert(0, f"{customer['values'][0]}")
+            self.id_ent.state(["disabled"])
+            self.type_cbx.set("Person")
+            self.first_name_ent.delete(0, END)
+            self.first_name_ent.insert(0, "Festus")
+            self.last_name_ent.delete(0, END)
+            self.last_name_ent.insert(0, "Abiatar")
+            self.entity_ent.delete(0, END)
+            self.entity_ent.insert(0, "Shell Ltd")
+            self.email_ent.delete(0, END)
+            self.email_ent.insert(0, f"{customer['values'][4]}")
+            self.phone_ent.delete(0, END)
+            self.phone_ent.insert(0, f"{customer['values'][3]}")
+            self.address_ent.delete(0, END)
+            self.address_ent.insert(0, "Erf 1896")
+            self.town_ent.delete(0, END)
+            self.town_ent.insert(0, f"{customer['values'][2]}")
+            self.country_ent.delete(0, END)
+            self.country_ent.insert(0, "Namibia")
+            self.since_ent.delete(0, END)
+            self.since_ent.insert(0, "01/01/2022")
+            self.notes_txt.delete("1.0", END)
+            self.notes_txt.insert("1.0", "Some notes...")
+            self.notebook.select(self.customer_frame)
+
         # Buttons
         open_customer_btn = ttk.Button(
             bottom_frame,
             text="Open Selected Record",
             # style="home_btns.TButton",
-            padding=21
+            padding=21,
+            command=view_customer
         )
         add_customer_btn = ttk.Button(
             bottom_frame, 
             text="Add New Customer",
             # style="home_btns.TButton",
-            padding=(10, 21)
+            padding=(10, 21),
+            command=add_new_customer
         )
         search_customer_btn = ttk.Button(
             bottom_frame, 
@@ -199,12 +269,14 @@ class MainWindow():
             padding=(10, 21)
         )
 
+
         open_customer_btn.grid(column=0, row=1, sticky=E)
         add_customer_btn.grid(column=1, row=1, sticky=E)
         search_customer_btn.grid(column=2, row=1, sticky=E)
 
         # Treeview
         tree = ttk.Treeview(mid_frame, show='headings', height=20)
+        tree.bind('<ButtonRelease-1>', select_record)
         
         # Scrollbar
         y_scroll = ttk.Scrollbar(mid_frame, orient=VERTICAL, command=tree.yview)
@@ -218,40 +290,59 @@ class MainWindow():
         # Define Our Columns
         tree['columns'] = (
             "ID",  
-            "Last Name", 
-            "First Name",
-            "Entity Name", 
+            "Customer Name",
             "Locality", 
+            "Phone",
+            "Email",
             "Customer Since"
         )
 
         # Format Our Columns
         tree.column("ID", anchor=CENTER)
-        tree.column("Last Name", anchor=W)
-        tree.column("First Name", anchor=W)
-        tree.column("Entity Name", anchor=W)
+        tree.column("Customer Name", anchor=W)
         tree.column("Locality", anchor=W)
+        tree.column("Phone", anchor=W)
+        tree.column("Email", anchor=W)
         tree.column("Customer Since", anchor=E)
 
         # Create Headings
         tree.heading("ID", text="ID", anchor=CENTER)
-        tree.heading("Last Name", text="Last Name", anchor=W)
-        tree.heading("First Name", text="First Name", anchor=W)
-        tree.heading("Entity Name", text="Entity Name", anchor=W)
+        tree.heading("Customer Name", text="Customer Name", anchor=W)
         tree.heading("Locality", text="Locality", anchor=W)
+        tree.heading("Phone", text="Phone", anchor=W)
+        tree.heading("Email", text="Email", anchor=W)
         tree.heading("Customer Since", text="Customr Since", anchor=E)
 
         # Insert the data in Treeview widget
-        for i in range(1,21):
-            tree.insert('', 'end', values=(
-                f"{i}",
-                fake.last_name(),
-                fake.first_name(),
-                fake.city(),
-                fake.company(),
-                datetime.strptime(fake.date(), '%Y-%m-%d').date()
+        customers = session.query(Customer).order_by(Customer.customer_id).all()
+        print(f"TOTAL CUSTOMERS: {len(customers)}")
+        # for i in range(1, total_customers+1):
+        for customer in customers:
+            if customer.first_name and customer.last_name:
+                customer_name = f"{customer.last_name} {customer.first_name}"
+            else:
+                customer_name = customer.entity_name
+            tree.insert('', 'end', iid=f"{customer.customer_id}",
+            values=(
+                f"{customer.customer_id}",
+                customer_name,
+                customer.town,
+                customer.phone,
+                customer.email,
+                customer.customer_since
                 )
             )
+
+        # for i in range(1,21):
+        #     tree.insert('', 'end', values=(
+        #         f"{i}",
+        #         fake.last_name(),
+        #         fake.first_name(),
+        #         fake.city(),
+        #         fake.company(),
+        #         datetime.strptime(fake.date(), '%Y-%m-%d').date()
+        #         )
+        #     )
 
         tree.grid(column=0, row=0, sticky=(N, S, W, E))
 
@@ -308,13 +399,13 @@ class MainWindow():
             anchor=W,
             # style="heading.TLabel",
         )
-        f_name_lbl = ttk.Label(
+        first_name_lbl = ttk.Label(
             mid_frame,
             text="First Name",
             anchor=W,
             # style="heading.TLabel",
         )
-        l_name_lbl = ttk.Label(
+        last_name_lbl = ttk.Label(
             mid_frame,
             text="Last Name",
             anchor=W,
@@ -372,8 +463,8 @@ class MainWindow():
         heading_lbl.grid(row=0, sticky=(N, S, W, E))
         id_lbl.grid(column=0, row=1, sticky=(W, ))
         type_lbl.grid(column=0, row=2, sticky=(W, ))
-        f_name_lbl.grid(column=0, row=3, sticky=(W, ))
-        l_name_lbl.grid(column=0, row=4, sticky=(W, ))
+        first_name_lbl.grid(column=0, row=3, sticky=(W, ))
+        last_name_lbl.grid(column=0, row=4, sticky=(W, ))
         entity_lbl.grid(column=0, row=5, sticky=(W, ))
         email_lbl.grid(column=0, row=6, sticky=(W, ))
         phone_lbl.grid(column=0, row=7, sticky=(W, ))
@@ -384,72 +475,72 @@ class MainWindow():
         notes_lbl.grid(column=4, row=0, sticky=(E, ))
 
         # Entries
-        id_ent = ttk.Entry(
+        self.id_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        id_ent.state(["disabled"])
+        # self.id_ent.state(["disabled"])
 
-        f_name_ent = ttk.Entry(
+        self.first_name_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        l_name_ent = ttk.Entry(
+        self.last_name_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        entity_ent = ttk.Entry(
+        self.entity_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        email_ent = ttk.Entry(
+        self.email_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        phone_ent = ttk.Entry(
+        self.phone_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        address_ent = ttk.Entry(
+        self.address_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        town_ent = ttk.Entry(
+        self.town_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        country_ent = ttk.Entry(
+        self.country_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        since_ent = ttk.Entry(
+        self.since_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
@@ -458,7 +549,7 @@ class MainWindow():
         )
 
         # Comboboxes
-        type_cbx = ttk.Combobox(
+        self.type_cbx = ttk.Combobox(
             mid_frame,
             width=38,
             values=("Person", "Entity")
@@ -466,10 +557,10 @@ class MainWindow():
             # anchor="",
             # style="heading.TLabel",
         )
-        type_cbx.state(["readonly"])
+        self.type_cbx.state(["readonly"])
 
         # Texts
-        notes_txt = Text(
+        self.notes_txt = Text(
             mid_frame,
             width=35, 
             height=9,
@@ -478,18 +569,18 @@ class MainWindow():
             # style="heading.TLabel",
         )
 
-        id_ent.grid(column=1, row=1, sticky=(N, S, E, W))
-        type_cbx.grid(column=1, row=2, sticky=(N, S, E, W))
-        f_name_ent.grid(column=1, row=3, sticky=(N, S, E, W))
-        l_name_ent.grid(column=1, row=4, sticky=(N, S, E, W))
-        entity_ent.grid(column=1, row=5, sticky=(N, S, E, W))
-        email_ent.grid(column=1, row=6, sticky=(N, S, E, W))
-        phone_ent.grid(column=1, row=7, sticky=(N, S, E, W))
-        address_ent.grid(column=1, row=8, sticky=(N, S, E, W))
-        town_ent.grid(column=1, row=9, sticky=(N, S, E, W))
-        country_ent.grid(column=1, row=10, sticky=(N, S, E, W))
-        since_ent.grid(column=1, row=11, sticky=(N, S, E, W))
-        notes_txt.grid(column=2, columnspan=3,row=1, rowspan=5, sticky=(N, S, E, W))
+        self.id_ent.grid(column=1, row=1, sticky=(N, S, E, W))
+        self.type_cbx.grid(column=1, row=2, sticky=(N, S, E, W))
+        self.first_name_ent.grid(column=1, row=3, sticky=(N, S, E, W))
+        self.last_name_ent.grid(column=1, row=4, sticky=(N, S, E, W))
+        self.entity_ent.grid(column=1, row=5, sticky=(N, S, E, W))
+        self.email_ent.grid(column=1, row=6, sticky=(N, S, E, W))
+        self.phone_ent.grid(column=1, row=7, sticky=(N, S, E, W))
+        self.address_ent.grid(column=1, row=8, sticky=(N, S, E, W))
+        self.town_ent.grid(column=1, row=9, sticky=(N, S, E, W))
+        self.country_ent.grid(column=1, row=10, sticky=(N, S, E, W))
+        self.since_ent.grid(column=1, row=11, sticky=(N, S, E, W))
+        self.notes_txt.grid(column=2, columnspan=3,row=1, rowspan=5, sticky=(N, S, E, W))
 
         # Buttons
         save_btn = ttk.Button(
@@ -884,7 +975,11 @@ class MainWindow():
             print(f"QUANTITY: {quantity}")
             if product[0] == "" or description[0] == "":
                 print("INVALID ITEM")
-                return
+                error_message = messagebox.showerror(
+                    message='Item could not be added to the quotation!',
+                    title='Invalid Item'
+                )
+                return error_message
             tree.insert('', 'end', values=(
                 product[0],
                 description[0],
