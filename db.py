@@ -18,12 +18,9 @@ from models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
 def get_customers(session, pk=None, other_fields=""):
     """Get a list of customer objects sorted by last name"""
     if pk:
-        customer = (
-            session.query(Customer)
-            .get(pk)
-        )
+        return session.query(Customer).get(pk)
     elif other_fields == "":
-        return session.query(Customer).order_by(Customer.last_name).all()
+        return session.query(Customer).order_by(Customer.customer_id).all()
     else:
         customer = (
             session.query(Customer)
@@ -37,10 +34,10 @@ def get_customers(session, pk=None, other_fields=""):
                     Customer.email.like(f'%{other_fields}%'),
                     Customer.town.like(f'%{other_fields}%'),
                 )
-            .order_by(Customer.last_name).all()
             )
+        .order_by(Customer.customer_id).all()
         )
-    return customer
+        return customer
     
 def add_customer(
     session, 

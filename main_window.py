@@ -1,5 +1,6 @@
 from datetime import datetime
 import random
+import db
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
@@ -193,7 +194,20 @@ class MainWindow():
             style="heading.TLabel",
         )
 
-        heading_lbl.grid(row=0)
+        # ENTRIES
+        self.search_ent = ttk.Entry(
+            bottom_frame,
+        )
+        self.search_ent.grid(column=3, row=1, sticky=(S, N, W, E))
+
+        # COMBOBOXES
+        
+        self.search_option_cbx = ttk.Combobox(
+            bottom_frame,
+            width=38,
+            values=("Customer ID", "Other Variables"),
+        )
+        self.search_option_cbx.grid(column=2, row=1, padx=2, sticky=(S, N, W, E))
 
         def select_record(event):
             print("Record selected")
@@ -203,6 +217,7 @@ class MainWindow():
         def add_new_customer():
             self.id_ent.state(["!disabled"])
             self.id_ent.delete(0, END)
+            self.id_ent.insert(0, "New")
             self.id_ent.state(["disabled"])
             self.type_cbx.set("")
             self.first_name_ent.delete(0, END)
@@ -253,6 +268,106 @@ class MainWindow():
             self.notes_txt.insert("1.0", customer['values'][12])
             self.notebook.select(self.customer_frame)
 
+        def search_customer():
+            search_option = self.search_option_cbx.get()
+            search_value = self.search_ent.get()
+            if search_option == "Customer ID":
+                customer_id = search_value
+                if not customer_id:
+                    error_message = messagebox.showerror(
+                        message="Cannot search a with blank Customer ID.",
+                        title='Error'
+                    )
+                    return error_message
+                try:
+                    customer_id = int(customer_id)
+                    try:
+                        customer = db.get_customers(session, pk=customer_id)
+                        if customer:
+                            if customer.first_name and customer.last_name:
+                                customer_name = f"{customer.last_name} {customer.first_name}"
+                            else:
+                                customer_name = customer.entity_name
+                            for item in tree.get_children():
+                                tree.delete(item)
+                            tree.insert('', 'end', iid=f"{customer.customer_id}",
+                            values=(
+                                f"{customer.customer_id}",
+                                customer.customer_type,
+                                customer.first_name,
+                                customer.last_name,
+                                customer.entity_name,
+                                customer_name,
+                                customer.email,
+                                customer.phone,
+                                customer.address,
+                                customer.town,
+                                customer.country,
+                                customer.customer_since,
+                                customer.notes
+                                )
+                            )
+                        else:
+                            info_message = messagebox.showinfo(
+                            message="No matching record was found.",
+                            title='Info'
+                        )
+                            return info_message
+                    except Exception as e:
+                            error_message = messagebox.showerror(
+                            message="Oops! Something went wrong.",
+                            detail=e,
+                            title='Error'
+                        )
+                            return error_message
+                except Exception as e:
+                    error_message = messagebox.showerror(
+                    message="Invalid Customer ID.",
+                    detail=e,
+                    title='Error'
+                )
+                    return error_message
+            else:
+                try:
+                    customers = db.get_customers(session, other_fields=search_value)
+                    if not customers:
+                        info_message = messagebox.showinfo(
+                            message="No matching record was found.",
+                            title='Info'
+                            )
+                        return info_message
+                    for item in tree.get_children():
+                        tree.delete(item)
+                    for customer in customers:
+                        if customer.first_name and customer.last_name:
+                            customer_name = f"{customer.last_name} {customer.first_name}"
+                        else:
+                            customer_name = customer.entity_name
+                        tree.insert('', 'end', iid=f"{customer.customer_id}",
+                        values=(
+                            f"{customer.customer_id}",
+                            customer.customer_type,
+                            customer.first_name,
+                            customer.last_name,
+                            customer.entity_name,
+                            customer_name,
+                            customer.email,
+                            customer.phone,
+                            customer.address,
+                            customer.town,
+                            customer.country,
+                            customer.customer_since,
+                            customer.notes
+                            )
+                        )
+                except Exception as e:
+                    error_message = messagebox.showerror(
+                    message="Oops! Something went wrong.",
+                    detail=e,
+                    title='Error'
+                )
+                    return error_message
+
         # Buttons
         open_customer_btn = ttk.Button(
             bottom_frame,
@@ -272,13 +387,14 @@ class MainWindow():
             bottom_frame, 
             text="Search Customer",
             # style="home_btns.TButton",
-            padding=(10, 21)
+            padding=(10, 21),
+            command=search_customer
         )
 
 
         open_customer_btn.grid(column=0, row=1, sticky=E)
         add_customer_btn.grid(column=1, row=1, sticky=E)
-        search_customer_btn.grid(column=2, row=1, sticky=E)
+        search_customer_btn.grid(column=4, row=1, sticky=E)
 
         # Treeview
         tree = ttk.Treeview(mid_frame, show='headings', height=20)
@@ -626,18 +742,98 @@ class MainWindow():
         self.since_ent.grid(column=1, row=11, sticky=(N, S, E, W))
         self.notes_txt.grid(column=2, columnspan=3,row=1, rowspan=5, sticky=(N, S, E, W))
 
+        def add_new_customer():
+            self.id_ent.state(["!disabled"])
+            self.id_ent.delete(0, END)
+            self.id_ent.insert(0, "New")
+            self.id_ent.state(["disabled"])
+            self.type_cbx.set("")
+            self.first_name_ent.delete(0, END)
+            self.last_name_ent.delete(0, END)
+            self.entity_ent.delete(0, END)
+            self.email_ent.delete(0, END)
+            self.phone_ent.delete(0, END)
+            self.address_ent.delete(0, END)
+            self.town_ent.delete(0, END)
+            self.country_ent.delete(0, END)
+            self.since_ent.delete(0, END)
+            self.notes_txt.delete("1.0", END)
+            # Update the Save/Update button
+            # self.notebook.select(self.customer_frame)
+
+        def save_customer():
+            customer_id = self.id_ent.get()
+            if customer_id == "New":
+                try:
+                    db.add_customer(
+                    session, 
+                    customer_type=self.type_cbx.get(),
+                    first_name=self.first_name_ent.get(), 
+                    last_name=self.last_name_ent.get(), 
+                    entity_name=self.entity_ent.get(), 
+                    email=self.email_ent.get(), 
+                    phone=self.phone_ent.get(), 
+                    address=self.address_ent.get(), 
+                    town=self.town_ent.get(), 
+                    country=self.country_ent.get(),
+                    customer_since=datetime.strptime(self.since_ent.get(), '%Y-%m-%d').date(),
+                    notes=self.notes_txt.get("1.0")
+                )
+                    add_new_customer()
+                    success_message = messagebox.showinfo(
+                    message='Customer was successfully created!',
+                    title='Success'
+                )
+                    return success_message
+                except Exception as e:
+                    error_message = messagebox.showerror(
+                    message="Oops! Something went wrong.",
+                    detail=e,
+                    title='Error'
+                )
+                    return error_message
+            else:
+                try:
+                    customer = db.get_customers(session, customer_id)
+                    customer.customer_type = self.type_cbx.get()
+                    customer.first_name = self.first_name_ent.get()
+                    customer.last_name = self.last_name_ent.get()
+                    customer.entity_name = self.entity_ent.get()
+                    customer.email = self.email_ent.get()
+                    customer.phone = self.phone_ent.get()
+                    customer.address = self.address_ent.get()
+                    customer.town = self.town_ent.get()
+                    customer.country = self.country_ent.get()
+                    customer.customer_since = datetime.strptime(self.since_ent.get(), '%Y-%m-%d').date()
+                    customer.notes = self.notes_txt.get("1.0")
+                    session.commit()
+                    success_message = messagebox.showinfo(
+                    message='Record was successfully updated!',
+                    title='Success'
+                )
+                    return success_message
+                except Exception as e:
+                    error_message = messagebox.showerror(
+                    message="Oops! Something went wrong.",
+                    detail=e,
+                    title='Error'
+                )
+                    return error_message 
+
         # Buttons
         save_btn = ttk.Button(
             mid_frame,
             text="Save Record",
             # style="home_btns.TButton",
-            padding=5
+            padding=5,
+            command=save_customer
         )
         new_customer_btn = ttk.Button(
             mid_frame,
             text="New Customer",
             # style="home_btns.TButton",
-            padding=5
+            padding=5,
+            command=add_new_customer
         )
         orders_btn = ttk.Button(
             mid_frame, 
@@ -652,7 +848,7 @@ class MainWindow():
             padding=5
         )
 
-        save_btn.grid(column=0, columnspan=5, row=11, sticky=(E, W))
+        save_btn.grid(column=0, columnspan=5, row=12, sticky=(E, W))
         new_customer_btn.grid(column=2, row=6, sticky=(N, S, E, W))
         orders_btn.grid(column=3, row=6, sticky=(N, S, E, W))
         contacts_btn.grid(column=4, row=6, sticky=(N, S, E, W))
@@ -677,6 +873,7 @@ class MainWindow():
         mid_frame.rowconfigure(9, weight=1)
         mid_frame.rowconfigure(10, weight=1)
         mid_frame.rowconfigure(11, weight=1)
+        mid_frame.rowconfigure(12, weight=1)
 
         for child in mid_frame.winfo_children():
             child.grid_configure(padx=2, pady=5)

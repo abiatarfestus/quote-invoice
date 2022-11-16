@@ -7,3 +7,7 @@ Review the update methods
 Add check for item quantity is >0
 Add check when order is marked Paid: warn that no new items will be added
 entity person
+https://pythonguides.com/python-tkinter-table-tutorial/
+Wrap data display/insertion on the treeview into a function for reuse by search function
+Wrap clear treeview into a method for access by all search methods
+Limit number of list items diplayed in the list views
