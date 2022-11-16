@@ -220,31 +220,37 @@ class MainWindow():
         def view_customer():
             print(f"SELECTED RECORD: {self.selected_customer}")
             customer = self.selected_customer
+            if not self.selected_customer:
+                error_message = messagebox.showerror(
+                    message='No record is selected!',
+                    title='Error'
+                )
+                return error_message
             self.id_ent.state(["!disabled"])
             self.id_ent.delete(0, END)
-            self.id_ent.insert(0, f"{customer['values'][0]}")
+            self.id_ent.insert(0, customer['values'][0])
             self.id_ent.state(["disabled"])
-            self.type_cbx.set("Person")
+            self.type_cbx.set(customer['values'][1])
             self.first_name_ent.delete(0, END)
-            self.first_name_ent.insert(0, "Festus")
+            self.first_name_ent.insert(0, customer['values'][2])
             self.last_name_ent.delete(0, END)
-            self.last_name_ent.insert(0, "Abiatar")
+            self.last_name_ent.insert(0, customer['values'][3])
             self.entity_ent.delete(0, END)
-            self.entity_ent.insert(0, "Shell Ltd")
+            self.entity_ent.insert(0, customer['values'][4])
             self.email_ent.delete(0, END)
-            self.email_ent.insert(0, f"{customer['values'][4]}")
+            self.email_ent.insert(0, customer['values'][6])
             self.phone_ent.delete(0, END)
-            self.phone_ent.insert(0, f"{customer['values'][3]}")
+            self.phone_ent.insert(0, customer['values'][7])
             self.address_ent.delete(0, END)
-            self.address_ent.insert(0, "Erf 1896")
+            self.address_ent.insert(0, customer['values'][8])
             self.town_ent.delete(0, END)
-            self.town_ent.insert(0, f"{customer['values'][2]}")
+            self.town_ent.insert(0, customer['values'][9])
             self.country_ent.delete(0, END)
-            self.country_ent.insert(0, "Namibia")
+            self.country_ent.insert(0, customer['values'][10])
             self.since_ent.delete(0, END)
-            self.since_ent.insert(0, "01/01/2022")
+            self.since_ent.insert(0, customer['values'][11])
             self.notes_txt.delete("1.0", END)
-            self.notes_txt.insert("1.0", "Some notes...")
+            self.notes_txt.insert("1.0", customer['values'][12])
             self.notebook.select(self.customer_frame)
 
         # Buttons
@@ -288,10 +294,27 @@ class MainWindow():
 
 
         # Define Our Columns
-        tree['columns'] = (
-            "ID",  
+        tree["columns"] = (
+            "ID",
+            "Customer Type",
+            "First Name",
+            "Last Name",
+            "Entity Name",
             "Customer Name",
-            "Locality", 
+            "Email",
+            "Phone",
+            "Address",
+            "Town",
+            "Country",
+            "Customer Since",
+            "Notes"
+        )
+
+        # Columns to display
+        tree["displaycolumns"] = (
+            "ID",
+            "Customer Name",
+            "Town",
             "Phone",
             "Email",
             "Customer Since"
@@ -300,18 +323,32 @@ class MainWindow():
         # Format Our Columns
         tree.column("ID", anchor=CENTER)
         tree.column("Customer Name", anchor=W)
-        tree.column("Locality", anchor=W)
+        tree.column("Town", anchor=W)
         tree.column("Phone", anchor=W)
         tree.column("Email", anchor=W)
         tree.column("Customer Since", anchor=E)
+        # tree.column("Customer Type", anchor=W)
+        # tree.column("First Name", anchor=W)
+        # tree.column("Last Name", anchor=W)
+        # tree.column("Entity Name", anchor=W)
+        # tree.column("Address", anchor=W)
+        # tree.column("Country", anchor=W)
+        # tree.column("Notes", anchor=W)
 
         # Create Headings
         tree.heading("ID", text="ID", anchor=CENTER)
         tree.heading("Customer Name", text="Customer Name", anchor=W)
-        tree.heading("Locality", text="Locality", anchor=W)
+        tree.heading("Town", text="Town", anchor=W)
         tree.heading("Phone", text="Phone", anchor=W)
         tree.heading("Email", text="Email", anchor=W)
         tree.heading("Customer Since", text="Customr Since", anchor=E)
+        # tree.heading("Customer Type", text="Customer Type", anchor=W)
+        # tree.heading("First Name", text="First Name", anchor=W)
+        # tree.heading("Last Name", text="Last Name", anchor=W)
+        # tree.heading("Entity Name", text="Entity Name", anchor=W)
+        # tree.heading("Address", text="Address", anchor=W)
+        # tree.heading("Country", text="Country", anchor=W)
+        # tree.heading("Notes", text="Notes", anchor=W)
 
         # Insert the data in Treeview widget
         customers = session.query(Customer).order_by(Customer.customer_id).all()
@@ -325,11 +362,18 @@ class MainWindow():
             tree.insert('', 'end', iid=f"{customer.customer_id}",
             values=(
                 f"{customer.customer_id}",
+                customer.customer_type,
+                customer.first_name,
+                customer.last_name,
+                customer.entity_name,
                 customer_name,
-                customer.town,
-                customer.phone,
                 customer.email,
-                customer.customer_since
+                customer.phone,
+                customer.address,
+                customer.town,
+                customer.country,
+                customer.customer_since,
+                customer.notes
                 )
             )
 
