@@ -27,6 +27,8 @@ class MainWindow():
         self.root = root
         self.root.title("Quote & Invoice")
         self.selected_customer = None
+        self.selected_quotation = None
+        self.selected_order = None
         self.selected_quote = None
         self.selected_order = None
 
@@ -49,18 +51,18 @@ class MainWindow():
         self.customer_list_frame = ttk.Frame(self.notebook)
         self.customer_frame = ttk.Frame(self.notebook)
         self.quotation_list_frame = ttk.Frame(self.notebook)
-        self.quotations_frame = ttk.Frame(self.notebook)
+        self.quotation_frame = ttk.Frame(self.notebook)
         self.order_list_frame = ttk.Frame(self.notebook)
-        self.orders_frame = ttk.Frame(self.notebook)
+        self.order_frame = ttk.Frame(self.notebook)
 
         # Add tabs/pages to the Notebook
         self.notebook.add(self.home_frame, text="Home")
         self.notebook.add(self.customer_list_frame, text="Customer List")
         self.notebook.add(self.customer_frame, text="Customer Details")
         self.notebook.add(self.quotation_list_frame, text="Quotation List")
-        self.notebook.add(self.quotations_frame, text="Quote Details")
+        self.notebook.add(self.quotation_frame, text="Quote Details")
         self.notebook.add(self.order_list_frame, text="Order List")
-        self.notebook.add(self.orders_frame, text="Order Details")
+        self.notebook.add(self.order_frame, text="Order Details")
         
         # Grid Notebook
         self.notebook.grid(column=0, row=0, columnspan=2, rowspan=12, sticky=(N, W, E, S))
@@ -194,6 +196,8 @@ class MainWindow():
             style="heading.TLabel",
         )
 
+        heading_lbl.grid(column=0, row=0, sticky=(S, N, W, E))
+
         # ENTRIES
         self.search_ent = ttk.Entry(
             bottom_frame,
@@ -275,7 +279,7 @@ class MainWindow():
                 customer_id = search_value
                 if not customer_id:
                     error_message = messagebox.showerror(
-                        message="Cannot search a with blank Customer ID.",
+                        message="Cannot search with blank Customer ID.",
                         title='Error'
                     )
                     return error_message
@@ -911,12 +915,185 @@ class MainWindow():
 
         heading_lbl.grid(row=0)
 
+
+
+
+        def select_record(event):
+            print("Record selected")
+            record = tree.focus()
+            self.selected_quotation = tree.item(record)
+        
+        # def add_new_quotation():
+        #     self.id_ent.state(["!disabled"])
+        #     self.id_ent.delete(0, END)
+        #     self.id_ent.insert(0, "New")
+        #     self.id_ent.state(["disabled"])
+        #     self.type_cbx.set("")
+        #     self.first_name_ent.delete(0, END)
+        #     self.last_name_ent.delete(0, END)
+        #     self.entity_ent.delete(0, END)
+        #     self.email_ent.delete(0, END)
+        #     self.phone_ent.delete(0, END)
+        #     self.address_ent.delete(0, END)
+        #     self.town_ent.delete(0, END)
+        #     self.country_ent.delete(0, END)
+        #     self.since_ent.delete(0, END)
+        #     self.notes_txt.delete("1.0", END)
+        #     self.notebook.select(self.customer_frame)
+        
+        def view_quotation():
+            print(f"SELECTED RECORD: {self.selected_quotation}")
+            quotation = self.selected_quotation
+            if not self.selected_quotation:
+                error_message = messagebox.showerror(
+                    message='No record is selected!',
+                    title='Error'
+                )
+                return error_message
+            self.quote_id_ent.state(["!disabled"])
+            self.quote_id_ent.delete(0, END)
+            self.quote_id_ent.insert(0, quotation['values'][0])
+            self.quote_id_ent.state(["disabled"])
+            self.quote_customer_cbx.state(["!disabled"])
+            self.quote_customer_cbx.delete(0, END)
+            self.quote_customer_cbx.set(quotation['values'][1])
+            self.quote_description_ent.state(["!disabled"])
+            self.quote_description_ent.delete(0, END)
+            self.quote_description_ent.insert(0, quotation['values'][2])
+            self.quote_date_ent.state(["!disabled"])
+            self.quote_date_ent.delete(0, END)
+            self.quote_date_ent.insert(0, quotation['values'][3])
+            self.quote_accepted_chk.state(["!disabled"])
+            self.is_accepted.set(value=quotation['values'][4])
+            print(f"CHECK VALUE: {self.is_accepted.get()}")
+            self.quote_notes_txt.delete("1.0", END)
+            self.quote_notes_txt.insert("1.0", quotation['values'][6])
+            self.quote_input_product_cbx.state(["!disabled"])
+            self.quote_input_description_ent.state(["!disabled"])
+            self.quote_input_quantity_spx.state(["!disabled"])
+            self.quote_input_add_btn.state(["!disabled"])
+            if self.is_accepted.get():
+                self.quote_customer_cbx.state(["disabled"])
+                self.quote_description_ent.state(["disabled"])
+                self.quote_date_ent.state(["disabled"])
+                self.quote_accepted_chk.invoke()
+                self.quote_accepted_chk.state(["disabled"])
+                self.quote_input_product_cbx.state(["disabled"])
+                self.quote_input_description_ent.state(["disabled"])
+                self.quote_input_quantity_spx.state(["disabled"])
+                self.quote_input_add_btn.state(["disabled"])
+            self.notebook.select(self.quotation_frame)
+
+        # def search_customer():
+        #     search_option = self.search_option_cbx.get()
+        #     search_value = self.search_ent.get()
+        #     if search_option == "Customer ID":
+        #         customer_id = search_value
+        #         if not customer_id:
+        #             error_message = messagebox.showerror(
+        #                 message="Cannot search a with blank Customer ID.",
+        #                 title='Error'
+        #             )
+        #             return error_message
+        #         try:
+        #             customer_id = int(customer_id)
+        #             try:
+        #                 customer = db.get_customers(session, pk=customer_id)
+        #                 if customer:
+        #                     if customer.first_name and customer.last_name:
+        #                         customer_name = f"{customer.last_name} {customer.first_name}"
+        #                     else:
+        #                         customer_name = customer.entity_name
+        #                     for item in tree.get_children():
+        #                         tree.delete(item)
+        #                     tree.insert('', 'end', iid=f"{customer.customer_id}",
+        #                     values=(
+        #                         f"{customer.customer_id}",
+        #                         customer.customer_type,
+        #                         customer.first_name,
+        #                         customer.last_name,
+        #                         customer.entity_name,
+        #                         customer_name,
+        #                         customer.email,
+        #                         customer.phone,
+        #                         customer.address,
+        #                         customer.town,
+        #                         customer.country,
+        #                         customer.customer_since,
+        #                         customer.notes
+        #                         )
+        #                     )
+        #                 else:
+        #                     info_message = messagebox.showinfo(
+        #                     message="No matching record was found.",
+        #                     title='Info'
+        #                 )
+        #                     return info_message
+        #             except Exception as e:
+        #                     error_message = messagebox.showerror(
+        #                     message="Oops! Something went wrong.",
+        #                     detail=e,
+        #                     title='Error'
+        #                 )
+        #                     return error_message
+        #         except Exception as e:
+        #             error_message = messagebox.showerror(
+        #             message="Invalid Customer ID.",
+        #             detail=e,
+        #             title='Error'
+        #         )
+        #             return error_message
+        #     else:
+        #         try:
+        #             customers = db.get_customers(session, other_fields=search_value)
+        #             if not customers:
+        #                 info_message = messagebox.showinfo(
+        #                     message="No matching record was found.",
+        #                     title='Info'
+        #                     )
+        #                 return info_message
+        #             for item in tree.get_children():
+        #                 tree.delete(item)
+        #             for customer in customers:
+        #                 if customer.first_name and customer.last_name:
+        #                     customer_name = f"{customer.last_name} {customer.first_name}"
+        #                 else:
+        #                     customer_name = customer.entity_name
+        #                 tree.insert('', 'end', iid=f"{customer.customer_id}",
+        #                 values=(
+        #                     f"{customer.customer_id}",
+        #                     customer.customer_type,
+        #                     customer.first_name,
+        #                     customer.last_name,
+        #                     customer.entity_name,
+        #                     customer_name,
+        #                     customer.email,
+        #                     customer.phone,
+        #                     customer.address,
+        #                     customer.town,
+        #                     customer.country,
+        #                     customer.customer_since,
+        #                     customer.notes
+        #                     )
+        #                 )
+        #         except Exception as e:
+        #             error_message = messagebox.showerror(
+        #             message="Oops! Something went wrong.",
+        #             detail=e,
+        #             title='Error'
+        #         )
+        #             return error_message
+
+
+
+
         # Buttons
         open_quotation_btn = ttk.Button(
             bottom_frame,
             text="Open Selected Record",
             # style="home_btns.TButton",
-            padding=21
+            padding=21,
+            command=view_quotation
         )
         add_quotation_btn = ttk.Button(
             bottom_frame, 
@@ -937,6 +1114,7 @@ class MainWindow():
 
         # Treeview
         tree = ttk.Treeview(mid_frame, show='headings', height=20)
+        tree.bind('<ButtonRelease-1>', select_record)
         
         # Scrollbar
         y_scroll = ttk.Scrollbar(mid_frame, orient=VERTICAL, command=tree.yview)
@@ -954,6 +1132,16 @@ class MainWindow():
             "Description",
             "Quote Date",
             "Accepted", 
+            "Closed",
+            "Notes"
+        )
+
+        tree['displaycolumns'] = (
+            "ID",
+            "Customer",
+            "Description",
+            "Quote Date",
+            "Accepted", 
             "Closed"
         )
 
@@ -964,24 +1152,40 @@ class MainWindow():
         tree.column("Quote Date", anchor=E)
         tree.column("Accepted", anchor=CENTER)
         tree.column("Closed", anchor=CENTER)
+        tree.column("Notes", anchor=W)
 
         # Create Headings
         tree.heading("ID", text="ID", anchor=CENTER)
-        tree.heading("Customer", text="Customer", anchor=W)
+        tree.heading("Customer", text="Customer ID", anchor=W)
         tree.heading("Description", text="Description", anchor=W)
         tree.heading("Quote Date", text="Quote Date", anchor=E)
         tree.heading("Accepted", text="Accepted", anchor=CENTER)
         tree.heading("Closed", text="Closed", anchor=CENTER)
+        tree.heading("Notes", text="Notes", anchor=W)
 
         # Insert the data in Treeview widget
-        for i in range(1,21):
-            tree.insert('', 'end', values=(
-                f"{i}",
-                fake.name(),
-                fake.sentence(nb_words=3),
-                datetime.strptime(fake.date(), '%Y-%m-%d').date(),
-                random.choice(["Yes", "No"]),
-                random.choice(["Yes", "No"]),
+        # for i in range(1,21):
+        #     tree.insert('', 'end', values=(
+        #         f"{i}",
+        #         fake.name(),
+        #         fake.sentence(nb_words=3),
+        #         datetime.strptime(fake.date(), '%Y-%m-%d').date(),
+        #         random.choice(["Yes", "No"]),
+        #         random.choice(["Yes", "No"]),
+        #         )
+        #     )
+        quotations = session.query(Quotation).order_by(Quotation.quote_date).all()
+        print(f"TOTAL QUOTATIONS: {len(quotations)}")
+        for quote in quotations:
+            tree.insert('', 'end', iid=f"{quote.quote_id}",
+            values=(
+                f"{quote.quote_id}",
+                quote.customer_id,
+                quote.description,
+                quote.quote_date,
+                quote.is_accepted,
+                quote.is_closed,
+                quote.notes
                 )
             )
 
@@ -998,21 +1202,21 @@ class MainWindow():
         mid_frame.rowconfigure(0, weight=1)
         mid_frame.rowconfigure(1, weight=1)
 
-    def setup_quotations_tab(self):
+    def setup_quotation_tab(self):
         """Configure the quotations tab"""
         # Frames
         top_frame = ttk.Frame(
-            self.quotations_frame,
+            self.quotation_frame,
             borderwidth=5, 
             relief="solid"
         )
         mid_frame = ttk.Frame(
-            self.quotations_frame, 
+            self.quotation_frame, 
             borderwidth=5, 
             # relief="solid"
         )
         bottom_frame = ttk.Frame(
-            self.quotations_frame,
+            self.quotation_frame,
             borderwidth=5, 
             relief="solid"
         )
@@ -1109,30 +1313,30 @@ class MainWindow():
         input_quantity_lbl.grid(column=2, row=0, sticky=(N, S, W, E))
 
         # Entries
-        id_ent = ttk.Entry(
+        self.quote_id_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        id_ent.state(["disabled"])
+        self.quote_id_ent.state(["disabled"])
 
-        date_ent = ttk.Entry(
+        self.quote_date_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        quote_description_ent = ttk.Entry(
+        self.quote_description_ent = ttk.Entry(
             mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        input_description_ent = ttk.Entry(
+        self.quote_input_description_ent = ttk.Entry(
             bottom_frame,
             width=40,
             # textvariable="",
@@ -1141,14 +1345,14 @@ class MainWindow():
         )
 
         # Spinboxes
-        input_quantity_spx = ttk.Spinbox(
+        self.quote_input_quantity_spx = ttk.Spinbox(
             bottom_frame,
             from_=1,
             to=500000,
         )
 
         # Comboboxes
-        customer_cbx = ttk.Combobox(
+        self.quote_customer_cbx = ttk.Combobox(
             mid_frame,
             width=38,
             values=("Abiatar", "Mumbala")
@@ -1156,8 +1360,8 @@ class MainWindow():
             # anchor="",
             # style="heading.TLabel",
         )
-        customer_cbx.state(["readonly"])
-        input_product_cbx = ttk.Combobox(
+        self.quote_customer_cbx.state(["readonly"])
+        self.quote_input_product_cbx = ttk.Combobox(
             bottom_frame,
             width=40,
             values=("Chair", "Table")
@@ -1167,7 +1371,7 @@ class MainWindow():
         )
 
         # Texts
-        notes_txt = Text(
+        self.quote_notes_txt = Text(
             mid_frame,
             width=50, 
             height=3,
@@ -1184,33 +1388,30 @@ class MainWindow():
         # )
 
         # Checkboxes
-        accepted_chk = ttk.Checkbutton(
+        self.is_accepted =  BooleanVar()
+        self.quote_accepted_chk = ttk.Checkbutton(
             mid_frame,
-            text='Is Accepted', 
-	        # command=metricChanged, 
-            # variable=measureSystem,
-	        onvalue='accepted', 
-            offvalue='not accepted',
-            # textvariable="",
-            # anchor="",
-            # style="heading.TLabel",
+            text='Is Accepted',
+            variable=self.is_accepted,
+            onvalue="True",
+            offvalue="False"
         )
 
-        id_ent.grid(column=1, row=0, sticky=(S, N, E, W))
-        date_ent.grid(column=1, row=1, sticky=(S, N, E, W))
-        quote_description_ent.grid(column=1, row=2, sticky=(S, N, E, W))
-        customer_cbx.grid(column=1, row=3, sticky=(S, N, E, W))
-        accepted_chk.grid(column=2, row=0, sticky=(S, N, E, W))
-        notes_txt.grid(column=2, columnspan=2, row=1, rowspan=3, sticky=(S, N, E, W))
+        self.quote_id_ent.grid(column=1, row=0, sticky=(S, N, E, W))
+        self.quote_date_ent.grid(column=1, row=1, sticky=(S, N, E, W))
+        self.quote_description_ent.grid(column=1, row=2, sticky=(S, N, E, W))
+        self.quote_customer_cbx.grid(column=1, row=3, sticky=(S, N, E, W))
+        self.quote_accepted_chk.grid(column=2, row=0, sticky=(S, N, E, W))
+        self.quote_notes_txt.grid(column=2, columnspan=2, row=1, rowspan=3, sticky=(S, N, E, W))
         # product_description_txt.grid(column=1, row=0, sticky=(W))
-        input_product_cbx.grid(column=0, row=1, rowspan=2, sticky=(S, N, E, W))
-        input_description_ent.grid(column=1, row=1, rowspan=2, sticky=(S, N, E, W))
-        input_quantity_spx.grid(column=2, row=1, rowspan=2, sticky=(S, N, E, W))
+        self.quote_input_product_cbx.grid(column=0, row=1, rowspan=2, sticky=(S, N, E, W))
+        self.quote_input_description_ent.grid(column=1, row=1, rowspan=2, sticky=(S, N, E, W))
+        self.quote_input_quantity_spx.grid(column=2, row=1, rowspan=2, sticky=(S, N, E, W))
         
         def add_item():
-            product = input_product_cbx.get(),
-            description = input_description_ent.get(),
-            quantity = input_quantity_spx.get()
+            product = self.quote_input_product_cbx.get(),
+            description = self.quote_input_description_ent.get(),
+            quantity = self.quote_input_quantity_spx.get()
             print(f"PRODUCT: {product[0]}")
             print(f"DESCRIPTION: {description[0]}")
             print(f"QUANTITY: {quantity}")
@@ -1227,13 +1428,13 @@ class MainWindow():
                 quantity
                 )
             )
-            input_product_cbx.set("")
-            input_description_ent.delete(0,END)
-            input_quantity_spx.delete(0,END)
+            self.quote_input_product_cbx.set("")
+            self.quote_input_description_ent.delete(0,END)
+            self.quote_input_quantity_spx.delete(0,END)
             return
 
         # Buttons
-        preview_btn = ttk.Button(
+        quote_preview_btn = ttk.Button(
             mid_frame,
             text="Print/Preview Quotation",
             # style="home_btns.TButton",
@@ -1245,13 +1446,13 @@ class MainWindow():
             # style="home_btns.TButton",
             padding=10
         )
-        save_btn = ttk.Button(
+        quote_save_btn = ttk.Button(
             mid_frame, 
             text="Save Quotation",
             # style="home_btns.TButton",
             padding=5
         )
-        input_add_btn = ttk.Button(
+        self.quote_input_add_btn = ttk.Button(
             bottom_frame, 
             text="Add Item",
             # style="home_btns.TButton",
@@ -1260,10 +1461,10 @@ class MainWindow():
         )
 
 
-        preview_btn.grid(column=4, row=0, rowspan=2, sticky=(N, W, E, S))
+        quote_preview_btn.grid(column=4, row=0, rowspan=2, sticky=(N, W, E, S))
         add_quote_btn.grid(column=4, row=2, rowspan=2, sticky=(N,W, E, S))
-        save_btn.grid(column=0, columnspan=3, row=6, sticky=(N, S, W, E))
-        input_add_btn.grid(column=3, row=1, rowspan=2, sticky=(N, S, W, E))
+        quote_save_btn.grid(column=0, columnspan=3, row=6, sticky=(N, S, W, E))
+        self.quote_input_add_btn.grid(column=3, row=1, rowspan=2, sticky=(N, S, W, E))
 
         # Treeview
         tree = ttk.Treeview(mid_frame, show='headings', height=5)
@@ -1461,21 +1662,21 @@ class MainWindow():
 
 
 
-    def setup_orders_tab(self):
+    def setup_order_tab(self):
         """configure the orders tab"""
         # Frames
         top_frame = ttk.Frame(
-            self.orders_frame,
+            self.order_frame,
             borderwidth=5, 
             relief="solid"
         )
         mid_frame = ttk.Frame(
-            self.orders_frame, 
+            self.order_frame, 
             borderwidth=5, 
             # relief="solid"
         )
         bottom_frame = ttk.Frame(
-            self.orders_frame,
+            self.order_frame,
             borderwidth=5, 
             relief="solid"
         )
@@ -1760,11 +1961,11 @@ class MainWindow():
         self.quotation_list_frame.rowconfigure(1, weight=1)
         self.quotation_list_frame.rowconfigure(2, weight=1)
 
-        self.quotations_frame.columnconfigure(0, weight=1)
-        self.quotations_frame.columnconfigure(1, weight=1)
-        self.quotations_frame.rowconfigure(0, weight=1)
-        self.quotations_frame.rowconfigure(1, weight=1)
-        self.quotations_frame.rowconfigure(2, weight=1)
+        self.quotation_frame.columnconfigure(0, weight=1)
+        self.quotation_frame.columnconfigure(1, weight=1)
+        self.quotation_frame.rowconfigure(0, weight=1)
+        self.quotation_frame.rowconfigure(1, weight=1)
+        self.quotation_frame.rowconfigure(2, weight=1)
 
         self.order_list_frame.columnconfigure(0, weight=1)
         self.order_list_frame.columnconfigure(1, weight=1)
@@ -1772,8 +1973,8 @@ class MainWindow():
         self.order_list_frame.rowconfigure(1, weight=1)
         self.order_list_frame.rowconfigure(2, weight=1)
 
-        self.orders_frame.columnconfigure(0, weight=1)
-        self.orders_frame.columnconfigure(1, weight=1)
-        self.orders_frame.rowconfigure(0, weight=1)
-        self.orders_frame.rowconfigure(1, weight=1)
-        self.orders_frame.rowconfigure(2, weight=1)
+        self.order_frame.columnconfigure(0, weight=1)
+        self.order_frame.columnconfigure(1, weight=1)
+        self.order_frame.rowconfigure(0, weight=1)
+        self.order_frame.rowconfigure(1, weight=1)
+        self.order_frame.rowconfigure(2, weight=1)
