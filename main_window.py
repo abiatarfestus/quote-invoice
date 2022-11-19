@@ -923,23 +923,33 @@ class MainWindow():
             record = tree.focus()
             self.selected_quotation = tree.item(record)
         
-        # def add_new_quotation():
-        #     self.id_ent.state(["!disabled"])
-        #     self.id_ent.delete(0, END)
-        #     self.id_ent.insert(0, "New")
-        #     self.id_ent.state(["disabled"])
-        #     self.type_cbx.set("")
-        #     self.first_name_ent.delete(0, END)
-        #     self.last_name_ent.delete(0, END)
-        #     self.entity_ent.delete(0, END)
-        #     self.email_ent.delete(0, END)
-        #     self.phone_ent.delete(0, END)
-        #     self.address_ent.delete(0, END)
-        #     self.town_ent.delete(0, END)
-        #     self.country_ent.delete(0, END)
-        #     self.since_ent.delete(0, END)
-        #     self.notes_txt.delete("1.0", END)
-        #     self.notebook.select(self.customer_frame)
+        def add_new_quotation():
+            self.quote_id_ent.state(["!disabled"])
+            self.quote_id_ent.delete(0, END)
+            self.quote_id_ent.insert(0, "New")
+            self.quote_id_ent.state(["disabled"])
+            self.quote_customer_cbx.state(["!disabled"])
+            self.quote_customer_cbx.set("")
+            self.quote_description_ent.state(["!disabled"])
+            self.quote_description_ent.delete(0, END)
+            self.quote_date_ent.state(["!disabled"])
+            self.quote_date_ent.delete(0, END)
+            self.quote_accepted_chk.state(["!disabled"])
+            self.is_accepted.set(value="False")
+            # self.quote_accepted_chk.invoke()
+            self.quote_notes_txt.delete("1.0", END)
+            self.quote_input_product_cbx.state(["!disabled"])
+            self.quote_input_description_ent.state(["!disabled"])
+            self.quote_input_quantity_spx.state(["!disabled"])
+            self.quote_input_add_btn.state(["!disabled"])
+            self.quote_save_update_btn.state(["!disabled"])
+            self.change_to_order_btn.state(["!disabled"])
+            self.mark_closed_btn.state(["!disabled"])
+            for item in self.quote_items_tree.get_children():
+                self.quote_items_tree.delete(item)
+            self.quote_amount.set(f"N$0.00")
+            self.quote_save_update.set("Save Quotation")
+            self.notebook.select(self.quotation_frame)
         
         def view_quotation():
             print(f"SELECTED RECORD: {self.selected_quotation}")
@@ -950,20 +960,30 @@ class MainWindow():
                     title='Error'
                 )
                 return error_message
+            # Get quote items from datatbase
+            quote_id = quotation['values'][0]
+            quote_amount = 0.00
+            quote_items = session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == quotation['values'][0]).all()
+            print(quote_items)
+            print(f"QUOTE ITEMS\n Product\tDescription\tQuantity\tUnit Price\tTotal. Price")
+            # for product,item in quote_items:
+            #     print(f""" {product.product_name}\t{product.description[:10]}\tx{item.quantity}\t@{product.price}\t={item.quantity*product.price}""")
+            
             self.quote_id_ent.state(["!disabled"])
             self.quote_id_ent.delete(0, END)
-            self.quote_id_ent.insert(0, quotation['values'][0])
+            self.quote_id_ent.insert(0, quote_id)
             self.quote_id_ent.state(["disabled"])
             self.quote_customer_cbx.state(["!disabled"])
             self.quote_customer_cbx.delete(0, END)
             self.quote_customer_cbx.set(quotation['values'][1])
+            self.quote_customer_cbx.state(["disabled"])
             self.quote_description_ent.state(["!disabled"])
             self.quote_description_ent.delete(0, END)
             self.quote_description_ent.insert(0, quotation['values'][2])
             self.quote_date_ent.state(["!disabled"])
             self.quote_date_ent.delete(0, END)
             self.quote_date_ent.insert(0, quotation['values'][3])
-            self.quote_accepted_chk.state(["!disabled"])
+            self.quote_accepted_chk.state(["disabled"])
             self.is_accepted.set(value=quotation['values'][4])
             print(f"CHECK VALUE: {self.is_accepted.get()}")
             self.quote_notes_txt.delete("1.0", END)
@@ -972,16 +992,38 @@ class MainWindow():
             self.quote_input_description_ent.state(["!disabled"])
             self.quote_input_quantity_spx.state(["!disabled"])
             self.quote_input_add_btn.state(["!disabled"])
-            if self.is_accepted.get():
+            if self.is_accepted.get() or quotation['values'][5] == "True":
                 self.quote_customer_cbx.state(["disabled"])
                 self.quote_description_ent.state(["disabled"])
                 self.quote_date_ent.state(["disabled"])
+                self.quote_accepted_chk.state(["!disabled"])
                 self.quote_accepted_chk.invoke()
                 self.quote_accepted_chk.state(["disabled"])
                 self.quote_input_product_cbx.state(["disabled"])
                 self.quote_input_description_ent.state(["disabled"])
                 self.quote_input_quantity_spx.state(["disabled"])
                 self.quote_input_add_btn.state(["disabled"])
+                self.quote_save_update_btn.state(["disabled"])
+                self.change_to_order_btn.state(["disabled"])
+                self.mark_closed_btn.state(["disabled"])
+            
+            # Update item list
+            for item in self.quote_items_tree.get_children():
+                self.quote_items_tree.delete(item)
+            for product,item in quote_items:
+                total_price = product.price*item.quantity
+                self.quote_items_tree.insert('', 'end', iid=f"{item.quote_item_id}",
+                    values=(
+                        product.product_name,
+                        item.notes,
+                        item.quantity,
+                        f"N${product.price}",
+                        f"N${total_price}"
+                        )
+                    )
+                quote_amount += total_price
+            self.quote_amount.set(f"N${quote_amount}")
+            self.quote_save_update.set("Update Quotation")
             self.notebook.select(self.quotation_frame)
 
         # def search_customer():
@@ -1099,7 +1141,8 @@ class MainWindow():
             bottom_frame, 
             text="Add New Quotation",
             # style="home_btns.TButton",
-            padding=(10, 21)
+            padding=(10, 21),
+            command=add_new_quotation
         )
         search_quotation_btn = ttk.Button(
             bottom_frame, 
@@ -1274,9 +1317,10 @@ class MainWindow():
             anchor=E,
             # style="heading.TLabel",
         )
+        self.quote_amount = StringVar(value="N$0.00")
         amount_lbl = ttk.Label(
             mid_frame,
-            text="N$50,555.00",
+            textvariable=self.quote_amount,
             anchor=E,
             # style="heading.TLabel",
         )
@@ -1394,7 +1438,8 @@ class MainWindow():
             text='Is Accepted',
             variable=self.is_accepted,
             onvalue="True",
-            offvalue="False"
+            offvalue="False",
+            state="disabled"
         )
 
         self.quote_id_ent.grid(column=1, row=0, sticky=(S, N, E, W))
@@ -1422,7 +1467,7 @@ class MainWindow():
                     title='Invalid Item'
                 )
                 return error_message
-            tree.insert('', 'end', values=(
+            self.quote_items_tree.insert('', 'end', values=(
                 product[0],
                 description[0],
                 quantity
@@ -1432,6 +1477,35 @@ class MainWindow():
             self.quote_input_description_ent.delete(0,END)
             self.quote_input_quantity_spx.delete(0,END)
             return
+
+        def add_new_quotation():
+            self.quote_id_ent.state(["!disabled"])
+            self.quote_id_ent.delete(0, END)
+            self.quote_id_ent.insert(0, "New")
+            self.quote_id_ent.state(["disabled"])
+            self.quote_customer_cbx.state(["!disabled"])
+            self.quote_customer_cbx.set("")
+            self.quote_description_ent.state(["!disabled"])
+            self.quote_description_ent.delete(0, END)
+            self.quote_date_ent.state(["!disabled"])
+            self.quote_date_ent.delete(0, END)
+            self.quote_accepted_chk.state(["!disabled"])
+            self.is_accepted.set(value="False")
+            # self.quote_accepted_chk.invoke()
+            self.quote_accepted_chk.state(["disabled"])
+            self.quote_notes_txt.delete("1.0", END)
+            self.quote_input_product_cbx.state(["!disabled"])
+            self.quote_input_description_ent.state(["!disabled"])
+            self.quote_input_quantity_spx.state(["!disabled"])
+            self.quote_input_add_btn.state(["!disabled"])
+            self.quote_save_update_btn.state(["!disabled"])
+            self.change_to_order_btn.state(["!disabled"])
+            self.mark_closed_btn.state(["!disabled"])
+            for item in self.quote_items_tree.get_children():
+                self.quote_items_tree.delete(item)
+            self.quote_amount.set(f"N$0.00")
+            self.quote_save_update.set("Save Quotation")
+            self.notebook.select(self.quotation_frame)
 
         # Buttons
         quote_preview_btn = ttk.Button(
@@ -1444,13 +1518,29 @@ class MainWindow():
             mid_frame,
             text="Add a New Quotation",
             # style="home_btns.TButton",
-            padding=10
+            padding=10,
+            command=add_new_quotation
         )
-        quote_save_btn = ttk.Button(
+        self.quote_save_update = StringVar(value="Save Quotation")
+        self.quote_save_update_btn = ttk.Button(
             mid_frame, 
-            text="Save Quotation",
+            textvariable=self.quote_save_update,
             # style="home_btns.TButton",
             padding=5
+        )
+        self.change_to_order_btn = ttk.Button(
+            mid_frame,
+            text="Change to Order",
+            # style="home_btns.TButton",
+            padding=10,
+            # command=add_new_quotation
+        )
+        self.mark_closed_btn = ttk.Button(
+            mid_frame,
+            text="Mark as Closed",
+            # style="home_btns.TButton",
+            padding=10,
+            # command=add_new_quotation
         )
         self.quote_input_add_btn = ttk.Button(
             bottom_frame, 
@@ -1463,57 +1553,59 @@ class MainWindow():
 
         quote_preview_btn.grid(column=4, row=0, rowspan=2, sticky=(N, W, E, S))
         add_quote_btn.grid(column=4, row=2, rowspan=2, sticky=(N,W, E, S))
-        quote_save_btn.grid(column=0, columnspan=3, row=6, sticky=(N, S, W, E))
+        self.quote_save_update_btn.grid(column=0, row=6, sticky=(N, S, W, E))
+        self.change_to_order_btn.grid(column=1, row=6, sticky=(N, S, W, E))
+        self.mark_closed_btn.grid(column=2, row=6, sticky=(N, S, W, E))
         self.quote_input_add_btn.grid(column=3, row=1, rowspan=2, sticky=(N, S, W, E))
 
         # Treeview
-        tree = ttk.Treeview(mid_frame, show='headings', height=5)
+        self.quote_items_tree = ttk.Treeview(mid_frame, show='headings', height=5)
         
         # Scrollbar
-        y_scroll = ttk.Scrollbar(mid_frame, orient=VERTICAL, command=tree.yview)
-        x_scroll = ttk.Scrollbar(mid_frame, orient=HORIZONTAL, command=tree.xview)
+        y_scroll = ttk.Scrollbar(mid_frame, orient=VERTICAL, command=self.quote_items_tree.yview)
+        x_scroll = ttk.Scrollbar(mid_frame, orient=HORIZONTAL, command=self.quote_items_tree.xview)
         y_scroll.grid(column=5, row=4, sticky=(N, S, W))
         x_scroll.grid(column=0, columnspan=5, row=5, sticky=(E, W))
-        tree['yscrollcommand'] = y_scroll.set
-        tree['xscrollcommand'] = x_scroll.set
+        self.quote_items_tree['yscrollcommand'] = y_scroll.set
+        self.quote_items_tree['xscrollcommand'] = x_scroll.set
 
 
         # Define Our Columns
-        tree['columns'] = (
-            "Product", 
+        self.quote_items_tree['columns'] = (
+            "Item", 
             "Description", 
-            "Qty", 
+            "Quantity", 
             "Unit Price", 
-            "Ext Price",
+            "Total Price",
         )
 
         # Format Our Columns
-        tree.column("Product", anchor=W)
-        tree.column("Description", anchor=W)
-        tree.column("Qty", anchor=E)
-        tree.column("Unit Price", anchor=E)
-        tree.column("Ext Price", anchor=E)
+        self.quote_items_tree.column("Item", anchor=W)
+        self.quote_items_tree.column("Description", anchor=W)
+        self.quote_items_tree.column("Quantity", anchor=E)
+        self.quote_items_tree.column("Unit Price", anchor=E)
+        self.quote_items_tree.column("Total Price", anchor=E)
 
         # Create Headings
-        tree.heading("Product", text="Product", anchor=W)
-        tree.heading("Description", text="Description", anchor=W)
-        tree.heading("Qty", text="Qty", anchor=E)
-        tree.heading("Unit Price", text="Unit Price", anchor=E)
-        tree.heading("Ext Price", text="Ext Price", anchor=E)
+        self.quote_items_tree.heading("Item", text="Item", anchor=W)
+        self.quote_items_tree.heading("Description", text="Description", anchor=W)
+        self.quote_items_tree.heading("Quantity", text="Quantity", anchor=E)
+        self.quote_items_tree.heading("Unit Price", text="Unit Price", anchor=E)
+        self.quote_items_tree.heading("Total Price", text="Total Price", anchor=E)
 
         # Insert the data in Treeview widget
-        for i in range(1,6):
-            tree.insert('', 'end', values=(
-                fake.word(part_of_speech="noun"),
-                fake.sentence(nb_words=3),
-                random.randint(1,100),
-                f"N${float(fake.pricetag()[1:].replace(',', ''))}",
-                f"N${float(fake.pricetag()[1:].replace(',', ''))}"
-                )
-            )
+        # for i in range(1,6):
+        #     self.quote_items_tree.insert('', 'end', values=(
+        #         fake.word(part_of_speech="noun"),
+        #         fake.sentence(nb_words=3),
+        #         random.randint(1,100),
+        #         f"N${float(fake.pricetag()[1:].replace(',', ''))}",
+        #         f"N${float(fake.pricetag()[1:].replace(',', ''))}"
+        #         )
+        #     )
         
 
-        tree.grid(column=0, columnspan=5, row=4, sticky=(N, S, W, E))
+        self.quote_items_tree.grid(column=0, columnspan=5, row=4, sticky=(N, S, W, E))
 
         
 
@@ -1868,7 +1960,7 @@ class MainWindow():
             "Description", 
             "Qty", 
             "Unit Price", 
-            "Ext Price",
+            "Total Price",
         )
 
         # Format Our Columns
@@ -1876,14 +1968,14 @@ class MainWindow():
         tree.column("Description", anchor=W)
         tree.column("Qty", anchor=E)
         tree.column("Unit Price", anchor=E)
-        tree.column("Ext Price", anchor=E)
+        tree.column("Total Price", anchor=E)
 
         # Create Headings
         tree.heading("Product", text="Product", anchor=W)
         tree.heading("Description", text="Description", anchor=W)
         tree.heading("Qty", text="Qty", anchor=E)
         tree.heading("Unit Price", text="Unit Price", anchor=E)
-        tree.heading("Ext Price", text="Ext Price", anchor=E)
+        tree.heading("Total Price", text="Total Price", anchor=E)
 
         # Insert the data in Treeview widget
         for i in range(1,6):

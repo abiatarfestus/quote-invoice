@@ -65,8 +65,8 @@ class QuotationItem(Base):
     notes = Column(String(250))
     quotation = relationship("Quotation", back_populates="quotation_items")
 
-    def __repr__(self):
-        return f"Item {self.quote_item_id}: x{self.quantity} of Product: {self.product_id}"
+    # def __repr__(self):
+    #     return f"Item {self.quote_item_id}: x{self.quantity} of Product: {self.product_id}"
 
 class Order(Base):
     __tablename__ = "order"

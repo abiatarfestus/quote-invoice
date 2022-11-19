@@ -11,3 +11,4 @@ https://pythonguides.com/python-tkinter-table-tutorial/
 Wrap data display/insertion on the treeview into a function for reuse by search function
 Wrap clear treeview into a method for access by all search methods
 Limit number of list items diplayed in the list views
+Add option for adding items not in the product table
