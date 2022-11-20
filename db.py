@@ -1,5 +1,5 @@
 from models import *
-from datetime import date
+from datetime import datetime
 from sqlalchemy import and_, or_, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import asc, desc, func
@@ -154,7 +154,7 @@ def get_quotations(session, pk=None, customer_id=None, other_fields=""):
     
 def add_quotation(
     session, 
-    quote_date=date.today(),
+    quote_date=datetime.today().date(),
     description="", 
     customer_id=None, 
     is_accepted=False, 
@@ -174,13 +174,16 @@ def add_quotation(
         )        
         session.add(quotation)
         session.commit()
+        quote_id = quotation.quote_id
+        # print(f"NEW QUOTE ID: {quote_id}")
+        return quote_id
     except Exception as e:
         print(e)
 
 def update_quotation(
     session, 
     pk=None,
-    quote_date=date.today(),
+    quote_date=datetime.today().date(),
     description="", 
     customer_id=None, 
     is_accepted=False,
@@ -236,7 +239,7 @@ def get_orders(session, pk=None, customer_id=None, other_fields=""):
     
 def add_order(
     session, 
-    order_date=date.today(),
+    order_date=datetime.today().date(),
     description="", 
     customer_id=None, 
     is_paid=False, 
@@ -261,7 +264,7 @@ def add_order(
 def update_order(
     session, 
     pk=None,
-    order_date=date.today(),
+    order_date=datetime.today(),
     description="", 
     customer_id=None, 
     is_paid=False, 
@@ -303,31 +306,35 @@ def add_quotation_item(
     quote_id=None,
     product_id=None, 
     quantity=1,
-    notes=""
+    description=""
 ):
     """Adds a new item to the quotation"""
 
     if quote_id and product_id:
         quotation = session.query(Quotation).get(quote_id)
         if quotation.is_closed:
-            print("THIS QUOTATION IS HAS CLOSED")
+            print("THIS QUOTATION IS CLOSED")
             return
         else:
             # Check if the product is already in the quotation
-            quotation_item = session.query(QuotationItem).filter(QuotationItem.product_id == product_id).one_or_none()
-            if quotation_item:
-                # quotation_item.quantity += 1
-                print("THE SELECTED PRODUCT IS ALREADY ON THE QUOTATION")
-                return
+            # quotation_item = session.query(QuotationItem).filter(QuotationItem.product_id == product_id).one_or_none()
+            if quotation.quotation_items: # If there are items in th quotation
+                quote_items = quotation.quotation_items
+                for item in quote_items:
+                    if item.product_id == product_id:
+                        # quotation_item.quantity += 1
+                        print("THE SELECTED PRODUCT IS ALREADY ON THE QUOTATION")
+                        return
             try:
                 quotation_item = QuotationItem(
                     quote_id=quote_id,
                     product_id=product_id, 
                     quantity=quantity,
-                    notes=notes
+                    description=description
                 )
                 session.add(quotation_item)
                 session.commit()
+                return
             except Exception as e:
                 print(e)      
     
@@ -338,14 +345,14 @@ def update_quotation_item(
     quote_id=None,
     product_id=None, 
     quantity=0,
-    notes=""
+    description=""
 ):
     try:
         session.query(QuotationItem).get(pk).update({
             QuotationItem.quote_id:quote_id,
             QuotationItem.product_id:product_id, 
             QuotationItem.quantity:quantity,
-            QuotationItem.notes:notes
+            QuotationItem.description:description
         }, synchronize_session = False
         )
         session.commit()
@@ -375,14 +382,14 @@ def add_order_item(
     order_id=None,
     product_id=None, 
     quantity=1,
-    notes=""
+    description=""
 ):
     """Adds a new item to the order"""
 
     if order_id and product_id:
         order = session.query(Order).get(order_id)
         if order.is_paid:
-            print("THIS ORDER IS HAS CLOSED")
+            print("THIS ORDER IS CLOSED")
             return
         else:
             # Check if the product is already in the order
@@ -396,7 +403,7 @@ def add_order_item(
                     order_id=order_id,
                     product_id=product_id, 
                     quantity=quantity,
-                    notes=notes
+                    description=description
                 )
                 session.add(order_item)
                 session.commit()
@@ -410,14 +417,14 @@ def update_order_item(
     order_id=None,
     product_id=None, 
     quantity=0,
-    notes=""
+    description=""
 ):
     try:
         session.query(OrderItem).get(pk).update({
             OrderItem.order_id:order_id,
             OrderItem.product_id:product_id, 
             OrderItem.quantity:quantity,
-            OrderItem.notes:notes
+            OrderItem.description:description
         }, synchronize_session = False
         )
         session.commit()

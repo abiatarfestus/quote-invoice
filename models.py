@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table, Date, Boolean, Float
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table, Date, Boolean
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -62,7 +62,7 @@ class QuotationItem(Base):
     quote_id = Column(Integer, ForeignKey("quotation.quote_id"))
     product_id = Column(Integer, ForeignKey("product.product_id"))
     quantity = Column(Integer)
-    notes = Column(String(250))
+    description = Column(String(100))
     quotation = relationship("Quotation", back_populates="quotation_items")
 
     # def __repr__(self):
@@ -72,7 +72,7 @@ class Order(Base):
     __tablename__ = "order"
     order_id = Column(Integer, primary_key=True)
     order_date = Column(Date)
-    description = Column(String(250))
+    description = Column(String(100))
     customer_id = Column(Integer, ForeignKey("customer.customer_id"))
     is_paid = Column(Boolean)
     notes = Column(String(250))
@@ -89,7 +89,7 @@ class OrderItem(Base):
     order_id = Column(Integer, ForeignKey("order.order_id"))
     product_id = Column(Integer, ForeignKey("product.product_id"))
     quantity = Column(Integer)
-    notes = Column(String(250))
+    description = Column(String(100))
     order = relationship("Order", back_populates="order_items")
 
     def __repr__(self):
@@ -101,8 +101,8 @@ class Product(Base):
     sku = Column(String(50), unique=True)
     barcode = Column(String(50), unique=True)
     product_name = Column(String(50), unique=True)
-    description = Column(String(250))
-    price = Column(Float)
+    description = Column(String(100))
+    price = Column(String)
     quantity = Column(Integer)
 
 
