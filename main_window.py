@@ -32,6 +32,7 @@ class MainWindow():
         self.selected_order = None
         self.selected_quote = None
         self.selected_order = None
+        # self.customer_id_name_dict = dict()
 
         # Styles
         style = ttk.Style()
@@ -1204,31 +1205,46 @@ class MainWindow():
 
         # Create Headings
         tree.heading("ID", text="ID", anchor=CENTER)
-        tree.heading("Customer", text="Customer ID", anchor=W)
+        tree.heading("Customer", text="Customer", anchor=W)
         tree.heading("Description", text="Description", anchor=W)
         tree.heading("Quote Date", text="Quote Date", anchor=E)
         tree.heading("Accepted", text="Accepted", anchor=CENTER)
         tree.heading("Closed", text="Closed", anchor=CENTER)
         tree.heading("Notes", text="Notes", anchor=W)
 
-        # Insert the data in Treeview widget
-        # for i in range(1,21):
-        #     tree.insert('', 'end', values=(
-        #         f"{i}",
-        #         fake.name(),
-        #         fake.sentence(nb_words=3),
-        #         datetime.strptime(fake.date(), '%Y-%m-%d').date(),
-        #         random.choice(["Yes", "No"]),
-        #         random.choice(["Yes", "No"]),
-        #         )
-        #     )
+        customers = session.query(Customer).all()
+        self.customers_dict = dict()
+        for customer in customers:
+            if customer.customer_type == "Person":
+                key = f"{customer.last_name} {customer.first_name} >> {customer.phone}"
+            else:
+                key = f"{customer.entity_name} >> {customer.phone}"
+            self.customers_dict.update({
+                key:[
+                    customer.customer_id,
+                    customer.customer_type,
+                    customer.first_name,
+                    customer.last_name,
+                    customer.entity_name,
+                    customer.email,
+                    customer.phone
+                    ]
+                }
+            )
+        # print(f"CUSTOMERS: {customers_dict}")
+        # Create a dict of customer_id:customer_name for use in update customer
+        customer_id_name_dict = dict()
+        for name in tuple(self.customers_dict):
+            customer_id_name_dict.update({self.customers_dict[name][0]:name })
+        print(f"CUSTOMER_ID_NAME DICT: {customer_id_name_dict}")
+
         quotations = session.query(Quotation).order_by(Quotation.quote_date).all()
         print(f"TOTAL QUOTATIONS: {len(quotations)}")
         for quote in quotations:
             tree.insert('', 'end', iid=f"{quote.quote_id}",
             values=(
                 f"{quote.quote_id}",
-                quote.customer_id,
+                customer_id_name_dict[quote.customer_id],
                 quote.description,
                 quote.quote_date,
                 quote.is_accepted,
@@ -1404,30 +1420,36 @@ class MainWindow():
         )
 
         # Comboboxes
-        customers = session.query(Customer).all()
-        customers_dict = dict()
-        for customer in customers:
-            if customer.customer_type == "Person":
-                key = f"{customer.last_name} {customer.first_name} >> {customer.phone}"
-            else:
-                key = f"{customer.entity_name} >> {customer.phone}"
-            customers_dict.update({
-                key:[
-                    customer.customer_id,
-                    customer.customer_type,
-                    customer.first_name,
-                    customer.last_name,
-                    customer.entity_name,
-                    customer.email,
-                    customer.phone
-                    ]
-                }
-            )
-        # print(f"CUSTOMERS: {customers_dict}")
+        # customers = session.query(Customer).all()
+        # customers_dict = dict()
+        # for customer in customers:
+        #     if customer.customer_type == "Person":
+        #         key = f"{customer.last_name} {customer.first_name} >> {customer.phone}"
+        #     else:
+        #         key = f"{customer.entity_name} >> {customer.phone}"
+        #     customers_dict.update({
+        #         key:[
+        #             customer.customer_id,
+        #             customer.customer_type,
+        #             customer.first_name,
+        #             customer.last_name,
+        #             customer.entity_name,
+        #             customer.email,
+        #             customer.phone
+        #             ]
+        #         }
+        #     )
+        # # print(f"CUSTOMERS: {customers_dict}")
+        # # Create a dict of customer_id:customer_name for use in update customer
+        # # self.customer_id_name_dict = dict()
+        # for name in tuple(customers_dict):
+        #     self.customer_id_name_dict.update({customers_dict[name][0]:name })
+        # print(f"CUSTOMER_ID_NAME DICT: {self.customer_id_name_dict}")
+
         self.quote_customer_cbx = ttk.Combobox(
             mid_frame,
             width=38,
-            values=sorted(tuple(customers_dict))
+            values=sorted(tuple(self.customers_dict))
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
