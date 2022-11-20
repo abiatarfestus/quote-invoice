@@ -108,4 +108,5 @@ session = Session()
 # for q in quotations:
 #     session.delete(q)
 # session.commit()
+delete_quotation(session, 9)
 

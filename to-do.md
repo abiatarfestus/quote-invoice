@@ -21,5 +21,5 @@ entity person
 - [ ] Show info message on print("THE SELECTED PRODUCT IS ALREADY ON THE QUOTATION") but continue with next item
 - [ ] Reset input fields on opening bank quote/order form
 - [ ] Check if product is in stock 
-- [ ] Use add_columns() when querying for the list of customers for the combobox
 - [ ] Change money/prices representation in the db and elsewhere from float to strings
+- [ ] Verify/validate customer field when submitting quotation

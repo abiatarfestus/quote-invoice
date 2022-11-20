@@ -1404,20 +1404,35 @@ class MainWindow():
         )
 
         # Comboboxes
+        customers = session.query(Customer).all()
+        customers_dict = dict()
+        for customer in customers:
+            if customer.customer_type == "Person":
+                key = f"{customer.last_name} {customer.first_name} >> {customer.phone}"
+            else:
+                key = f"{customer.entity_name} >> {customer.phone}"
+            customers_dict.update({
+                key:[
+                    customer.customer_id,
+                    customer.customer_type,
+                    customer.first_name,
+                    customer.last_name,
+                    customer.entity_name,
+                    customer.email,
+                    customer.phone
+                    ]
+                }
+            )
+        # print(f"CUSTOMERS: {customers_dict}")
         self.quote_customer_cbx = ttk.Combobox(
             mid_frame,
             width=38,
-            values=("Abiatar", "Mumbala")
+            values=sorted(tuple(customers_dict))
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
         self.quote_customer_cbx.state(["readonly"])
-
-        # query = select([Product.product_name, Product.product_id])
-        # result = engine.execute(query).fetchall()
-        # print(f"PRODUCT IDS AND NAMES: {result}")
-        # products_dict = {product[0]:product[1] for product in result}
         products = session.query(Product).all()
         products_dict = {
             product.product_name:[
@@ -1430,11 +1445,11 @@ class MainWindow():
                 product.barcode
                 ] for product in products
             }
-        print(f"PRODUCTS: {products_dict}")
+        # print(f"PRODUCTS: {products_dict}")
         self.quote_input_product_cbx = ttk.Combobox(
             bottom_frame,
             width=40,
-            values=tuple(products_dict)
+            values=sorted(tuple(products_dict))
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
@@ -1480,27 +1495,27 @@ class MainWindow():
         self.quote_input_quantity_spx.grid(column=2, row=1, rowspan=2, sticky=(S, N, E, W))
         
         def add_item():
-            product = self.quote_input_product_cbx.get(),
-            description = self.quote_input_description_ent.get(),
+            product = self.quote_input_product_cbx.get()
+            description = self.quote_input_description_ent.get()
             quantity = self.quote_input_quantity_spx.get()
-            # print(f"PRODUCT: {product[0]}")
-            # print(f"PRODUCT ID: {products_dict[product[0]][0]}")
-            # print(f"DESCRIPTION: {description[0]}")
+            # print(f"PRODUCT: {product}")
+            # print(f"PRODUCT ID: {products_dict[product][0]}")
+            # print(f"DESCRIPTION: {description}")
             # print(f"QUANTITY: {quantity}")
-            if product[0] == "" or quantity == "":
+            if product == "" or quantity == "":
                 print("INVALID ITEM")
                 error_message = messagebox.showerror(
                     message='Cannot add an item without a product or quantity!',
                     title='Invalid Item'
                 )
                 return error_message
-            unit_price = Money(str(products_dict[product[0]][3]), NAD)
+            unit_price = Money(str(products_dict[product][3]), NAD)
             total_price = unit_price*int(quantity)
             self.quote_items_tree.insert('', 'end', values=(
                 "",
-                str(products_dict[product[0]][0]),
-                product[0],
-                description[0],
+                str(products_dict[product][0]),
+                product,
+                description,
                 quantity,
                 str(unit_price.amount),
                 str(total_price.amount)
@@ -1555,109 +1570,81 @@ class MainWindow():
 
         
         def create_or_update_quotation():
-            items = []
             quote_id = self.quote_id_ent.get()
-            for item in self.quote_items_tree.get_children():
-                items.append(self.quote_items_tree.item(item))
             if quote_id == "New":
                 try:
                     quote_date=datetime.strptime(self.quote_date_ent.get(), '%Y/%m/%d').date()
-                    new_quote_id = db.add_quotation(
-                        session, 
-                        quote_date=quote_date,
-                        description=self.quote_description_ent.get(),
-                        customer_id=self.quote_customer_cbx.get(),
-                        is_accepted=self.is_accepted.get(),
-                        notes=self.quote_notes_txt.get("1.0", END)
-                    )
                     try:
-                        for item in items:
-                            db.add_quotation_item(
-                                session,
-                                quote_id=new_quote_id,
-                                product_id=item[1],
-                                quantity=item[4],
-                                description=item[3]
-                            )
-                        success_message = messagebox.showinfo(
-                            message='Quotation was successfully created!',
-                            title='Success'
-                        )
-                        return success_message
+                        customer_id = customers_dict[self.quote_customer_cbx.get()][0]
                     except Exception as e:
                         error_message = messagebox.showerror(
-                        message="Oops! Something went wrong. Some items could not be added to the Quotation.",
+                        message="Invalid customer entered.",
                         detail=e,
                         title='Error'
                     )
                         return error_message
-                    finally:
-                        quote_items = session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == new_quote_id).all()
-                        # print(quote_items)
-                        # print(f"QUOTE ITEMS\n Product\tDescription\tQuantity\tUnit Price\tTotal. Price")
-                        # for product,item in quote_items:
-                        #     print(f""" {product.product_name}\t{product.description[:10]}\tx{item.quantity}\t@{product.price}\t={item.quantity*product.price}""")
-                        
-                        self.quote_id_ent.state(["!disabled"])
-                        self.quote_id_ent.delete(0, END)
-                        self.quote_id_ent.insert(0, new_quote_id)
-                        self.quote_id_ent.state(["disabled"])
-                        # self.quote_customer_cbx.state(["!disabled"])
-                        # self.quote_customer_cbx.delete(0, END)
-                        # self.quote_customer_cbx.set(quotation['values'][1])
-                        # self.quote_customer_cbx.state(["disabled"])
-                        # self.quote_description_ent.state(["!disabled"])
-                        # self.quote_description_ent.delete(0, END)
-                        # self.quote_description_ent.insert(0, quotation['values'][2])
-                        # self.quote_date_ent.state(["!disabled"])
-                        # self.quote_date_ent.delete(0, END)
-                        # self.quote_date_ent.insert(0, quotation['values'][3])
-                        # self.quote_accepted_chk.state(["disabled"])
-                        # self.is_accepted.set(value=quotation['values'][4])
-                        # print(f"CHECK VALUE: {self.is_accepted.get()}")
-                        # self.quote_notes_txt.delete("1.0", END)
-                        # self.quote_notes_txt.insert("1.0", quotation['values'][6])
-                        # self.quote_input_product_cbx.state(["!disabled"])
-                        # self.quote_input_description_ent.state(["!disabled"])
-                        # self.quote_input_quantity_spx.state(["!disabled"])
-                        # self.quote_input_add_btn.state(["!disabled"])
-                        # if self.is_accepted.get() or quotation['values'][5] == "True":
-                        #     self.quote_customer_cbx.state(["disabled"])
-                        #     self.quote_description_ent.state(["disabled"])
-                        #     self.quote_date_ent.state(["disabled"])
-                        #     self.quote_accepted_chk.state(["!disabled"])
-                        #     self.quote_accepted_chk.invoke()
-                        #     self.quote_accepted_chk.state(["disabled"])
-                        #     self.quote_input_product_cbx.state(["disabled"])
-                        #     self.quote_input_description_ent.state(["disabled"])
-                        #     self.quote_input_quantity_spx.state(["disabled"])
-                        #     self.quote_input_add_btn.state(["disabled"])
-                        #     self.quote_save_update_btn.state(["disabled"])
-                        #     self.change_to_order_btn.state(["disabled"])
-                        #     self.mark_closed_btn.state(["disabled"])
-                        
-                        # Update item list
-                        quote_amount = Money("0.00", NAD)
-                        for item in self.quote_items_tree.get_children():
-                            self.quote_items_tree.delete(item)
-                        for product,item in quote_items:
-                            unit_price = Money(product.price, NAD)
-                            total_price = unit_price*item.quantity
-                            self.quote_items_tree.insert('', 'end', iid=f"{item.quote_item_id}",
-                                values=(
-                                    item.quote_item_id,
-                                    product.product_id,
-                                    product.product_name,
-                                    item.description,
-                                    item.quantity,
-                                    unit_price.amount,
-                                    total_price.amount
-                                    )
+                    new_quote_id = db.add_quotation(
+                        session, 
+                        quote_date=quote_date,
+                        description=self.quote_description_ent.get(),
+                        customer_id=customer_id,
+                        is_accepted=self.is_accepted.get(),
+                        notes=self.quote_notes_txt.get("1.0", END)
+                    )
+                    if self.quote_items_tree.get_children(): # If there are items on the list
+                        try:
+                            items = []
+                            for item in self.quote_items_tree.get_children():
+                                items.append(self.quote_items_tree.item(item))
+                            for item in items:
+                                db.add_quotation_item(
+                                    session,
+                                    quote_id=new_quote_id,
+                                    product_id=item["values"][1],
+                                    quantity=item["values"][4],
+                                    description=item["values"][3]
                                 )
-                            quote_amount += total_price
-                        self.quote_amount.set(f"Total Cost:\tN${quote_amount.amount}")
-                        self.quote_save_update.set("Update Quotation")
-                        self.notebook.select(self.quotation_frame)
+                            success_message = messagebox.showinfo(
+                                message='Quotation was successfully created!',
+                                title='Success'
+                            )
+                            return success_message
+                        except Exception as e:
+                            error_message = messagebox.showerror(
+                            message="Oops! Something went wrong. Some items could not be added to the Quotation.",
+                            detail=e,
+                            title='Error'
+                        )
+                            return error_message
+                        finally:
+                            quote_items = session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == new_quote_id).all()
+                            self.quote_id_ent.state(["!disabled"])
+                            self.quote_id_ent.delete(0, END)
+                            self.quote_id_ent.insert(0, new_quote_id)
+                            self.quote_id_ent.state(["disabled"])
+                            
+                            # Update item list
+                            quote_amount = Money("0.00", NAD)
+                            for item in self.quote_items_tree.get_children():
+                                self.quote_items_tree.delete(item)
+                            for product,item in quote_items:
+                                unit_price = Money(product.price, NAD)
+                                total_price = unit_price*item.quantity
+                                self.quote_items_tree.insert('', 'end', iid=f"{item.quote_item_id}",
+                                    values=(
+                                        item.quote_item_id,
+                                        product.product_id,
+                                        product.product_name,
+                                        item.description,
+                                        item.quantity,
+                                        unit_price.amount,
+                                        total_price.amount
+                                        )
+                                    )
+                                quote_amount += total_price
+                            self.quote_amount.set(f"Total Cost:\tN${quote_amount.amount}")
+                            self.quote_save_update.set("Update Quotation")
+                            self.notebook.select(self.quotation_frame)
                 except Exception as e:
                     error_message = messagebox.showerror(
                     message="Oops! Something went wrong. Quotation could not be created.",
