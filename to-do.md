@@ -23,3 +23,4 @@ entity person
 - [ ] Check if product is in stock 
 - [ ] Change money/prices representation in the db and elsewhere from float to strings
 - [ ] Verify/validate customer field when submitting quotation
+- [ ] Enforce or validate a particular date format
