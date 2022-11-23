@@ -449,13 +449,6 @@ class MainWindow():
         tree.column("Phone", anchor=W)
         tree.column("Email", anchor=W)
         tree.column("Customer Since", anchor=E)
-        # tree.column("Customer Type", anchor=W)
-        # tree.column("First Name", anchor=W)
-        # tree.column("Last Name", anchor=W)
-        # tree.column("Entity Name", anchor=W)
-        # tree.column("Address", anchor=W)
-        # tree.column("Country", anchor=W)
-        # tree.column("Notes", anchor=W)
 
         # Create Headings
         tree.heading("ID", text="ID", anchor=CENTER)
@@ -464,13 +457,6 @@ class MainWindow():
         tree.heading("Phone", text="Phone", anchor=W)
         tree.heading("Email", text="Email", anchor=W)
         tree.heading("Customer Since", text="Customr Since", anchor=E)
-        # tree.heading("Customer Type", text="Customer Type", anchor=W)
-        # tree.heading("First Name", text="First Name", anchor=W)
-        # tree.heading("Last Name", text="Last Name", anchor=W)
-        # tree.heading("Entity Name", text="Entity Name", anchor=W)
-        # tree.heading("Address", text="Address", anchor=W)
-        # tree.heading("Country", text="Country", anchor=W)
-        # tree.heading("Notes", text="Notes", anchor=W)
 
         # Insert the data in Treeview widget
         customers = session.query(Customer).order_by(Customer.customer_id).all()
@@ -917,8 +903,20 @@ class MainWindow():
 
         heading_lbl.grid(row=0)
 
+        # ENTRIES
+        self.quote_search_ent = ttk.Entry(
+            bottom_frame,
+        )
+        self.quote_search_ent.grid(column=3, row=1, sticky=(S, N, W, E))
 
-
+        # COMBOBOXES
+        
+        self.quote_search_option_cbx = ttk.Combobox(
+            bottom_frame,
+            width=38,
+            values=("Quote ID", "Customer ID", "Other Variables"),
+        )
+        self.quote_search_option_cbx.grid(column=2, row=1, padx=2, sticky=(S, N, W, E))
 
         def select_record(event):
             print("Record selected")
@@ -1032,105 +1030,131 @@ class MainWindow():
             self.quote_save_update.set("Update Quotation")
             self.notebook.select(self.quotation_frame)
 
-        # def search_customer():
-        #     search_option = self.search_option_cbx.get()
-        #     search_value = self.search_ent.get()
-        #     if search_option == "Customer ID":
-        #         customer_id = search_value
-        #         if not customer_id:
-        #             error_message = messagebox.showerror(
-        #                 message="Cannot search a with blank Customer ID.",
-        #                 title='Error'
-        #             )
-        #             return error_message
-        #         try:
-        #             customer_id = int(customer_id)
-        #             try:
-        #                 customer = db.get_customers(session, pk=customer_id)
-        #                 if customer:
-        #                     if customer.first_name and customer.last_name:
-        #                         customer_name = f"{customer.last_name} {customer.first_name}"
-        #                     else:
-        #                         customer_name = customer.entity_name
-        #                     for item in tree.get_children():
-        #                         tree.delete(item)
-        #                     tree.insert('', 'end', iid=f"{customer.customer_id}",
-        #                     values=(
-        #                         f"{customer.customer_id}",
-        #                         customer.customer_type,
-        #                         customer.first_name,
-        #                         customer.last_name,
-        #                         customer.entity_name,
-        #                         customer_name,
-        #                         customer.email,
-        #                         customer.phone,
-        #                         customer.address,
-        #                         customer.town,
-        #                         customer.country,
-        #                         customer.customer_since,
-        #                         customer.notes
-        #                         )
-        #                     )
-        #                 else:
-        #                     info_message = messagebox.showinfo(
-        #                     message="No matching record was found.",
-        #                     title='Info'
-        #                 )
-        #                     return info_message
-        #             except Exception as e:
-        #                     error_message = messagebox.showerror(
-        #                     message="Oops! Something went wrong.",
-        #                     detail=e,
-        #                     title='Error'
-        #                 )
-        #                     return error_message
-        #         except Exception as e:
-        #             error_message = messagebox.showerror(
-        #             message="Invalid Customer ID.",
-        #             detail=e,
-        #             title='Error'
-        #         )
-        #             return error_message
-        #     else:
-        #         try:
-        #             customers = db.get_customers(session, other_fields=search_value)
-        #             if not customers:
-        #                 info_message = messagebox.showinfo(
-        #                     message="No matching record was found.",
-        #                     title='Info'
-        #                     )
-        #                 return info_message
-        #             for item in tree.get_children():
-        #                 tree.delete(item)
-        #             for customer in customers:
-        #                 if customer.first_name and customer.last_name:
-        #                     customer_name = f"{customer.last_name} {customer.first_name}"
-        #                 else:
-        #                     customer_name = customer.entity_name
-        #                 tree.insert('', 'end', iid=f"{customer.customer_id}",
-        #                 values=(
-        #                     f"{customer.customer_id}",
-        #                     customer.customer_type,
-        #                     customer.first_name,
-        #                     customer.last_name,
-        #                     customer.entity_name,
-        #                     customer_name,
-        #                     customer.email,
-        #                     customer.phone,
-        #                     customer.address,
-        #                     customer.town,
-        #                     customer.country,
-        #                     customer.customer_since,
-        #                     customer.notes
-        #                     )
-        #                 )
-        #         except Exception as e:
-        #             error_message = messagebox.showerror(
-        #             message="Oops! Something went wrong.",
-        #             detail=e,
-        #             title='Error'
-        #         )
-        #             return error_message
+        def search_quotation():
+            search_option = self.quote_search_option_cbx.get()
+            search_value = self.quote_search_ent.get()
+            if search_option == "Quote ID":
+                quote_id = search_value
+                if not quote_id:
+                    error_message = messagebox.showerror(
+                        message="Cannot search a with blank Quote ID.",
+                        title='Error'
+                    )
+                    return error_message
+                try:
+                    quote_id = int(quote_id)
+                    try:
+                        quotation = db.get_quotations(session, pk=quote_id)
+                        if quotation:
+                            for item in tree.get_children():
+                                tree.delete(item)
+                            tree.insert('', 'end', iid=f"{quotation.quote_id}",
+                            values=(
+                                f"{quote.quote_id}",
+                                customer_id_name_dict[quote.customer_id],
+                                quote.description,
+                                quote.quote_date,
+                                quote.is_accepted,
+                                quote.is_closed,
+                                quote.notes
+                                )
+                            )
+                        else:
+                            info_message = messagebox.showinfo(
+                            message="No matching record was found.",
+                            title='Info'
+                        )
+                            return info_message
+                    except Exception as e:
+                            error_message = messagebox.showerror(
+                            message="Oops! Something went wrong.",
+                            detail=e,
+                            title='Error'
+                        )
+                            return error_message
+                except Exception as e:
+                    error_message = messagebox.showerror(
+                    message="Invalid Quote ID.",
+                    detail=e,
+                    title='Error'
+                )
+                    return error_message
+            elif search_option == "Customer ID":
+                customer_id = search_value
+                if not customer_id:
+                    error_message = messagebox.showerror(
+                        message="Cannot search a with blank Customer ID.",
+                        title='Error'
+                    )
+                    return error_message
+                try:
+                    customer_id = int(customer_id)
+                    try:
+                        quotation = db.get_quotations(session, customer_id=customer_id)
+                        if quotation:
+                            for item in tree.get_children():
+                                tree.delete(item)
+                            tree.insert('', 'end', iid=f"{quotation.quote_id}",
+                            values=(
+                                f"{quote.quote_id}",
+                                customer_id_name_dict[quote.customer_id],
+                                quote.description,
+                                quote.quote_date,
+                                quote.is_accepted,
+                                quote.is_closed,
+                                quote.notes
+                                )
+                            )
+                        else:
+                            info_message = messagebox.showinfo(
+                            message="No matching record was found.",
+                            title='Info'
+                        )
+                            return info_message
+                    except Exception as e:
+                            error_message = messagebox.showerror(
+                            message="Oops! Something went wrong.",
+                            detail=e,
+                            title='Error'
+                        )
+                            return error_message
+                except Exception as e:
+                    error_message = messagebox.showerror(
+                    message="Invalid Quote ID.",
+                    detail=e,
+                    title='Error'
+                )
+                    return error_message
+            else:
+                try:
+                    quotations = db.get_quotations(session, other_fields=search_value)
+                    if not quotations:
+                        info_message = messagebox.showinfo(
+                            message="No matching record was found.",
+                            title='Info'
+                            )
+                        return info_message
+                    for item in tree.get_children():
+                        tree.delete(item)
+                    for quotation in quotations:
+                        tree.insert('', 'end', iid=f"{quotation.quote_id}",
+                        values=(
+                            f"{quote.quote_id}",
+                            customer_id_name_dict[quote.customer_id],
+                            quote.description,
+                            quote.quote_date,
+                            quote.is_accepted,
+                            quote.is_closed,
+                            quote.notes
+                            )
+                        )
+                except Exception as e:
+                    error_message = messagebox.showerror(
+                    message="Oops! Something went wrong.",
+                    detail=e,
+                    title='Error'
+                )
+                    return error_message
 
 
 
@@ -1154,12 +1178,13 @@ class MainWindow():
             bottom_frame, 
             text="Search Quotation",
             # style="home_btns.TButton",
-            padding=(10, 21)
+            padding=(10, 21),
+            command=search_quotation
         )
 
         open_quotation_btn.grid(column=0, row=1, sticky=E)
         add_quotation_btn.grid(column=1, row=1, sticky=E)
-        search_quotation_btn.grid(column=2, row=1, sticky=E)
+        search_quotation_btn.grid(column=4, row=1, sticky=E)
 
         # Treeview
         tree = ttk.Treeview(mid_frame, show='headings', height=20)
