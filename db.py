@@ -132,7 +132,7 @@ def delete_customer(session, pk):
 # Quotations -----------------------------------------------
 def get_quotations(session, pk=None, customer_id=None, other_fields=""):
         if pk:
-            quotation = (session.query(Quotation).get(pk))
+            return session.query(Quotation).get(pk)
         elif customer_id:
             return session.query(Quotation).filter(
                 Quotation.customer_id == customer_id
@@ -147,10 +147,10 @@ def get_quotations(session, pk=None, customer_id=None, other_fields=""):
                         Quotation.description.like(f'%{other_fields}%'),
                         Quotation.notes.like(f'%{other_fields}%'),
                     )
-                .order_by(Quotation.quote_date).all()
                 )
+                .order_by(Quotation.quote_date).all()
             )
-        return quotation
+            return quotation
     
 def add_quotation(
     session, 

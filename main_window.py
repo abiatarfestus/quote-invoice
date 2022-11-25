@@ -986,7 +986,7 @@ class MainWindow():
             self.quote_date_ent.insert(0, quotation['values'][3])
             self.quote_accepted_chk.state(["disabled"])
             self.is_accepted.set(value=quotation['values'][4])
-            print(f"CHECK VALUE: {self.is_accepted.get()}")
+            # print(f"CHECK VALUE: {self.is_accepted.get()}")
             self.quote_notes_txt.delete("1.0", END)
             self.quote_notes_txt.insert("1.0", quotation['values'][6])
             self.quote_input_product_cbx.state(["!disabled"])
@@ -1050,13 +1050,13 @@ class MainWindow():
                                 tree.delete(item)
                             tree.insert('', 'end', iid=f"{quotation.quote_id}",
                             values=(
-                                f"{quote.quote_id}",
-                                customer_id_name_dict[quote.customer_id],
-                                quote.description,
-                                quote.quote_date,
-                                quote.is_accepted,
-                                quote.is_closed,
-                                quote.notes
+                                f"{quotation.quote_id}",
+                                customer_id_name_dict[quotation.customer_id],
+                                quotation.description,
+                                quotation.quote_date,
+                                quotation.is_accepted,
+                                quotation.is_closed,
+                                quotation.notes
                                 )
                             )
                         else:
@@ -1090,21 +1090,22 @@ class MainWindow():
                 try:
                     customer_id = int(customer_id)
                     try:
-                        quotation = db.get_quotations(session, customer_id=customer_id)
-                        if quotation:
+                        quotations = db.get_quotations(session, customer_id=customer_id)
+                        if quotations:
                             for item in tree.get_children():
                                 tree.delete(item)
-                            tree.insert('', 'end', iid=f"{quotation.quote_id}",
-                            values=(
-                                f"{quote.quote_id}",
-                                customer_id_name_dict[quote.customer_id],
-                                quote.description,
-                                quote.quote_date,
-                                quote.is_accepted,
-                                quote.is_closed,
-                                quote.notes
+                            for quote in quotations:
+                                tree.insert('', 'end', iid=f"{quote.quote_id}",
+                                values=(
+                                    f"{quote.quote_id}",
+                                    customer_id_name_dict[quote.customer_id],
+                                    quote.description,
+                                    quote.quote_date,
+                                    quote.is_accepted,
+                                    quote.is_closed,
+                                    quote.notes
+                                    )
                                 )
-                            )
                         else:
                             info_message = messagebox.showinfo(
                             message="No matching record was found.",
@@ -1136,8 +1137,8 @@ class MainWindow():
                         return info_message
                     for item in tree.get_children():
                         tree.delete(item)
-                    for quotation in quotations:
-                        tree.insert('', 'end', iid=f"{quotation.quote_id}",
+                    for quote in quotations:
+                        tree.insert('', 'end', iid=f"{quote.quote_id}",
                         values=(
                             f"{quote.quote_id}",
                             customer_id_name_dict[quote.customer_id],
@@ -1261,10 +1262,10 @@ class MainWindow():
         customer_id_name_dict = dict()
         for name in tuple(self.customers_dict):
             customer_id_name_dict.update({self.customers_dict[name][0]:name })
-        print(f"CUSTOMER_ID_NAME DICT: {customer_id_name_dict}")
+        # print(f"CUSTOMER_ID_NAME DICT: {customer_id_name_dict}")
 
         quotations = session.query(Quotation).order_by(Quotation.quote_date).all()
-        print(f"TOTAL QUOTATIONS: {len(quotations)}")
+        # print(f"TOTAL QUOTATIONS: {len(quotations)}")
         for quote in quotations:
             tree.insert('', 'end', iid=f"{quote.quote_id}",
             values=(
