@@ -919,7 +919,7 @@ class MainWindow():
         self.quote_search_option_cbx.grid(column=2, row=1, padx=2, sticky=(S, N, W, E))
 
         def select_record(event):
-            print("Record selected")
+            # print("Record selected")
             record = tree.focus()
             self.selected_quotation = tree.item(record)
         
@@ -953,7 +953,7 @@ class MainWindow():
             self.notebook.select(self.quotation_frame)
         
         def view_quotation():
-            print(f"SELECTED RECORD: {self.selected_quotation}")
+            # print(f"SELECTED RECORD: {self.selected_quotation}")
             quotation = self.selected_quotation
             if not self.selected_quotation:
                 error_message = messagebox.showerror(
@@ -983,7 +983,7 @@ class MainWindow():
             self.quote_description_ent.insert(0, quotation['values'][2])
             self.quote_date_ent.state(["!disabled"])
             self.quote_date_ent.delete(0, END)
-            self.quote_date_ent.insert(0, quotation['values'][3])
+            self.quote_date_ent.insert(0, quotation['values'][3].replace("-", "/"))
             self.quote_accepted_chk.state(["disabled"])
             self.is_accepted.set(value=quotation['values'][4])
             # print(f"CHECK VALUE: {self.is_accepted.get()}")
@@ -1014,10 +1014,10 @@ class MainWindow():
             for product,item in quote_items:
                 unit_price = Money(product.price, NAD)
                 total_price = unit_price*item.quantity
-                self.quote_items_tree.insert('', 'end', iid=f"{item.quote_item_id}",
+                self.quote_items_tree.insert('', 'end', iid=f"{product.product_id}",
                     values=(
-                        item.quote_item_id,
                         product.product_id,
+                        item.quote_item_id,
                         product.product_name,
                         item.description,
                         item.quantity,
@@ -1446,31 +1446,6 @@ class MainWindow():
         )
 
         # Comboboxes
-        # customers = session.query(Customer).all()
-        # customers_dict = dict()
-        # for customer in customers:
-        #     if customer.customer_type == "Person":
-        #         key = f"{customer.last_name} {customer.first_name} >> {customer.phone}"
-        #     else:
-        #         key = f"{customer.entity_name} >> {customer.phone}"
-        #     customers_dict.update({
-        #         key:[
-        #             customer.customer_id,
-        #             customer.customer_type,
-        #             customer.first_name,
-        #             customer.last_name,
-        #             customer.entity_name,
-        #             customer.email,
-        #             customer.phone
-        #             ]
-        #         }
-        #     )
-        # # print(f"CUSTOMERS: {customers_dict}")
-        # # Create a dict of customer_id:customer_name for use in update customer
-        # # self.customer_id_name_dict = dict()
-        # for name in tuple(customers_dict):
-        #     self.customer_id_name_dict.update({customers_dict[name][0]:name })
-        # print(f"CUSTOMER_ID_NAME DICT: {self.customer_id_name_dict}")
 
         self.quote_customer_cbx = ttk.Combobox(
             mid_frame,
@@ -1492,6 +1467,11 @@ class MainWindow():
                 product.sku,
                 product.barcode
                 ] for product in products
+            }
+
+        # product_ids as keys
+        products_dict2 = {
+            product.product_id:product.product_name for product in products
             }
         # print(f"PRODUCTS: {products_dict}")
         self.quote_input_product_cbx = ttk.Combobox(
@@ -1542,6 +1522,22 @@ class MainWindow():
         self.quote_input_description_ent.grid(column=1, row=1, rowspan=2, sticky=(S, N, E, W))
         self.quote_input_quantity_spx.grid(column=2, row=1, rowspan=2, sticky=(S, N, E, W))
         
+        def select_record(event):
+            # print("Record selected")
+            # print(f"ITEM EXISTS: {self.quote_items_tree.exists('11')}")
+            record = self.quote_items_tree.focus()
+            selected_item = self.quote_items_tree.item(record)
+            # print(f"SELECTED ITEM: {selected_item}")
+            self.quote_input_product_cbx.state(["!disabled"])
+            # self.quote_input_product_cbx.delete(0, END)
+            self.quote_input_product_cbx.set(f"{products_dict2[selected_item['values'][0]]}")
+            self.quote_input_description_ent.state(["!disabled"])
+            self.quote_input_description_ent.delete(0, END)
+            self.quote_input_description_ent.insert(0, f"{selected_item['values'][3]}")
+            self.quote_input_quantity_spx.state(["!disabled"])
+            self.quote_input_quantity_spx.set(f"{selected_item['values'][4]}")
+
+
         def add_item():
             product = self.quote_input_product_cbx.get()
             description = self.quote_input_description_ent.get()
@@ -1557,21 +1553,35 @@ class MainWindow():
                     title='Invalid Item'
                 )
                 return error_message
+            product_id = str(products_dict[product][0])
             unit_price = Money(str(products_dict[product][3]), NAD)
             total_price = unit_price*int(quantity)
-            self.quote_items_tree.insert('', 'end', values=(
-                "",
-                str(products_dict[product][0]),
-                product,
-                description,
-                quantity,
-                str(unit_price.amount),
-                str(total_price.amount)
-                )
+            if self.quote_items_tree.exists(product_id):
+                selected_item = self.quote_items_tree.set(product_id, column="Total Price")
+                selected_item_total_price = Money(selected_item, NAD)
+                # print(f"SELECTED ITEM TOTAL PRICE: {selected_item_total_price}")
+                quote_amount = Money(self.quote_amount.get()[14:], NAD)
+                quote_amount = quote_amount-selected_item_total_price
+                self.quote_items_tree.set(product_id, column="Description", value=description)
+                self.quote_items_tree.set(product_id, column="Quantity", value=quantity)
+                self.quote_items_tree.set(product_id, column="Unit Price", value=str(unit_price.amount))
+                self.quote_items_tree.set(product_id, column="Total Price", value=str(total_price.amount))
+                quote_amount += total_price
+            else:
+                self.quote_items_tree.insert('', 'end', iid=f"{product_id}",
+                values=(
+                    product_id,  
+                    "", # this is replaced with quote_item_id when data is pulled from the db
+                    product,
+                    description,
+                    quantity,
+                    str(unit_price.amount),
+                    str(total_price.amount)
+                    )
             )
-            # print(f"SLICED QUOTE_AMOUNT: {self.quote_amount.get()[14:]}")
-            quote_amount = Money(self.quote_amount.get()[14:], NAD)
-            quote_amount += total_price
+                # print(f"SLICED QUOTE_AMOUNT: {self.quote_amount.get()[14:]}")
+                quote_amount = Money(self.quote_amount.get()[14:], NAD)
+                quote_amount += total_price
             # print(f"MONEY: {quote_amount.amount}")
             self.quote_amount.set(f"Total Cost:\tN${quote_amount.amount}")
             self.quote_input_product_cbx.set("")
@@ -1648,7 +1658,7 @@ class MainWindow():
                             db.add_quotation_item(
                                 session,
                                 quote_id=new_quote_id,
-                                product_id=item["values"][1],
+                                product_id=item["values"][0],
                                 quantity=item["values"][4],
                                 description=item["values"][3]
                             )
@@ -1678,10 +1688,10 @@ class MainWindow():
                         for product,item in quote_items:
                             unit_price = Money(product.price, NAD)
                             total_price = unit_price*item.quantity
-                            self.quote_items_tree.insert('', 'end', iid=f"{item.quote_item_id}",
+                            self.quote_items_tree.insert('', 'end', iid=f"{product.product_id}",
                                 values=(
-                                    item.quote_item_id,
                                     product.product_id,
+                                    item.quote_item_id,
                                     product.product_name,
                                     item.description,
                                     item.quantity,
@@ -1728,17 +1738,17 @@ class MainWindow():
                         for item in self.quote_items_tree.get_children():
                             items.append(self.quote_items_tree.item(item))
                         for item in items:
-                            if not item["values"][0]: # If it's new item (has no id)
+                            if not item["values"][1]: # If it's new item (has no id)
                                 db.add_quotation_item(
                                     session,
                                     quote_id=quote_id,
-                                    product_id=item["values"][1],
+                                    product_id=item["values"][0],
                                     quantity=item["values"][4],
                                     description=item["values"][3]
                                 )
                             else:
-                                existing_item = session.query(QuotationItem).get(item["values"][0])
-                                existing_item.product_id=item["values"][1]
+                                existing_item = session.query(QuotationItem).get(item["values"][1])
+                                existing_item.product_id=item["values"][0]
                                 existing_item.quantity=item["values"][4]
                                 existing_item.description=item["values"][3]
                                 session.commit()
@@ -1764,10 +1774,10 @@ class MainWindow():
                         for product,item in quote_items:
                             unit_price = Money(product.price, NAD)
                             total_price = unit_price*item.quantity
-                            self.quote_items_tree.insert('', 'end', iid=f"{item.quote_item_id}",
+                            self.quote_items_tree.insert('', 'end', iid=f"{product.product_id}",
                                 values=(
-                                    item.quote_item_id,
                                     product.product_id,
+                                    item.quote_item_id,
                                     product.product_name,
                                     item.description,
                                     item.quantity,
@@ -1864,6 +1874,7 @@ class MainWindow():
 
         # Treeview
         self.quote_items_tree = ttk.Treeview(mid_frame, show='headings', height=5)
+        self.quote_items_tree.bind('<ButtonRelease-1>', select_record)
         
         # Scrollbar
         y_scroll = ttk.Scrollbar(mid_frame, orient=VERTICAL, command=self.quote_items_tree.yview)
@@ -1876,8 +1887,8 @@ class MainWindow():
 
         # Define Our Columns
         self.quote_items_tree['columns'] = (
-            "ID",
-            "Product_ID",
+            "ID", # product_id
+            "Quote_Item_ID",
             "Item", 
             "Description", # Item description/note, not necessarily product description
             "Quantity", 
@@ -1895,7 +1906,7 @@ class MainWindow():
 
         # Format Our Columns
         self.quote_items_tree.column("ID", anchor=CENTER)
-        self.quote_items_tree.column("Product_ID", anchor=CENTER)
+        self.quote_items_tree.column("Quote_Item_ID", anchor=CENTER)
         self.quote_items_tree.column("Item", anchor=W)
         self.quote_items_tree.column("Description", anchor=W)
         self.quote_items_tree.column("Quantity", anchor=E)
