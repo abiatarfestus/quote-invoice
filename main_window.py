@@ -1492,13 +1492,6 @@ class MainWindow():
             # anchor="",
             # style="heading.TLabel",
         )
-        # product_description_txt = Text(
-        #     bottom_frame,
-        #     width=85, 
-        #     height=2,
-        #     # textvariable="",
-        #     # style="heading.TLabel",
-        # )
 
         # Checkboxes
         self.is_accepted =  BooleanVar()
@@ -1520,7 +1513,7 @@ class MainWindow():
         # product_description_txt.grid(column=1, row=0, sticky=(W))
         self.quote_input_product_cbx.grid(column=0, row=1, rowspan=2, sticky=(S, N, E, W))
         self.quote_input_description_ent.grid(column=1, row=1, rowspan=2, sticky=(S, N, E, W))
-        self.quote_input_quantity_spx.grid(column=2, row=1, rowspan=2, sticky=(S, N, E, W))
+        self.quote_input_quantity_spx.grid(column=2, row=1, sticky=(S, N, E, W))
         
         def select_record(event):
             # print("Record selected")
@@ -1862,6 +1855,13 @@ class MainWindow():
             padding=5,
             command=add_item
         )
+        self.quote_input_delete_btn = ttk.Button(
+            bottom_frame, 
+            text="Delete Item",
+            # style="home_btns.TButton",
+            padding=5,
+            # command=delete_item
+        )
 
 
         quote_preview_btn.grid(column=4, row=0, rowspan=2, sticky=(N, W, E, S))
@@ -1871,6 +1871,7 @@ class MainWindow():
         self.mark_closed_btn.grid(column=2, row=6, sticky=(N, S, W, E))
         self.reuse_quote_btn.grid(column=3, row=6, sticky=(N, S, W, E))
         self.quote_input_add_btn.grid(column=3, row=1, rowspan=2, sticky=(N, S, W, E))
+        self.quote_input_delete_btn.grid(column=2, row=2, sticky=(N, S, W, E))
 
         # Treeview
         self.quote_items_tree = ttk.Treeview(mid_frame, show='headings', height=5)
