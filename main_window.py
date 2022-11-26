@@ -1582,6 +1582,32 @@ class MainWindow():
             self.quote_input_quantity_spx.delete(0,END)
             return
 
+        def delete_item():
+            product = self.quote_input_product_cbx.get()
+            if not product:
+                self.quote_input_product_cbx.set("")
+                self.quote_input_description_ent.delete(0,END)
+                self.quote_input_quantity_spx.delete(0,END)
+                return
+            try:
+                product_id = str(products_dict[product][0])
+            except KeyError:
+                self.quote_input_product_cbx.set("")
+                self.quote_input_description_ent.delete(0,END)
+                self.quote_input_quantity_spx.delete(0,END)
+                return
+            if self.quote_items_tree.exists(product_id):
+                selected_item = self.quote_items_tree.set(product_id, column="Total Price")
+                selected_item_total_price = Money(selected_item, NAD)
+                quote_amount = Money(self.quote_amount.get()[14:], NAD)
+                quote_amount = quote_amount-selected_item_total_price
+                self.quote_items_tree.delete([product_id])
+                self.quote_amount.set(f"Total Cost:\tN${quote_amount.amount}")
+            self.quote_input_product_cbx.set("")
+            self.quote_input_description_ent.delete(0,END)
+            self.quote_input_quantity_spx.delete(0,END)
+            return
+
         def open_blank_quote_form():
             self.quote_id_ent.state(["!disabled"])
             self.quote_id_ent.delete(0, END)
@@ -1728,8 +1754,14 @@ class MainWindow():
                 if self.quote_items_tree.get_children(): # If there are items on the list
                     try:
                         items = []
+                        item_ids = set()
+                        old_items = session.query(QuotationItem).filter(QuotationItem.quote_id==quote_id).all()
+                        old_item_ids = [item.quote_item_id for item in old_items]
                         for item in self.quote_items_tree.get_children():
                             items.append(self.quote_items_tree.item(item))
+                            item_ids.add(self.quote_items_tree.item(item)["values"][1])
+                        # print(f"ITEM IDs: {item_ids}")
+                        # print(f"OLD ITEM IDs: {old_item_ids}")
                         for item in items:
                             if not item["values"][1]: # If it's new item (has no id)
                                 db.add_quotation_item(
@@ -1745,6 +1777,9 @@ class MainWindow():
                                 existing_item.quantity=item["values"][4]
                                 existing_item.description=item["values"][3]
                                 session.commit()
+                        for id in old_item_ids:
+                            if id not in item_ids:
+                                db.delete_quotation_item(session, pk=id)
                         success_message = messagebox.showinfo(
                             message='Quotation was successfully updated!',
                             title='Success'
@@ -1860,7 +1895,7 @@ class MainWindow():
             text="Delete Item",
             # style="home_btns.TButton",
             padding=5,
-            # command=delete_item
+            command=delete_item
         )
 
 
