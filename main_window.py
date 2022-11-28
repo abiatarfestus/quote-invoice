@@ -1474,6 +1474,15 @@ class MainWindow():
             product.product_id:product.product_name for product in products
             }
         # print(f"PRODUCTS: {products_dict}")
+        def populate_item_description(event):
+            selected_product = self.quote_input_product_cbx.get()
+            product_attributes = products_dict.get(selected_product)
+            if product_attributes:
+                product_description = product_attributes[2]
+                self.quote_input_description_ent.insert(0, product_description)
+                self.quote_input_quantity_spx.set("1")
+            
+
         self.quote_input_product_cbx = ttk.Combobox(
             bottom_frame,
             width=40,
@@ -1482,6 +1491,7 @@ class MainWindow():
             # anchor="",
             # style="heading.TLabel",
         )
+        self.quote_input_product_cbx.bind('<<ComboboxSelected>>', populate_item_description)
 
         # Texts
         self.quote_notes_txt = Text(
