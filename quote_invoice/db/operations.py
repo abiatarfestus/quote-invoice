@@ -1,9 +1,8 @@
-from models import *
 from datetime import datetime
 from sqlalchemy import and_, or_, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import asc, desc, func
-from models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
+from . models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
 
 
 # def get_connection():

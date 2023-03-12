@@ -1,10 +1,10 @@
 from tkinter import *
 from tkinter import ttk
 # from main_window import MainWindow
-from main_window import MainWindow
-from models import get_connection, Base
+from .gui.main_window import MainWindow
+from .db.models import get_connection, Base
 
-def main():
+def run():
     engine = get_connection()
     Base.metadata.create_all(engine)
     
@@ -25,6 +25,3 @@ def main():
     # root.columnconfigure(0, weight=1)
     # root.rowconfigure(0, weight=1)
     root.mainloop()
-
-if __name__ == "__main__":
-    main()

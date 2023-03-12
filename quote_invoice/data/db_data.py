@@ -1,5 +1,5 @@
 import random
-from db import *
+from quote_invoice.db.operations import *
 from faker import Faker
 from datetime import datetime
 from sqlalchemy import and_, or_, create_engine

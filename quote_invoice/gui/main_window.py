@@ -1,6 +1,6 @@
 from datetime import datetime, date
 import random
-import db
+from quote_invoice.db import operations as db
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
@@ -8,7 +8,7 @@ from faker import Faker
 from moneyed import Money, NAD
 from sqlalchemy import and_, or_, create_engine, select
 from sqlalchemy.orm import sessionmaker
-from models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
+from quote_invoice.db.models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
 
 fake = Faker()
 

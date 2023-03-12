@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import and_, or_, create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
+from . models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
 
 def get_connection():
     return create_engine(f"sqlite:///app_database.db")
