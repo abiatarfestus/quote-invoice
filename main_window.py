@@ -207,7 +207,6 @@ class MainWindow():
         self.search_ent.grid(column=3, row=1, sticky=(S, N, W, E))
 
         # COMBOBOXES
-        
         self.search_option_cbx = ttk.Combobox(
             bottom_frame,
             width=38,
@@ -992,6 +991,9 @@ class MainWindow():
             self.quote_input_product_cbx.state(["!disabled"])
             self.quote_input_description_ent.state(["!disabled"])
             self.quote_input_quantity_spx.state(["!disabled"])
+            self.quote_save_update_btn.state(["!disabled"])
+            self.change_to_order_btn.state(["!disabled"])
+            self.mark_closed_btn.state(["!disabled"])
             self.quote_input_add_btn.state(["!disabled"])
             if self.is_accepted.get() or quotation['values'][5] == "True":
                 self.quote_customer_cbx.state(["disabled"])
@@ -1007,6 +1009,7 @@ class MainWindow():
                 self.quote_save_update_btn.state(["disabled"])
                 self.change_to_order_btn.state(["disabled"])
                 self.mark_closed_btn.state(["disabled"])
+                self.quote_input_delete_btn.state(["disabled"])
             
             # Update item list
             for item in self.quote_items_tree.get_children():
@@ -1539,6 +1542,7 @@ class MainWindow():
             self.quote_input_description_ent.insert(0, f"{selected_item['values'][3]}")
             self.quote_input_quantity_spx.state(["!disabled"])
             self.quote_input_quantity_spx.set(f"{selected_item['values'][4]}")
+            self.quote_input_delete_btn.state(["!disabled"]) # Needs to check if quotation is closed
 
 
         def add_item():
@@ -1849,6 +1853,38 @@ class MainWindow():
             else:
                 update_quotation()
 
+        def mark_quote_closed():
+            quote_id = self.quote_id_ent.get()
+            if quote_id == "New":
+                error_message = messagebox.showerror(
+                    message='Cannot update an unsaved quotation!',
+                    title='Invalid Action'
+                )
+                return error_message
+            quotation = db.get_quotations(session, quote_id)
+            quotation.is_closed = True
+            session.commit()
+            self.quote_customer_cbx.state(["disabled"])
+            self.quote_description_ent.state(["disabled"])
+            self.quote_date_ent.state(["disabled"])
+            self.quote_notes_txt.config(state=DISABLED)
+            self.quote_accepted_chk.state(["!disabled"])
+            # self.quote_accepted_chk.invoke()
+            self.quote_accepted_chk.state(["disabled"])
+            self.quote_input_product_cbx.state(["disabled"])
+            self.quote_input_description_ent.state(["disabled"])
+            self.quote_input_quantity_spx.state(["disabled"])
+            self.quote_input_add_btn.state(["disabled"])
+            self.quote_save_update_btn.state(["disabled"])
+            self.change_to_order_btn.state(["disabled"])
+            self.mark_closed_btn.state(["disabled"])
+            self.quote_input_delete_btn.state(["disabled"])
+            success_message = messagebox.showinfo(
+                message='Quotation was successfully updated!',
+                title='Success'
+            )
+            return success_message
+
 
         # Buttons
         quote_preview_btn = ttk.Button(
@@ -1884,7 +1920,7 @@ class MainWindow():
             text="Mark as Closed",
             # style="home_btns.TButton",
             padding=10,
-            # command=self.mark_quote_closed
+            command=mark_quote_closed
         )
         self.reuse_quote_btn = ttk.Button(
             mid_frame,
