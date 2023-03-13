@@ -51,8 +51,8 @@ class MainWindow():
         )
         self.create_notebook()
         self.configure_rows_columns()
-        self.setup_customer_list_tab()
-        self.setup_customer_tab()
+        self.customer_details_tab = self.setup_customer_tab()
+        self.customer_list_tab = self.setup_customer_list_tab()
 
     
     def create_notebook(self):
@@ -131,10 +131,18 @@ class MainWindow():
         self.order_frame.rowconfigure(1, weight=1)
         self.order_frame.rowconfigure(2, weight=1)
 
-    def setup_customer_list_tab(self):
-        """Configure the customer list tab"""
-        customer_list_tab = CustomerListTab(self.notebook, self.customer_list_frame, session)
-    
     def setup_customer_tab(self):
         """Configure the customer form tab"""
         customer_details_tab = CustomerDetailsTab(self.notebook, self.customer_frame, session)
+        return customer_details_tab
+    
+    def setup_customer_list_tab(self):
+        """Configure the customer list tab"""
+        customer_list_tab = CustomerListTab(
+            self.notebook, 
+            self.customer_list_frame, 
+            self.customer_details_tab, 
+            session
+        )
+        return customer_list_tab
+    # Pass customer_details_tab object to the list_tab object, enables calling customer_details_tab methods from list

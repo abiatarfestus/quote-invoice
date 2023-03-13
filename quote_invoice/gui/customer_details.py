@@ -1,10 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from datetime import datetime, date
+from datetime import datetime
 from quote_invoice.db import operations as db
-from quote_invoice.gui import customer_details
-from quote_invoice.db.models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
 
 class CustomerDetailsTab():
     def __init__(self, notebook, parent_frame, session):
@@ -335,15 +333,14 @@ class CustomerDetailsTab():
         self.country_ent.delete(0, END)
         self.since_ent.delete(0, END)
         self.notes_txt.delete("1.0", END)
-        # Update the Save/Update button
-        # self.notebook.select(self.customer_frame)
+        self.save_btn.configure(text="Save Record")
 
     def create_or_update_customer(self):
         customer_id = self.id_ent.get()
         if customer_id == "New":
             try:
                 db.add_customer(
-                session, 
+                self.session, 
                 customer_type=self.type_cbx.get(),
                 first_name=self.first_name_ent.get(), 
                 last_name=self.last_name_ent.get(), 
@@ -356,7 +353,7 @@ class CustomerDetailsTab():
                 customer_since=datetime.strptime(self.since_ent.get(), '%Y-%m-%d').date(),
                 notes=self.notes_txt.get("1.0", END)
             )
-                open_blank_customer_form()
+                self.open_blank_customer_form()
                 success_message = messagebox.showinfo(
                 message='Customer was successfully created!',
                 title='Success'
@@ -371,7 +368,7 @@ class CustomerDetailsTab():
                 return error_message
         else:
             try:
-                customer = db.get_customers(session, customer_id)
+                customer = db.get_customers(self.session, customer_id)
                 customer.customer_type = self.type_cbx.get()
                 customer.first_name = self.first_name_ent.get()
                 customer.last_name = self.last_name_ent.get()
@@ -383,7 +380,7 @@ class CustomerDetailsTab():
                 customer.country = self.country_ent.get()
                 customer.customer_since = datetime.strptime(self.since_ent.get(), '%Y-%m-%d').date()
                 customer.notes = self.notes_txt.get("1.0", END)
-                session.commit()
+                self.session.commit()
                 success_message = messagebox.showinfo(
                 message='Record was successfully updated!',
                 title='Success'
@@ -396,5 +393,33 @@ class CustomerDetailsTab():
                 title='Error'
             )
                 return error_message 
+            
+    def populate_fields(self, customer):
+        self.id_ent.state(["!disabled"])
+        self.id_ent.delete(0, END)
+        self.id_ent.insert(0, customer['values'][0])
+        self.id_ent.state(["disabled"])
+        self.type_cbx.set(customer['values'][1])
+        self.first_name_ent.delete(0, END)
+        self.first_name_ent.insert(0, customer['values'][2])
+        self.last_name_ent.delete(0, END)
+        self.last_name_ent.insert(0, customer['values'][3])
+        self.entity_ent.delete(0, END)
+        self.entity_ent.insert(0, customer['values'][4])
+        self.email_ent.delete(0, END)
+        self.email_ent.insert(0, customer['values'][6])
+        self.phone_ent.delete(0, END)
+        self.phone_ent.insert(0, customer['values'][7])
+        self.address_ent.delete(0, END)
+        self.address_ent.insert(0, customer['values'][8])
+        self.town_ent.delete(0, END)
+        self.town_ent.insert(0, customer['values'][9])
+        self.country_ent.delete(0, END)
+        self.country_ent.insert(0, customer['values'][10])
+        self.since_ent.delete(0, END)
+        self.since_ent.insert(0, customer['values'][11])
+        self.notes_txt.delete("1.0", END)
+        self.notes_txt.insert("1.0", customer['values'][12])
+        self.save_btn.configure(text="Update Record")
 
         

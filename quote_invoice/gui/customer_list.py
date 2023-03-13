@@ -2,14 +2,14 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from quote_invoice.db import operations as db
-from quote_invoice.gui import customer_details
-from quote_invoice.db.models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
+from quote_invoice.db.models import Customer
 
 class CustomerListTab():
-    def __init__(self, notebook, parent_frame, session):
+    def __init__(self, notebook, parent_frame, customer_details_tab, session):
         """Configure the customer list tab"""
         self.session = session
         self.notebook = notebook
+        self.customer_details_tab = customer_details_tab
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(
@@ -181,7 +181,7 @@ class CustomerListTab():
         # self.bind_widgets_to_methods()
         self.selected_customer = None
 
-    def select_record(self):
+    def select_record(self, event):
         print("Record selected")
         record = self.tree.focus()
         self.selected_customer = self.tree.item(record)
@@ -189,23 +189,8 @@ class CustomerListTab():
     
     
     def open_blank_customer_form(self):
-        # customer_details.new_customer()
-    #     id_ent.state(["!disabled"])
-    #     id_ent.delete(0, END)
-    #     id_ent.insert(0, "New")
-    #     id_ent.state(["disabled"])
-    #     type_cbx.set("")
-    #     first_name_ent.delete(0, END)
-    #     last_name_ent.delete(0, END)
-    #     entity_ent.delete(0, END)
-    #     email_ent.delete(0, END)
-    #     phone_ent.delete(0, END)
-    #     address_ent.delete(0, END)
-    #     town_ent.delete(0, END)
-    #     country_ent.delete(0, END)
-    #     since_ent.delete(0, END)
-    #     notes_txt.delete("1.0", END)
-        self.notebook.select(self.notebook[2])
+        self.customer_details_tab.open_blank_customer_form()
+        self.notebook.select(2)
     
     def view_customer(self):
         print(f"SELECTED RECORD: {self.selected_customer}")
@@ -216,35 +201,10 @@ class CustomerListTab():
                 title='Error'
             )
             return error_message
-        # customer_details.populate(customer)
-        # id_ent.state(["!disabled"])
-        # id_ent.delete(0, END)
-        # id_ent.insert(0, customer['values'][0])
-        # id_ent.state(["disabled"])
-        # type_cbx.set(customer['values'][1])
-        # first_name_ent.delete(0, END)
-        # first_name_ent.insert(0, customer['values'][2])
-        # last_name_ent.delete(0, END)
-        # last_name_ent.insert(0, customer['values'][3])
-        # entity_ent.delete(0, END)
-        # entity_ent.insert(0, customer['values'][4])
-        # email_ent.delete(0, END)
-        # email_ent.insert(0, customer['values'][6])
-        # phone_ent.delete(0, END)
-        # phone_ent.insert(0, customer['values'][7])
-        # address_ent.delete(0, END)
-        # address_ent.insert(0, customer['values'][8])
-        # town_ent.delete(0, END)
-        # town_ent.insert(0, customer['values'][9])
-        # country_ent.delete(0, END)
-        # country_ent.insert(0, customer['values'][10])
-        # since_ent.delete(0, END)
-        # since_ent.insert(0, customer['values'][11])
-        # notes_txt.delete("1.0", END)
-        # notes_txt.insert("1.0", customer['values'][12])
-        self.notebook.select(self.notebook[2])
+        self.customer_details_tab.populate_fields(customer)
+        self.notebook.select(2)
 
-    def search_customer(self, session):
+    def search_customer(self):
         search_option = self.search_option_cbx.get()
         search_value = self.search_ent.get()
         if search_option == "Customer ID":
@@ -258,7 +218,7 @@ class CustomerListTab():
             try:
                 customer_id = int(customer_id)
                 try:
-                    customer = db.get_customers(session, pk=customer_id)
+                    customer = db.get_customers(self.session, pk=customer_id)
                     if customer:
                         if customer.first_name and customer.last_name:
                             customer_name = f"{customer.last_name} {customer.first_name}"
@@ -305,7 +265,7 @@ class CustomerListTab():
                 return error_message
         else:
             try:
-                customers = db.get_customers(session, other_fields=search_value)
+                customers = db.get_customers(self.session, other_fields=search_value)
                 if not customers:
                     info_message = messagebox.showinfo(
                         message="No matching record was found.",
@@ -343,13 +303,6 @@ class CustomerListTab():
                 title='Error'
             )
                 return error_message
-
-    
-    # def bind_widgets_to_methods(self):
-    #     self.tree.bind('<ButtonRelease-1>', self.select_record)
-    #     self.open_customer_btn.configure(command=self.view_customer)
-    #     self.add_customer_btn.configure(command=self.open_blank_customer_form)
-    #     self.search_customer_btn = ttk.Button(command=self.search_customer)
     
 
     
