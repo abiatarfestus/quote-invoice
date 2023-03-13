@@ -25,3 +25,4 @@ entity person
 - [ ] Verify/validate customer field when submitting quotation
 - [ ] Enforce or validate a particular date format
 - [ ] Reduce items.append(self.quote_items_tree.item(item)) to values instead of the whole dictionaries
+- [ ] Verify if get_connection() has to appear twice

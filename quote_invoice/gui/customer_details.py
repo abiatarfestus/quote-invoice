@@ -8,7 +8,6 @@ class CustomerDetailsTab():
     def __init__(self, notebook, parent_frame, session):
         """Configure the customer form tab"""
         self.session = session
-
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(
@@ -421,5 +420,3 @@ class CustomerDetailsTab():
         self.notes_txt.delete("1.0", END)
         self.notes_txt.insert("1.0", customer['values'][12])
         self.save_btn.configure(text="Update Record")
-
-        
