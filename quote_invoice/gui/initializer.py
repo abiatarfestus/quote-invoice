@@ -11,7 +11,9 @@ from sqlalchemy import and_, or_, create_engine, select
 from sqlalchemy.orm import sessionmaker
 from .home import HomeTab
 from .customer_list import CustomerListTab
+from .quotation_list import QuotationListTab
 from .customer_details import CustomerDetailsTab
+from .quote_details import QuoteDetailsTab
 from quote_invoice.db.models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
 
 fake = Faker()
@@ -55,6 +57,8 @@ class Window():
         self.home_tab = self.setup_home_tab()
         self.customer_details_tab = self.setup_customer_tab()
         self.customer_list_tab = self.setup_customer_list_tab()
+        self.quote_details_tab = self.setup_quote_tab()
+        self.quotation_list_tab = self.setup_quotation_list_tab()
 
     
     def create_notebook(self):
@@ -149,4 +153,17 @@ class Window():
             session
         )
         return customer_list_tab
+    
+    def setup_quote_tab(self):
+        quote_details_tab = QuoteDetailsTab(self.notebook, self.quotation_frame, session)
+        return quote_details_tab
+    
+    def setup_quotation_list_tab(self):
+        quotation_list_tab = QuotationListTab(
+            self.notebook, 
+            self.quotation_list_frame, 
+            self.quote_details_tab, 
+            session
+        )
+        return quotation_list_tab
     # Pass customer_details_tab object to the list_tab object, enables calling customer_details_tab methods from list

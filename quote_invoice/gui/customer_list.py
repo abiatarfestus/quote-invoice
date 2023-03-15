@@ -9,6 +9,7 @@ class CustomerListTab():
         """Configure the customer list tab"""
         self.session = session
         self.notebook = notebook
+        self.selected_customer = None
         self.customer_details_tab = customer_details_tab
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
@@ -179,7 +180,7 @@ class CustomerListTab():
         self.search_customer_btn.grid(column=4, row=1, sticky=E)
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
         # self.bind_widgets_to_methods()
-        self.selected_customer = None
+        
 
     def select_record(self, event):
         print("Record selected")
