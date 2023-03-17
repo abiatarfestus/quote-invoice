@@ -13,6 +13,7 @@ from quote_invoice.db.models import Customer, Order, OrderItem, Quotation, Quota
 class QuoteDetailsTab():
     def __init__(self, notebook, parent_frame, session):
         """Configure the quote details tab"""
+        self.notebook = notebook
         self.session = session
         customers = self.session.query(Customer).all()
         self.customers_dict = dict()
@@ -564,6 +565,7 @@ class QuoteDetailsTab():
         self.quote_save_update_btn.state(["!disabled"])
         self.change_to_order_btn.state(["!disabled"])
         self.mark_closed_btn.state(["!disabled"])
+        self.quote_input_delete_btn.state(["!disabled"])
         # print(f"ITEMS: {self.quote_items_tree.get_children()}")
         # items = []
         for item in self.quote_items_tree.get_children():
@@ -572,7 +574,7 @@ class QuoteDetailsTab():
         # print(f"ITEMS: {items}")
         self.quote_amount.set("Total Cost:\tN$0.00")
         self.quote_save_update.set("Save Quotation")
-        self.notebook.select(self.quotation_frame)
+        # self.notebook.select(self.quotation_frame)
 
     
     def create_quotation(self):
