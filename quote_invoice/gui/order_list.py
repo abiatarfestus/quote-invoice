@@ -2,15 +2,15 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from quote_invoice.db import operations as db
-from quote_invoice.db.models import Customer, Quotation
+from quote_invoice.db.models import Customer, Order
 
 
-class QuotationListTab():
-    def __init__(self, notebook, parent_frame, quote_details_tab, session):
+class OrderListTab():
+    def __init__(self, notebook, parent_frame, order_details_tab, session):
         self.notebook = notebook
         self.session = session
-        self.selected_quotation = None
-        self.quote_details_tab = quote_details_tab
+        self.selected_order = None
+        self.order_details_tab = order_details_tab
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(
@@ -25,7 +25,7 @@ class QuotationListTab():
         # Labels:
         self.heading_lbl = ttk.Label(
             self.top_frame,
-            text="Quotation List",
+            text="Order List",
             anchor="center",
             style="heading.TLabel",
         )
@@ -63,9 +63,8 @@ class QuotationListTab():
             "ID",
             "Customer",
             "Description",
-            "Quote Date",
-            "Accepted", 
-            "Closed",
+            "Order Date",
+            "Paid",
             "Notes"
         )
 
@@ -73,28 +72,25 @@ class QuotationListTab():
             "ID",
             "Customer",
             "Description",
-            "Quote Date",
-            "Accepted", 
-            "Closed"
+            "Order Date",
+            "Paid"
         )
 
         # Format Our Columns
         self.tree.column("ID", anchor=CENTER)
         self.tree.column("Customer", anchor=W)
         self.tree.column("Description", anchor=W)
-        self.tree.column("Quote Date", anchor=E)
-        self.tree.column("Accepted", anchor=CENTER)
-        self.tree.column("Closed", anchor=CENTER)
-        self.tree.column("Notes", anchor=W)
+        self.tree.column("Order Date", anchor=E)
+        self.tree.column("Paid", anchor=CENTER)
+        # self.tree.column("Notes", anchor=W)
 
         # Create Headings
         self.tree.heading("ID", text="ID", anchor=CENTER)
         self.tree.heading("Customer", text="Customer", anchor=W)
         self.tree.heading("Description", text="Description", anchor=W)
-        self.tree.heading("Quote Date", text="Quote Date", anchor=E)
-        self.tree.heading("Accepted", text="Accepted", anchor=CENTER)
-        self.tree.heading("Closed", text="Closed", anchor=CENTER)
-        self.tree.heading("Notes", text="Notes", anchor=W)
+        self.tree.heading("Order Date", text="Order Date", anchor=E)
+        self.tree.heading("Paid", text="Paid", anchor=CENTER)
+        # self.tree.heading("Notes", text="Notes", anchor=W)
 
         customers = self.session.query(Customer).all()
         self.customers_dict = dict()
@@ -122,18 +118,17 @@ class QuotationListTab():
             self.customer_id_name_dict.update({self.customers_dict[name][0]:name })
         # print(f"CUSTOMER_ID_NAME DICT: {self.customer_id_name_dict}")
 
-        self.quotations = self.session.query(Quotation).order_by(Quotation.quote_date).all()
-        # print(f"TOTAL QUOTATIONS: {len(quotations)}")
-        for quote in self.quotations:
-            self.tree.insert('', 'end', iid=f"{quote.quote_id}",
+        self.orders = self.session.query(Order).order_by(Order.order_date).all()
+        # print(f"TOTAL QUOTATIONS: {len(Orders)}")
+        for order in self.orders:
+            self.tree.insert('', 'end', iid=f"{order.order_id}",
             values=(
-                f"{quote.quote_id}",
-                self.customer_id_name_dict[quote.customer_id],
-                quote.description,
-                quote.quote_date,
-                quote.is_accepted,
-                quote.is_closed,
-                quote.notes
+                f"{order.order_id}",
+                self.customer_id_name_dict[order.customer_id],
+                order.description,
+                order.order_date,
+                order.is_paid,
+                order.notes
                 )
             )
 
@@ -150,97 +145,96 @@ class QuotationListTab():
         self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
 
         # Entries
-        self.quote_search_ent = ttk.Entry(
+        self.order_search_ent = ttk.Entry(
             self.bottom_frame,
         )
-        self.quote_search_ent.grid(column=3, row=1, sticky=(S, N, W, E))
+        self.order_search_ent.grid(column=3, row=1, sticky=(S, N, W, E))
 
         # Comboboxes
-        self.quote_search_option_cbx = ttk.Combobox(
+        self.order_search_option_cbx = ttk.Combobox(
             self.bottom_frame,
             width=38,
-            values=("Quote ID", "Customer ID", "Other Variables"),
+            values=("Order ID", "Customer ID", "Other Variables"),
         )
-        self.quote_search_option_cbx.grid(column=2, row=1, padx=2, sticky=(S, N, W, E))
+        self.order_search_option_cbx.grid(column=2, row=1, padx=2, sticky=(S, N, W, E))
 
         # Buttons:
-        self.open_quotation_btn = ttk.Button(
+        self.open_order_btn = ttk.Button(
             self.bottom_frame,
             text="Open Selected Record",
             # style="home_btns.TButton",
             padding=21,
-            command=self.view_quotation
+            command=self.view_order
         )
-        self.open_quotation_btn.grid(column=0, row=1, sticky=E)
+        self.open_order_btn.grid(column=0, row=1, sticky=E)
 
-        self.add_quotation_btn = ttk.Button(
+        self.add_order_btn = ttk.Button(
             self.bottom_frame, 
-            text="Add New Quotation",
+            text="Add New Order",
             # style="home_btns.TButton",
             padding=(10, 21),
-            command=self.open_blank_quote_form
+            command=self.open_blank_order_form
         )
-        self.add_quotation_btn.grid(column=1, row=1, sticky=E)
+        self.add_order_btn.grid(column=1, row=1, sticky=E)
 
-        self.search_quotation_btn = ttk.Button(
+        self.search_order_btn = ttk.Button(
             self.bottom_frame, 
-            text="Search Quotation",
+            text="Search Order",
             # style="home_btns.TButton",
             padding=(10, 21),
-            command=self.search_quotation
+            command=self.search_order
         )
-        self.search_quotation_btn.grid(column=4, row=1, sticky=E)
+        self.search_order_btn.grid(column=4, row=1, sticky=E)
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
        
     def select_record(self, event):
         # print("Record selected")
         record = self.tree.focus()
-        self.selected_quotation = self.tree.item(record)
+        self.selected_order = self.tree.item(record)
     
-    def open_blank_quote_form(self):
-        self.quote_details_tab.open_blank_quote_form()
-        self.notebook.select(4) # Change to tab name instead of index (same on customer)
+    def open_blank_order_form(self):
+        self.order_details_tab.open_blank_order_form()
+        self.notebook.select(6) # Change to tab name instead of index (same on customer)
     
-    def view_quotation(self):
-        # print(f"SELECTED RECORD: {self.selected_quotation}")
-        quotation = self.selected_quotation
-        if not self.selected_quotation:
+    def view_order(self):
+        # print(f"SELECTED RECORD: {self.selected_order}")
+        order = self.selected_order
+        if not self.selected_order:
             error_message = messagebox.showerror(
                 message='No record is selected!',
                 title='Error'
             )
             return error_message
-        self.quote_details_tab.populate_fields(quotation)
-        self.notebook.select(4)
+        self.order_details_tab.populate_fields(order)
+        self.notebook.select(6)
         
 
-    def search_quotation(self):
-        search_option = self.quote_search_option_cbx.get()
-        search_value = self.quote_search_ent.get()
-        if search_option == "Quote ID":
-            quote_id = search_value
-            if not quote_id:
+    def search_order(self):
+        search_option = self.order_search_option_cbx.get()
+        search_value = self.order_search_ent.get()
+        if search_option == "Order ID":
+            order_id = search_value
+            if not order_id:
                 error_message = messagebox.showerror(
-                    message="Cannot search with a blank Quote ID.",
+                    message="Cannot search with a blank Order ID.",
                     title='Error'
                 )
                 return error_message
             try:
-                quote_id = int(quote_id)
+                order_id = int(order_id)
                 try:
-                    quotation = db.get_quotations(self.session, pk=quote_id)
-                    if quotation:
+                    order = db.get_orders(self.session, pk=order_id)
+                    if order:
                         for item in self.tree.get_children():
                             self.tree.delete(item)
-                        self.tree.insert('', 'end', iid=f"{quotation.quote_id}",
+                        self.tree.insert('', 'end', iid=f"{order.order_id}",
                         values=(
-                            f"{quotation.quote_id}",
-                            self.customer_id_name_dict[quotation.customer_id],
-                            quotation.description,
-                            quotation.quote_date,
-                            quotation.is_accepted,
-                            quotation.is_closed,
-                            quotation.notes
+                            f"{order.order_id}",
+                            self.customer_id_name_dict[order.customer_id],
+                            order.description,
+                            order.order_date,
+                            order.is_paid,
+                            order.notes
                             )
                         )
                     else:
@@ -258,7 +252,7 @@ class QuotationListTab():
                         return error_message
             except Exception as e:
                 error_message = messagebox.showerror(
-                message="Invalid Quote ID.",
+                message="Invalid Order ID.",
                 detail=e,
                 title='Error'
             )
@@ -274,20 +268,19 @@ class QuotationListTab():
             try:
                 customer_id = int(customer_id)
                 try:
-                    quotations = db.get_quotations(self.session, customer_id=customer_id)
-                    if quotations:
+                    orders = db.get_orders(self.session, customer_id=customer_id)
+                    if orders:
                         for item in self.tree.get_children():
                             self.tree.delete(item)
-                        for quote in quotations:
-                            self.tree.insert('', 'end', iid=f"{quote.quote_id}",
+                        for order in orders:
+                            self.tree.insert('', 'end', iid=f"{order.order_id}",
                             values=(
-                                f"{quote.quote_id}",
-                                self.customer_id_name_dict[quote.customer_id],
-                                quote.description,
-                                quote.quote_date,
-                                quote.is_accepted,
-                                quote.is_closed,
-                                quote.notes
+                                f"{order.order_id}",
+                                self.customer_id_name_dict[order.customer_id],
+                                order.description,
+                                order.order_date,
+                                order.is_paid,
+                                order.notes
                                 )
                             )
                     else:
@@ -312,8 +305,8 @@ class QuotationListTab():
                 return error_message
         else:
             try:
-                quotations = db.get_quotations(self.session, other_fields=search_value)
-                if not quotations:
+                orders = db.get_orders(self.session, other_fields=search_value)
+                if not orders:
                     info_message = messagebox.showinfo(
                         message="No matching record was found.",
                         title='Info'
@@ -321,16 +314,15 @@ class QuotationListTab():
                     return info_message
                 for item in self.tree.get_children():
                     self.tree.delete(item)
-                for quote in quotations:
-                    self.tree.insert('', 'end', iid=f"{quote.quote_id}",
+                for order in orders:
+                    self.tree.insert('', 'end', iid=f"{order.order_id}",
                     values=(
-                        f"{quote.quote_id}",
-                        self.customer_id_name_dict[quote.customer_id],
-                        quote.description,
-                        quote.quote_date,
-                        quote.is_accepted,
-                        quote.is_closed,
-                        quote.notes
+                        f"{order.order_id}",
+                        self.customer_id_name_dict[order.customer_id],
+                        order.description,
+                        order.order_date,
+                        order.is_paid,
+                        order.notes
                         )
                     )
             except Exception as e:

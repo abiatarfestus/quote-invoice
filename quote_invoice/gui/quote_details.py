@@ -1,23 +1,19 @@
 from datetime import datetime, date
-import random
 from quote_invoice.db import operations as db
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from faker import Faker
 from moneyed import Money, NAD
-from sqlalchemy import and_, or_, create_engine, select
-from sqlalchemy.orm import sessionmaker
-from quote_invoice.db.models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
+from quote_invoice.db.models import Customer, QuotationItem, Product
 
 class QuoteDetailsTab():
     def __init__(self, notebook, parent_frame, session):
         """Configure the quote details tab"""
         self.notebook = notebook
         self.session = session
-        customers = self.session.query(Customer).all()
+        self.customers = self.session.query(Customer).all()
         self.customers_dict = dict()
-        for customer in customers:
+        for customer in self.customers:
             if customer.customer_type == "Person":
                 key = f"{customer.last_name} {customer.first_name} >> {customer.phone}"
             else:
@@ -319,17 +315,6 @@ class QuoteDetailsTab():
         self.quote_items_tree.heading("Quantity", text="Quantity", anchor=E)
         self.quote_items_tree.heading("Unit Price", text="Unit Price", anchor=E)
         self.quote_items_tree.heading("Total Price", text="Total Price", anchor=E)
-
-        # Insert the data in Treeview widget
-        # for i in range(1,6):
-        #     self.quote_items_tree.insert('', 'end', values=(
-        #         fake.word(part_of_speech="noun"),
-        #         fake.sentence(nb_words=3),
-        #         random.randint(1,100),
-        #         f"N${float(fake.pricetag()[1:].replace(',', ''))}",
-        #         f"N${float(fake.pricetag()[1:].replace(',', ''))}"
-        #         )
-        #     )
         self.quote_items_tree.grid(column=0, columnspan=5, row=4, sticky=(N, S, W, E))
         
         # Scrollbars:
@@ -652,7 +637,7 @@ class QuoteDetailsTab():
                         quote_amount += total_price
                     self.quote_amount.set(f"Total Cost:\tN${quote_amount.amount}")
                     self.quote_save_update.set("Update Quotation")
-                    self.notebook.select(self.quotation_frame)
+                    # self.notebook.select(self.quotation_frame)
         except Exception as e:
             error_message = messagebox.showerror(
             message="Oops! Something went wrong. Quotation could not be created.",
@@ -747,7 +732,7 @@ class QuoteDetailsTab():
                         quote_amount += total_price
                     self.quote_amount.set(f"Total Cost:\tN${quote_amount.amount}")
                     self.quote_save_update.set("Update Quotation")
-                    self.notebook.select(self.quotation_frame)
+                    # self.notebook.select(self.quotation_frame)
                     return
             success_message = messagebox.showinfo(
             message='Record was successfully updated!',

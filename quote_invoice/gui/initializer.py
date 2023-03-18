@@ -1,22 +1,14 @@
-from datetime import datetime, date
-import random
-from quote_invoice.db import operations as db
 from tkinter import *
 from tkinter import ttk
-from tkinter import messagebox
-from faker import Faker
-from moneyed import Money, NAD
-from quote_invoice.db.models import Base
-from sqlalchemy import and_, or_, create_engine, select
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from .home import HomeTab
 from .customer_list import CustomerListTab
 from .quotation_list import QuotationListTab
 from .customer_details import CustomerDetailsTab
 from .quote_details import QuoteDetailsTab
-from quote_invoice.db.models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
-
-fake = Faker()
+from .order_list import OrderListTab
+from .order_details import OrderDetailsTab
 
 def get_connection():
     return create_engine(f"sqlite:///app_database.db")
@@ -59,6 +51,8 @@ class Window():
         self.customer_list_tab = self.setup_customer_list_tab()
         self.quote_details_tab = self.setup_quote_tab()
         self.quotation_list_tab = self.setup_quotation_list_tab()
+        self.order_details_tab = self.setup_order_tab()
+        self.order_list_tab = self.setup_order_list_tab()
 
     
     def create_notebook(self):
@@ -167,3 +161,15 @@ class Window():
         )
         return quotation_list_tab
     # Pass customer_details_tab object to the list_tab object, enables calling customer_details_tab methods from list
+    def setup_order_tab(self):
+        order_details_tab = OrderDetailsTab(self.notebook, self.order_frame, session)
+        return order_details_tab
+    
+    def setup_order_list_tab(self):
+        order_list_tab = OrderListTab(
+            self.notebook, 
+            self.order_list_frame, 
+            self.order_details_tab, 
+            session
+        )
+        return order_list_tab

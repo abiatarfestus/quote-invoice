@@ -212,7 +212,7 @@ class CustomerListTab():
             customer_id = search_value
             if not customer_id:
                 error_message = messagebox.showerror(
-                    message="Cannot search with blank Customer ID.",
+                    message="Cannot search with a blank Customer ID.",
                     title='Error'
                 )
                 return error_message

@@ -26,3 +26,4 @@ entity person
 - [ ] Enforce or validate a particular date format
 - [ ] Reduce items.append(self.quote_items_tree.item(item)) to values instead of the whole dictionaries
 - [ ] Verify if get_connection() has to appear twice
+- [ ] Change self.notebook.select(6) to self.notebook.select(tab name)
