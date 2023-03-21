@@ -4,7 +4,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from moneyed import Money, NAD
-from quote_invoice.db.models import Customer, OrderItem, Product
+from quote_invoice.db.models import Customer, OrderItem, Product, QuotationItem
 
 
 class OrderDetailsTab():
@@ -432,8 +432,9 @@ class OrderDetailsTab():
     
     def select_record(self, event):
         order = db.get_orders(self.session, pk=self.order_id_ent.get())
-        if order.is_paid:
-            return
+        if order:
+            if order.is_paid:
+                return
         record = self.order_items_tree.focus()
         selected_item = self.order_items_tree.item(record)
         # print(f"SELECTED ITEM: {selected_item}")
@@ -538,6 +539,7 @@ class OrderDetailsTab():
         self.order_date_ent.insert(0, date.today().strftime('%Y/%m/%d'))
         self.order_paid_chk.state(["!disabled"])
         self.is_paid.set(value=0)
+        self.order_notes_txt.config(state=NORMAL)
         self.order_notes_txt.delete("1.0", END)
         self.reset_order_input_fields()
         self.order_input_add_btn.state(["!disabled"])
@@ -545,15 +547,10 @@ class OrderDetailsTab():
         self.clear_order_items_btn.state(["!disabled"])
         self.reset_order_btn.state(["!disabled"])
         self.order_input_delete_btn.state(["!disabled"])
-        # print(f"ITEMS: {self.order_items_tree.get_children()}")
-        # items = []
         for item in self.order_items_tree.get_children():
-            # items.append(self.order_items_tree.item(item))
             self.order_items_tree.delete(item)
-        # print(f"ITEMS: {items}")
         self.order_amount.set("Total Cost:\tN$0.00")
         self.order_save_update.set("Save Order")
-        # self.notebook.select(self.order_frame)
 
     
     def create_order(self):
@@ -585,9 +582,7 @@ class OrderDetailsTab():
             title='Error'
         )
             return error_message
-            
         if self.order_items_tree.get_children(): # If there are items on the list
-            print("Order Contains Item")
             try:
                 items = []
                 for item in self.order_items_tree.get_children():
@@ -616,20 +611,7 @@ class OrderDetailsTab():
         self.update_item_list_tree(order_items)
         self.order_save_update.set("Update Order")
         if self.is_paid.get():
-            self.order_customer_cbx.state(["disabled"])
-            self.order_description_ent.state(["disabled"])
-            self.order_date_ent.state(["disabled"])
-            self.order_paid_chk.state(["!disabled"])
-            self.order_paid_chk.invoke()
-            self.order_paid_chk.state(["disabled"])
-            self.order_input_product_cbx.state(["disabled"])
-            self.order_input_description_ent.state(["disabled"])
-            self.order_input_quantity_spx.state(["disabled"])
-            self.order_input_add_btn.state(["disabled"])
-            self.order_save_update_btn.state(["disabled"])
-            self.clear_order_items_btn.state(["!disabled"])
-            self.reset_order_btn.state(["!disabled"])
-            self.order_input_delete_btn.state(["disabled"])
+            self.disable_widgets()
         success_message = messagebox.showinfo(
             message='Order was successfully created!',
             title='Success'
@@ -655,13 +637,13 @@ class OrderDetailsTab():
             detail=e,
             title='Error'
         )
-            return error_message 
+            return error_message
+        items = []
+        item_ids = set()
+        old_items = self.session.query(OrderItem).filter(OrderItem.order_id==order_id).all()
+        print(f"Old items: {old_items}")
+        old_item_ids = [item.order_item_id for item in old_items]
         if self.order_items_tree.get_children(): # If there are items on the list
-            items = []
-            item_ids = set()
-            old_items = self.session.query(OrderItem).filter(OrderItem.order_id==order_id).all()
-            print(f"Old ites: {old_items}")
-            old_item_ids = [item.order_item_id for item in old_items]
             for item in self.order_items_tree.get_children():
                 items.append(self.order_items_tree.item(item))
                 item_ids.add(self.order_items_tree.item(item)["values"][1])
@@ -698,35 +680,24 @@ class OrderDetailsTab():
                             title='Error'
                         )
                         return error_message
-            for id in old_item_ids:
-                if id not in item_ids:
-                    db.delete_order_item(self.session, pk=id)
-            order_items = self.session.query(Product, OrderItem).join(OrderItem).filter(OrderItem.order_id == order_id).all()
-            self.update_item_list_tree(order_items)
-            self.order_save_update.set("Update Order")
-            if self.is_paid.get():
-                self.order_customer_cbx.state(["disabled"])
-                self.order_description_ent.state(["disabled"])
-                self.order_date_ent.state(["disabled"])
-                self.order_paid_chk.state(["disabled"])
-                self.order_input_product_cbx.state(["disabled"])
-                self.order_input_description_ent.state(["disabled"])
-                self.order_input_quantity_spx.state(["disabled"])
-                self.order_input_add_btn.state(["disabled"])
-                self.order_save_update_btn.state(["disabled"])
-                self.clear_order_items_btn.state(["!disabled"])
-                self.reset_order_btn.state(["!disabled"])
-                self.order_input_delete_btn.state(["disabled"])
-            success_message = messagebox.showinfo(
-                message='Order was successfully updated!',
-                title='Success'
-            )
-            return success_message
+        for id in old_item_ids:
+            if id not in item_ids:
+                db.delete_order_item(self.session, pk=id)
+        order_items = self.session.query(Product, OrderItem).join(OrderItem).filter(OrderItem.order_id == order_id).all()
+        self.update_item_list_tree(order_items)
+        self.order_save_update.set("Update Order")
+        if self.is_paid.get():
+            self.disable_widgets()
+        success_message = messagebox.showinfo(
+            message='Order was successfully updated!',
+            title='Success'
+        )
+        return success_message
     
     def create_or_update_order(self):
         if self.is_paid.get():
             if not messagebox.askyesno(
-                message='Paid orders cannot be edited after saving. Do you want to continue saving this order?',
+                message='This order is marked as paid. Saving it will lock it from editing.\nDo you want to continue saving this order?',
                 icon='question',
                 title='Save Order'
             ):
@@ -741,48 +712,35 @@ class OrderDetailsTab():
         """Populate order detail fields with the currect order details"""
         order_id = order.order_id
         order_items = self.session.query(Product, OrderItem).join(OrderItem).filter(OrderItem.order_id == order_id).all()
-        self.reset_order_input_fields()
+        self.open_blank_order_form()
         self.order_id_ent.state(["!disabled"])
         self.order_id_ent.delete(0, END)
         self.order_id_ent.insert(0, order_id)
         self.order_id_ent.state(["disabled"])
-        self.order_customer_cbx.state(["!disabled"])
-        self.order_customer_cbx.delete(0, END)
         self.order_customer_cbx.set(order.customer_id)
         self.order_customer_cbx.state(["disabled"])
-        self.order_description_ent.state(["!disabled"])
-        self.order_description_ent.delete(0, END)
         self.order_description_ent.insert(0, order.description)
-        self.order_date_ent.state(["!disabled"])
         self.order_date_ent.delete(0, END)
         self.order_date_ent.insert(0, str(order.order_date).replace("-", "/"))
         self.order_date_ent.state(["disabled"])
-        self.order_paid_chk.state(["!disabled"])
         self.is_paid.set(value=order.is_paid)
-        self.order_notes_txt.delete("1.0", END)
+        # self.order_notes_txt.config(state=NORMAL)
         self.order_notes_txt.insert("1.0", order.notes)
-        self.order_input_product_cbx.state(["!disabled"])
-        self.order_input_description_ent.state(["!disabled"])
-        self.order_input_quantity_spx.state(["!disabled"])
-        self.order_save_update_btn.state(["!disabled"])
-        self.clear_order_items_btn.state(["!disabled"])
-        self.reset_order_btn.state(["!disabled"])
-        self.order_input_add_btn.state(["!disabled"])
         if order.is_paid:
-            self.order_customer_cbx.state(["disabled"])
-            self.order_description_ent.state(["disabled"])
-            self.order_date_ent.state(["disabled"])
-            self.order_paid_chk.state(["disabled"])
-            self.order_input_product_cbx.state(["disabled"])
-            self.order_input_description_ent.state(["disabled"])
-            self.order_input_quantity_spx.state(["disabled"])
-            self.order_input_add_btn.state(["disabled"])
-            self.order_save_update_btn.state(["disabled"])
-            self.clear_order_items_btn.state(["disabled"])
-            self.reset_order_btn.state(["disabled"])
-            self.order_input_delete_btn.state(["disabled"])
+            self.disable_widgets()
         self.update_item_list_tree(order_items)
         self.order_save_update.set("Update Order")
+
+    def populate_fields_from_quote(self, quotation):
+        """Populate order detail fields with details from a quotation"""
+        quote_id = quotation.quote_id
+        quote_items = self.session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == quote_id).all()
+        self.open_blank_order_form()
+        self.order_customer_cbx.set(quotation.customer_id)
+        # self.order_customer_cbx.state(["disabled"])
+        self.order_description_ent.insert(0, quotation.description)
+        self.order_notes_txt.insert("1.0", quotation.notes)
+        self.update_item_list_tree(quote_items, from_quote=True)
 
     def clear_order_items(self):
         """Clear all order items from the treeview"""
@@ -821,17 +779,22 @@ class OrderDetailsTab():
         self.order_notes_txt.insert("1.0", order.notes)
         self.update_item_list_tree(order_items)
 
-    def update_item_list_tree(self, order_items):
+    def update_item_list_tree(self, items, from_quote=False):
+        """Update order item treeview with items from an order or quotation"""
         order_amount = Money("0.00", NAD)
         for item in self.order_items_tree.get_children():
             self.order_items_tree.delete(item)
-        for product,item in order_items:
+        for product,item in items:
+            if from_quote:
+                item_id = ""
+            else:
+                item_id = item.order_item_id
             unit_price = Money(product.price, NAD)
             total_price = unit_price*item.quantity
             self.order_items_tree.insert('', 'end', iid=f"{product.product_id}",
                 values=(
                     product.product_id,
-                    item.order_item_id,
+                    item_id,
                     product.product_name,
                     item.description,
                     item.quantity,
@@ -843,6 +806,24 @@ class OrderDetailsTab():
         self.order_amount.set(f"Total Cost:\tN${order_amount.amount}")
 
     def reset_order_input_fields(self):
+        self.order_input_product_cbx.state(["!disabled"])
+        self.order_input_description_ent.state(["!disabled"])
+        self.order_input_quantity_spx.state(["!disabled"])
         self.order_input_product_cbx.set("")
         self.order_input_description_ent.delete(0,END)
         self.order_input_quantity_spx.delete(0,END)
+    
+    def disable_widgets(self):
+        self.order_customer_cbx.state(["disabled"])
+        self.order_description_ent.state(["disabled"])
+        self.order_date_ent.state(["disabled"])
+        self.order_paid_chk.state(["disabled"])
+        self.order_notes_txt.config(state=DISABLED)
+        self.order_input_product_cbx.state(["disabled"])
+        self.order_input_description_ent.state(["disabled"])
+        self.order_input_quantity_spx.state(["disabled"])
+        self.order_input_add_btn.state(["disabled"])
+        self.order_save_update_btn.state(["disabled"])
+        self.clear_order_items_btn.state(["disabled"])
+        self.reset_order_btn.state(["disabled"])
+        self.order_input_delete_btn.state(["disabled"])

@@ -33,3 +33,4 @@ entity person
 - [ ] Disable order_date when in editing mode
 - [ ] Reset variables on open_new blank form and open record
 - [ ] Check if !disabled is necessary before modifying the widget
+- [ ] Fix customer selction: ID vs display name

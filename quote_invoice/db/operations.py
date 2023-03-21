@@ -183,20 +183,20 @@ def add_quotation(
 def update_quotation(
     session, 
     pk=None,
-    quote_date=datetime.today().date(),
+    # quote_date=datetime.today().date(),
     description="", 
-    customer_id=None, 
+    # customer_id=None, 
     is_accepted=False,
-    is_closed=False,
+    # is_closed=False,
     notes=""
 ):
     try:
         session.query(Quotation).filter(Quotation.quote_id==pk).update({
-            Quotation.quote_date:quote_date,
+            # Quotation.quote_date:quote_date,
             Quotation.description:description, 
-            Quotation.customer_id:customer_id, 
+            # Quotation.customer_id:customer_id, 
             Quotation.is_accepted:is_accepted, 
-            Quotation.is_closed:is_closed,
+            # Quotation.is_closed:is_closed,
             Quotation.notes:notes
         }, synchronize_session=False
         )
@@ -351,15 +351,15 @@ def add_quotation_item(
 def update_quotation_item(
     session, 
     pk=None,
-    quote_id=None,
-    product_id=None, 
+    # quote_id=None,
+    # product_id=None, 
     quantity=0,
     description=""
 ):
     try:
         session.query(QuotationItem).filter(QuotationItem.quote_item_id==pk).update({
-            QuotationItem.quote_id:quote_id,
-            QuotationItem.product_id:product_id, 
+            # QuotationItem.quote_id:quote_id,
+            # QuotationItem.product_id:product_id, 
             QuotationItem.quantity:quantity,
             QuotationItem.description:description
         }, synchronize_session = False

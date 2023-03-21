@@ -7,12 +7,13 @@ from moneyed import Money, NAD
 from quote_invoice.db.models import Customer, QuotationItem, Product
 
 class QuoteDetailsTab():
-    def __init__(self, notebook, parent_frame, session):
+    def __init__(self, notebook, parent_frame, order_details_tab, session):
         """Configure the quote details tab"""
         self.notebook = notebook
         self.session = session
         self.customers = self.session.query(Customer).all()
         self.customers_dict = dict()
+        self.order_details_tab = order_details_tab
         for customer in self.customers:
             if customer.customer_type == "Person":
                 key = f"{customer.last_name} {customer.first_name} >> {customer.phone}"
@@ -253,14 +254,14 @@ class QuoteDetailsTab():
         )
         self.quote_save_update_btn.grid(column=0, row=6, sticky=(N, S, W, E))
 
-        self.change_to_order_btn = ttk.Button(
+        self.generate_order_btn = ttk.Button(
             self.mid_frame,
-            text="Change to Order",
+            text="Generate Order",
             # style="home_btns.TButton",
             padding=10,
-            # command=change_quote_to_order
+            command=self.qenerate_order_from_quote
         )
-        self.change_to_order_btn.grid(column=1, row=6, sticky=(N, S, W, E))
+        self.generate_order_btn.grid(column=1, row=6, sticky=(N, S, W, E))
 
         self.mark_closed_btn = ttk.Button(
             self.mid_frame,
@@ -451,8 +452,9 @@ class QuoteDetailsTab():
     
     def select_record(self, event):
         quotation = db.get_quotations(self.session, pk=self.quote_id_ent.get())
-        if quotation.is_accepted or quotation.is_closed:
-            return
+        if quotation:
+            if quotation.is_accepted or quotation.is_closed:
+                return
         record = self.quote_items_tree.focus()
         selected_item = self.quote_items_tree.item(record)
         # print(f"SELECTED ITEM: {selected_item}")
@@ -556,14 +558,15 @@ class QuoteDetailsTab():
         self.quote_date_ent.insert(0, date.today().strftime('%Y/%m/%d'))
         self.quote_accepted_chk.state(["!disabled"])
         self.is_accepted.set(value=0)
+        self.quote_notes_txt.config(state=NORMAL)
         self.quote_notes_txt.delete("1.0", END)
         self.reset_quote_input_fields()
         self.quote_input_add_btn.state(["!disabled"])
         self.quote_save_update_btn.state(["!disabled"])
-        self.change_to_order_btn.state(["!disabled"])
+        # self.generate_order_btn.state(["!disabled"])
         self.mark_closed_btn.state(["!disabled"])
         self.clear_quote_items_btn.state(["!disabled"])
-        self.reuse_quote_btn.state(["!disabled"])
+        # self.reuse_quote_btn.state(["!disabled"])
         self.reset_quote_btn.state(["!disabled"])
         self.quote_input_delete_btn.state(["!disabled"])
         for item in self.quote_items_tree.get_children():
@@ -594,62 +597,6 @@ class QuoteDetailsTab():
                 notes=self.quote_notes_txt.get("1.0", END)
             )
             print(f"NEW QUOTE ID: {new_quote_id}")
-            if self.quote_items_tree.get_children(): # If there are items on the list
-                try:
-                    items = []
-                    for item in self.quote_items_tree.get_children():
-                        items.append(self.quote_items_tree.item(item))
-                    for item in items:
-                        db.add_quotation_item(
-                            self.session,
-                            quote_id=new_quote_id,
-                            product_id=item["values"][0],
-                            quantity=item["values"][4],
-                            description=item["values"][3]
-                        )
-                    success_message = messagebox.showinfo(
-                        message='Quotation was successfully created!',
-                        title='Success'
-                    )
-                    return success_message
-                except Exception as e:
-                    error_message = messagebox.showerror(
-                    message="Oops! Something went wrong. Some items could not be added to the Quotation.",
-                    detail=e,
-                    title='Error'
-                )
-                    return error_message
-                finally:
-                    quote_items = self.session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == new_quote_id).all()
-                    self.quote_id_ent.state(["!disabled"])
-                    self.quote_id_ent.delete(0, END)
-                    print(f"NEW quote ID: {new_quote_id}")
-                    self.quote_id_ent.insert(0, new_quote_id)
-                    print(f"New quote id: {new_quote_id}")
-                    self.quote_id_ent.state(["disabled"])
-                    
-                    # Update item list
-                    quote_amount = Money("0.00", NAD)
-                    for item in self.quote_items_tree.get_children():
-                        self.quote_items_tree.delete(item)
-                    for product,item in quote_items:
-                        unit_price = Money(product.price, NAD)
-                        total_price = unit_price*item.quantity
-                        self.quote_items_tree.insert('', 'end', iid=f"{product.product_id}",
-                            values=(
-                                product.product_id,
-                                item.quote_item_id,
-                                product.product_name,
-                                item.description,
-                                item.quantity,
-                                unit_price.amount,
-                                total_price.amount
-                                )
-                            )
-                        quote_amount += total_price
-                    self.quote_amount.set(f"Total Cost:\tN${quote_amount.amount}")
-                    self.quote_save_update.set("Update Quotation")
-                    # self.notebook.select(self.quotation_frame)
         except Exception as e:
             error_message = messagebox.showerror(
             message="Oops! Something went wrong. Quotation could not be created.",
@@ -657,110 +604,125 @@ class QuoteDetailsTab():
             title='Error'
         )
             return error_message
-    
-    def update_quotation(self):
-        quote_id = self.quote_id_ent.get()
-        try:
-            quotation = db.get_quotations(self.session, quote_id)
-            quote_date=datetime.strptime(self.quote_date_ent.get(), '%Y/%m/%d').date()
+        if self.quote_items_tree.get_children(): # If there are items on the list
             try:
-                customer_id = self.customers_dict[self.quote_customer_cbx.get()][0]
+                items = []
+                for item in self.quote_items_tree.get_children():
+                    items.append(self.quote_items_tree.item(item))
+                for item in items:
+                    db.add_quotation_item(
+                        self.session,
+                        quote_id=new_quote_id,
+                        product_id=item["values"][0],
+                        quantity=item["values"][4],
+                        description=item["values"][3]
+                    )
             except Exception as e:
-                error_message = messagebox.showerror(
-                message="Invalid customer entered.",
+                error_message = messagebox.showwarning(
+                message="Alert! Something went wrong. Some items could not be added to the Quotation.",
                 detail=e,
                 title='Error'
             )
                 return error_message
-
-            quotation.quote_date = quote_date
-            quotation.description = self.quote_description_ent.get()
-            quotation.customer_id = customer_id
-            quotation.is_accepted = self.is_accepted.get()
-            quotation.notes = self.quote_notes_txt.get("1.0", END)
-            self.session.commit()
-            if self.quote_items_tree.get_children(): # If there are items on the list
-                try:
-                    items = []
-                    item_ids = set()
-                    old_items = self.session.query(QuotationItem).filter(QuotationItem.quote_id==quote_id).all()
-                    old_item_ids = [item.quote_item_id for item in old_items]
-                    for item in self.quote_items_tree.get_children():
-                        items.append(self.quote_items_tree.item(item))
-                        item_ids.add(self.quote_items_tree.item(item)["values"][1])
-                    # print(f"ITEM IDs: {item_ids}")
-                    # print(f"OLD ITEM IDs: {old_item_ids}")
-                    for item in items:
-                        if not item["values"][1]: # If it's new item (has no id)
-                            db.add_quotation_item(
-                                self.session,
-                                quote_id=quote_id,
-                                product_id=item["values"][0],
-                                quantity=item["values"][4],
-                                description=item["values"][3]
-                            )
-                        else:
-                            existing_item = self.session.query(QuotationItem).get(item["values"][1])
-                            existing_item.product_id=item["values"][0]
-                            existing_item.quantity=item["values"][4]
-                            existing_item.description=item["values"][3]
-                            self.session.commit()
-                    for id in old_item_ids:
-                        if id not in item_ids:
-                            db.delete_quotation_item(self.session, pk=id)
-                    success_message = messagebox.showinfo(
-                        message='Quotation was successfully updated!',
-                        title='Success'
-                    )
-                    return success_message
-                except Exception as e:
-                    error_message = messagebox.showerror(
-                    message="Oops! Something went wrong. Some items could not be updated.",
-                    detail=e,
-                    title='Error'
-                )
-                    return error_message
-                finally:
-                    quote_items = self.session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == quote_id).all()                            
-                    # Update item list
-                    quote_amount = Money("0.00", NAD)
-                    for item in self.quote_items_tree.get_children():
-                        self.quote_items_tree.delete(item)
-                    
-                    for product,item in quote_items:
-                        unit_price = Money(product.price, NAD)
-                        total_price = unit_price*item.quantity
-                        self.quote_items_tree.insert('', 'end', iid=f"{product.product_id}",
-                            values=(
-                                product.product_id,
-                                item.quote_item_id,
-                                product.product_name,
-                                item.description,
-                                item.quantity,
-                                unit_price.amount,
-                                total_price.amount
-                                )
-                            )
-                        quote_amount += total_price
-                    self.quote_amount.set(f"Total Cost:\tN${quote_amount.amount}")
-                    self.quote_save_update.set("Update Quotation")
-                    # self.notebook.select(self.quotation_frame)
-                    return
-            success_message = messagebox.showinfo(
-            message='Record was successfully updated!',
+        quote_items = self.session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == new_quote_id).all()
+        self.quote_id_ent.state(["!disabled"])
+        self.quote_id_ent.delete(0, END)
+        print(f"NEW quote ID: {new_quote_id}")
+        self.quote_id_ent.insert(0, new_quote_id)
+        print(f"New quote id: {new_quote_id}")
+        self.quote_id_ent.state(["disabled"])
+        self.update_item_list_tree(quote_items)
+        self.quote_save_update.set("Update Quotation")
+        if self.is_accepted.get():
+            self.disable_widgets()
+        success_message = messagebox.showinfo(
+            message='Quote was successfully created!',
             title='Success'
         )
-            return success_message
+        return success_message
+    
+    def update_quotation(self):
+        quote_id = self.quote_id_ent.get()
+        description = self.quote_description_ent.get()
+        is_accepted = self.is_accepted.get()
+        notes = self.quote_notes_txt.get("1.0", END)
+        try:
+            db.update_quotation(
+                self.session,
+                pk=quote_id,
+                description=description,
+                is_accepted=is_accepted, 
+                notes=notes)
         except Exception as e:
             error_message = messagebox.showerror(
-            message="Oops! Something went wrong.",
+            message="Oops! Quotation update encountered an error.",
             detail=e,
             title='Error'
         )
-            return error_message 
+            return error_message
+        items = []
+        item_ids = set()
+        old_items = self.session.query(QuotationItem).filter(QuotationItem.quote_id==quote_id).all()
+        old_item_ids = [item.quote_item_id for item in old_items]
+        if self.quote_items_tree.get_children(): # If there are items on the list
+            for item in self.quote_items_tree.get_children():
+                items.append(self.quote_items_tree.item(item))
+                item_ids.add(self.quote_items_tree.item(item)["values"][1])
+            for item in items:
+                if not item["values"][1]: # If it's new item (has no id)
+                    try:
+                        db.add_quotation_item(
+                            self.session,
+                            quote_id=quote_id,
+                            product_id=item["values"][0],
+                            quantity=item["values"][4],
+                            description=item["values"][3]
+                        )
+                    except Exception as e:
+                        error_message = messagebox.showerror(
+                            message="Error adding item",
+                            detail=e,
+                            title='Error'
+                        )
+                        return error_message
+                else:
+                    try:
+                        db.update_quotation_item(
+                            self.session,
+                            pk=item["values"][1],
+                            quantity=item["values"][4],
+                            description=item["values"][3]
+                        )
+                    except Exception as e:
+                        error_message = messagebox.showerror(
+                            message="Oops! Some items could not be updated.",
+                            detail=e,
+                            title='Error'
+                        )
+                        return error_message
+        for id in old_item_ids:
+            if id not in item_ids:
+                db.delete_quotation_item(self.session, pk=id)
+        quote_items = self.session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == quote_id).all()
+        self.update_item_list_tree(quote_items)
+        self.quote_save_update.set("Update Quotation")
+        if self.is_accepted.get():
+            self.disable_widgets()
+        success_message = messagebox.showinfo(
+            message='Order was successfully updated!',
+            title='Success'
+        )
+        return success_message    
     
     
     def create_or_update_quotation(self):
+        if self.is_accepted.get():
+            if not messagebox.askyesno(
+                    message='This quote is marked as accepted. Saving it will lock it from editing.\nDo you still want to continue?',
+                    icon='question',
+                    title='Close Quote'
+                ):
+                    return
         quote_id = self.quote_id_ent.get()
         if quote_id == "New":
             self.create_quotation()
@@ -768,33 +730,32 @@ class QuoteDetailsTab():
             self.update_quotation()
 
     def mark_quote_closed(self):
+        """Change quote is_closed to  true and lock it from editing"""
         quote_id = self.quote_id_ent.get()
+        # Prompt if quote not is_accepted
         if quote_id == "New":
             error_message = messagebox.showerror(
                 message='Cannot update an unsaved quotation!',
                 title='Invalid Action'
             )
             return error_message
+        elif not self.is_accepted.get():
+            if not messagebox.askyesno(
+                    message='This quote has not been accepted. Closing it will lock it from editing.\nDo you still want to close it?',
+                    icon='question',
+                    title='Close Quote'
+                ):
+                    return
+        elif not messagebox.askyesno(
+                message='Closing a quote will lock it from editing.\nDo you still want to continue?',
+                icon='question',
+                title='Close Quote'
+            ):
+                return
         quotation = db.get_quotations(self.session, quote_id)
         quotation.is_closed = True
         self.session.commit()
-        self.quote_customer_cbx.state(["disabled"])
-        self.quote_description_ent.state(["disabled"])
-        self.quote_date_ent.state(["disabled"])
-        self.quote_notes_txt.config(state=DISABLED)
-        # self.quote_accepted_chk.state(["!disabled"])
-        # self.quote_accepted_chk.invoke()
-        self.quote_accepted_chk.state(["disabled"])
-        self.quote_input_product_cbx.state(["disabled"])
-        self.quote_input_description_ent.state(["disabled"])
-        self.quote_input_quantity_spx.state(["disabled"])
-        self.quote_input_add_btn.state(["disabled"])
-        self.quote_save_update_btn.state(["disabled"])
-        self.change_to_order_btn.state(["disabled"])
-        self.mark_closed_btn.state(["disabled"])
-        self.clear_quote_items_btn.state(["disabled"])
-        self.reset_quote_btn.state(["disabled"])
-        self.quote_input_delete_btn.state(["disabled"])
+        self.disable_widgets()
         success_message = messagebox.showinfo(
             message='Quotation was successfully updated!',
             title='Success'
@@ -804,53 +765,21 @@ class QuoteDetailsTab():
     def populate_fields(self, quotation):
         """Populate quote detail fields with the currect quote details"""
         quote_id = quotation.quote_id
-        # quote_amount = Money("0.00", NAD)
         quote_items = self.session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == quote_id).all()
-        self.reset_quote_input_fields()
+        self.open_blank_quote_form()
         self.quote_id_ent.state(["!disabled"])
         self.quote_id_ent.delete(0, END)
         self.quote_id_ent.insert(0, quote_id)
         self.quote_id_ent.state(["disabled"])
-        self.quote_customer_cbx.state(["!disabled"])
-        self.quote_customer_cbx.delete(0, END)
         self.quote_customer_cbx.set(quotation.customer_id)
         self.quote_customer_cbx.state(["disabled"])
-        self.quote_description_ent.state(["!disabled"])
-        self.quote_description_ent.delete(0, END)
         self.quote_description_ent.insert(0, quotation.description)
-        self.quote_date_ent.state(["!disabled"])
         self.quote_date_ent.delete(0, END)
         self.quote_date_ent.insert(0, str(quotation.quote_date).replace("-", "/"))
-        self.quote_accepted_chk.state(["!disabled"])
         self.is_accepted.set(value=quotation.is_accepted)
-        self.quote_notes_txt.delete("1.0", END)
         self.quote_notes_txt.insert("1.0", quotation.notes)
-        self.quote_input_product_cbx.state(["!disabled"])
-        self.quote_input_description_ent.state(["!disabled"])
-        self.quote_input_quantity_spx.state(["!disabled"])
-        self.quote_save_update_btn.state(["!disabled"])
-        self.change_to_order_btn.state(["!disabled"])
-        self.mark_closed_btn.state(["!disabled"])
-        self.clear_quote_items_btn.state(["!disabled"])
-        self.reuse_quote_btn.state(["!disabled"])
-        self.reset_quote_btn.state(["!disabled"])
-        self.quote_input_add_btn.state(["!disabled"])
         if quotation.is_accepted or quotation.is_closed:
-            self.quote_customer_cbx.state(["disabled"])
-            self.quote_description_ent.state(["disabled"])
-            self.quote_date_ent.state(["disabled"])
-            self.quote_accepted_chk.state(["disabled"])
-            self.quote_accepted_chk.invoke()
-            self.quote_accepted_chk.state(["disabled"])
-            self.quote_input_product_cbx.state(["disabled"])
-            self.quote_input_description_ent.state(["disabled"])
-            self.quote_input_quantity_spx.state(["disabled"])
-            self.quote_input_add_btn.state(["disabled"])
-            self.quote_save_update_btn.state(["disabled"])
-            self.clear_quote_items_btn.state(["disabled"])
-            self.reset_quote_btn.state(["disabled"])
-            self.mark_closed_btn.state(["disabled"])
-            self.quote_input_delete_btn.state(["disabled"])
+            self.disable_widgets()
         self.update_item_list_tree(quote_items)
         self.quote_save_update.set("Update Quotation")
 
@@ -891,24 +820,18 @@ class QuoteDetailsTab():
         self.quote_notes_txt.insert("1.0", quotation.notes)
         self.update_item_list_tree(quote_items)
 
-    # def change_to_order(self):
-    #     """Generate a new order from the current quotation"""
-    #     order_id = self.order_id_ent.get()
-    #     if order_id == "New":
-    #         messagebox.showerror(
-    #             message='An unsaved order cannot be reused!',
-    #             title='Info'
-    #         )
-    #         return
-    #     order = db.get_orders(self.session, pk=order_id)
-    #     order_items = self.session.query(Product, OrderItem).join(OrderItem).filter(OrderItem.order_id == order_id).all()
-    #     self.open_blank_order_form()
-    #     self.order_id_ent.insert(0, order_id)
-    #     self.order_customer_cbx.state(["!disabled"])
-    #     self.order_description_ent.insert(0, order.description)
-    #     self.is_paid.set(value=order.is_paid)
-    #     self.order_notes_txt.insert("1.0", order.notes)
-    #     self.update_item_list_tree(order_items)
+    def qenerate_order_from_quote(self):
+        """Generate a new order from the current quotation"""
+        quote_id = self.quote_id_ent.get()
+        if quote_id == "New":
+            messagebox.showerror(
+                message='Cannot generate an order from an unsaved quotation!',
+                title='Info'
+            )
+            return
+        quotation = db.get_quotations(self.session, pk=quote_id)
+        self.order_details_tab.populate_fields_from_quote(quotation)
+        self.notebook.select(6)
 
     def update_item_list_tree(self, quote_items):
         quote_amount = Money("0.00", NAD)
@@ -932,7 +855,27 @@ class QuoteDetailsTab():
         self.quote_amount.set(f"Total Cost:\tN${quote_amount.amount}")
 
     def reset_quote_input_fields(self):
+        self.quote_input_product_cbx.state(["!disabled"])
+        self.quote_input_description_ent.state(["!disabled"])
+        self.quote_input_quantity_spx.state(["!disabled"])
         self.quote_input_product_cbx.set("")
         self.quote_input_description_ent.delete(0,END)
         self.quote_input_quantity_spx.delete(0,END)
-        
+    
+    def disable_widgets(self):
+        self.quote_customer_cbx.state(["disabled"])
+        self.quote_description_ent.state(["disabled"])
+        self.quote_date_ent.state(["disabled"])
+        self.quote_accepted_chk.state(["disabled"])
+        self.quote_accepted_chk.invoke()
+        self.quote_accepted_chk.state(["disabled"])
+        self.quote_notes_txt.config(state=DISABLED)
+        self.quote_input_product_cbx.state(["disabled"])
+        self.quote_input_description_ent.state(["disabled"])
+        self.quote_input_quantity_spx.state(["disabled"])
+        self.quote_input_add_btn.state(["disabled"])
+        self.quote_save_update_btn.state(["disabled"])
+        self.clear_quote_items_btn.state(["disabled"])
+        self.reset_quote_btn.state(["disabled"])
+        self.mark_closed_btn.state(["disabled"])
+        self.quote_input_delete_btn.state(["disabled"])
