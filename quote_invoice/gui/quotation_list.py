@@ -202,14 +202,14 @@ class QuotationListTab():
         self.notebook.select(4) # Change to tab name instead of index (same on customer)
     
     def view_quotation(self):
-        # print(f"SELECTED RECORD: {self.selected_quotation}")
-        quotation = self.selected_quotation
+        """View the quote details of the quotation selected in the order list treeview"""
         if not self.selected_quotation:
             error_message = messagebox.showerror(
                 message='No record is selected!',
                 title='Error'
             )
             return error_message
+        quotation = db.get_quotations(self.session, pk=self.selected_quotation['values'][0])
         self.quote_details_tab.populate_fields(quotation)
         self.notebook.select(4)
         

@@ -199,13 +199,13 @@ class OrderListTab():
     def view_order(self):
         """View the oder details of the order selected in the order list treeview"""
         # print(f"SELECTED RECORD: {self.selected_order}")
-        order = db.get_orders(self.session, pk=self.selected_order['values'][0])
         if not self.selected_order:
             error_message = messagebox.showerror(
                 message='No record is selected!',
                 title='Error'
             )
             return error_message
+        order = db.get_orders(self.session, pk=self.selected_order['values'][0])
         self.order_details_tab.populate_fields(order)
         self.notebook.select(6)
         

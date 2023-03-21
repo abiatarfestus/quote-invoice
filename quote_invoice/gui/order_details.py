@@ -6,12 +6,6 @@ from tkinter import messagebox
 from moneyed import Money, NAD
 from quote_invoice.db.models import Customer, OrderItem, Product
 
-# def get_connection():
-#     return create_engine(f"sqlite:///app_database.db")
-# engine = get_connection()
-# Session = sessionmaker()
-# Session.configure(bind=engine)
-# session = Session()
 
 class OrderDetailsTab():
     def __init__(self, notebook, parent_frame, session):
@@ -311,9 +305,9 @@ class OrderDetailsTab():
         self.order_items_tree.column("ID", anchor=CENTER)
         self.order_items_tree.column("Order_Item_ID", anchor=CENTER)
         self.order_items_tree.column("Item", anchor=W)
-        self.order_items_tree.column("Description", anchor=W)
-        self.order_items_tree.column("Quantity", anchor=E)
-        self.order_items_tree.column("Unit Price", anchor=E)
+        self.order_items_tree.column("Description", width=600, anchor=W)
+        self.order_items_tree.column("Quantity", width=100, anchor=E)
+        self.order_items_tree.column("Unit Price", width=100, anchor=E)
         self.order_items_tree.column("Total Price", anchor=E)
 
         # Create Headings
@@ -437,8 +431,9 @@ class OrderDetailsTab():
 
     
     def select_record(self, event):
-        # print("Record selected")
-        # print(f"ITEM EXISTS: {self.order_items_tree.exists('11')}")
+        order = db.get_orders(self.session, pk=self.order_id_ent.get())
+        if order.is_paid:
+            return
         record = self.order_items_tree.focus()
         selected_item = self.order_items_tree.item(record)
         # print(f"SELECTED ITEM: {selected_item}")
@@ -505,6 +500,7 @@ class OrderDetailsTab():
         return
 
     def delete_item(self):
+        """Delete the product from the item list treeview or reset the item input fields if product indicated is not on the item list"""
         product = self.order_input_product_cbx.get()
         if not product:
             self.order_input_product_cbx.set("")
@@ -514,9 +510,7 @@ class OrderDetailsTab():
         try:
             product_id = str(self.products_dict[product][0])
         except KeyError:
-            self.order_input_product_cbx.set("")
-            self.order_input_description_ent.delete(0,END)
-            self.order_input_quantity_spx.delete(0,END)
+            self.reset_order_input_fields()
             return
         if self.order_items_tree.exists(product_id):
             selected_item = self.order_items_tree.set(product_id, column="Total Price")
@@ -544,20 +538,12 @@ class OrderDetailsTab():
         self.order_date_ent.insert(0, date.today().strftime('%Y/%m/%d'))
         self.order_paid_chk.state(["!disabled"])
         self.is_paid.set(value=0)
-        # self.order_paid_chk.invoke()
-        # self.order_paid_chk.state(["disabled"])
         self.order_notes_txt.delete("1.0", END)
-        self.order_input_product_cbx.state(["!disabled"])
-        self.order_input_product_cbx.delete(0, END)
-        self.order_input_description_ent.state(["!disabled"])
-        self.order_input_description_ent.delete(0, END)
-        self.order_input_quantity_spx.state(["!disabled"])
-        self.order_input_quantity_spx.set("")
+        self.reset_order_input_fields()
         self.order_input_add_btn.state(["!disabled"])
         self.order_save_update_btn.state(["!disabled"])
         self.clear_order_items_btn.state(["!disabled"])
         self.reset_order_btn.state(["!disabled"])
-        # self.mark_closed_btn.state(["!disabled"])
         self.order_input_delete_btn.state(["!disabled"])
         # print(f"ITEMS: {self.order_items_tree.get_children()}")
         # items = []
@@ -755,6 +741,7 @@ class OrderDetailsTab():
         """Populate order detail fields with the currect order details"""
         order_id = order.order_id
         order_items = self.session.query(Product, OrderItem).join(OrderItem).filter(OrderItem.order_id == order_id).all()
+        self.reset_order_input_fields()
         self.order_id_ent.state(["!disabled"])
         self.order_id_ent.delete(0, END)
         self.order_id_ent.insert(0, order_id)
@@ -781,7 +768,7 @@ class OrderDetailsTab():
         self.clear_order_items_btn.state(["!disabled"])
         self.reset_order_btn.state(["!disabled"])
         self.order_input_add_btn.state(["!disabled"])
-        if self.is_paid.get():
+        if order.is_paid:
             self.order_customer_cbx.state(["disabled"])
             self.order_description_ent.state(["disabled"])
             self.order_date_ent.state(["disabled"])
@@ -807,16 +794,27 @@ class OrderDetailsTab():
     def reset_order(self):
         """Reset the current active order to the last saved state"""
         order_id = self.order_id_ent.get()
+        if order_id == "New":
+            messagebox.showerror(
+                message='An unsaved order cannot be reset!',
+                title='Info'
+            )
+            return
         order = db.get_orders(self.session, pk=order_id)
         self.populate_fields(order)
 
     def reuse_order(self):
         """Generate a new order from the active order"""
         order_id = self.order_id_ent.get()
+        if order_id == "New":
+            messagebox.showerror(
+                message='An unsaved order cannot be reused!',
+                title='Info'
+            )
+            return
         order = db.get_orders(self.session, pk=order_id)
         order_items = self.session.query(Product, OrderItem).join(OrderItem).filter(OrderItem.order_id == order_id).all()
         self.open_blank_order_form()
-        self.order_id_ent.insert(0, order_id)
         self.order_customer_cbx.state(["!disabled"])
         self.order_description_ent.insert(0, order.description)
         self.is_paid.set(value=order.is_paid)
@@ -843,3 +841,8 @@ class OrderDetailsTab():
                 )
             order_amount += total_price
         self.order_amount.set(f"Total Cost:\tN${order_amount.amount}")
+
+    def reset_order_input_fields(self):
+        self.order_input_product_cbx.set("")
+        self.order_input_description_ent.delete(0,END)
+        self.order_input_quantity_spx.delete(0,END)
