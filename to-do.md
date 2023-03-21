@@ -19,7 +19,7 @@ entity person
 - [ ] Quote/OrderItem description defaults to associated product description, but can be modified
 - [ ] Change if quote_id and product_id: to if not quote_id or not product_id: and return error message
 - [ ] Show info message on print("THE SELECTED PRODUCT IS ALREADY ON THE QUOTATION") but continue with next item
-- [ ] Reset input fields on opening bank quote/order form
+- [ ] Reset input fields on opening blank quote/order form
 - [ ] Check if product is in stock 
 - [ ] Change money/prices representation in the db and elsewhere from float to strings
 - [ ] Verify/validate customer field when submitting quotation
@@ -27,3 +27,9 @@ entity person
 - [ ] Reduce items.append(self.quote_items_tree.item(item)) to values instead of the whole dictionaries
 - [ ] Verify if get_connection() has to appear twice
 - [ ] Change self.notebook.select(6) to self.notebook.select(tab name)
+- [ ] Add specific exceptions
+- [ ] change print("THIS ORDER IS CLOSED") to error message
+- [ ] Refactor update_order in order details to connect to db's method
+- [ ] Disable order_date when in editing mode
+- [ ] Reset variables on open_new blank form and open record
+- [ ] Check if !disabled is necessary before modifying the widget

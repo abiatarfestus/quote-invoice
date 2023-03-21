@@ -583,7 +583,7 @@ class QuoteDetailsTab():
                 is_accepted=self.is_accepted.get(),
                 notes=self.quote_notes_txt.get("1.0", END)
             )
-            
+            print(f"NEW QUOTE ID: {new_quote_id}")
             if self.quote_items_tree.get_children(): # If there are items on the list
                 try:
                     items = []
@@ -613,7 +613,9 @@ class QuoteDetailsTab():
                     quote_items = self.session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == new_quote_id).all()
                     self.quote_id_ent.state(["!disabled"])
                     self.quote_id_ent.delete(0, END)
+                    print(f"NEW quote ID: {new_quote_id}")
                     self.quote_id_ent.insert(0, new_quote_id)
+                    print(f"New quote id: {new_quote_id}")
                     self.quote_id_ent.state(["disabled"])
                     
                     # Update item list

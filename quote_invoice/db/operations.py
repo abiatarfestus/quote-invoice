@@ -102,7 +102,7 @@ def update_customer(
     notes=""
 ):
     try:
-        session.query(Customer).get(pk).update({
+        session.query(Customer).filter(Customer.customer_id==pk).update({
             Customer.customer_type:customer_type, 
             Customer.first_name:first_name, 
             Customer.last_name:last_name, 
@@ -160,7 +160,7 @@ def add_quotation(
     is_closed=False,
     notes=""
 ):
-    """Adds a new quotation to the database"""
+    """Add a new quotation to the database and return its ID"""
 
     try:
         quotation = Quotation(
@@ -178,6 +178,7 @@ def add_quotation(
         return quote_id
     except Exception as e:
         print(e)
+        raise Exception(f"An error occurred while adding the quotation: {e}")
 
 def update_quotation(
     session, 
@@ -190,7 +191,7 @@ def update_quotation(
     notes=""
 ):
     try:
-        session.query(Quotation).get(pk).update({
+        session.query(Quotation).filter(Quotation.quote_id==pk).update({
             Quotation.quote_date:quote_date,
             Quotation.description:description, 
             Quotation.customer_id:customer_id, 
@@ -211,12 +212,14 @@ def delete_quotation(session, pk):
         session.commit()
     except Exception as e:
         print(e)
+        raise Exception(f"An error occurred while adding the quotation: {e}")
     
 
 # Orders -----------------------------------------------
 def get_orders(session, pk=None, customer_id=None, other_fields=""):
+        """Return order matching pk if pk is provided else orders matching customer_id or other_fiels"""
         if pk:
-            order = (session.query(Order).get(pk))
+            return (session.query(Order).get(pk))
         elif customer_id:
             return session.query(Order).filter(
                 Order.customer_id == customer_id
@@ -224,7 +227,7 @@ def get_orders(session, pk=None, customer_id=None, other_fields=""):
         elif other_fields == "":
             return session.query(Order).order_by(Order.order_date).all()
         else:
-            order = (
+            return (
                 session.query(Order)
                 .filter(
                     or_(
@@ -234,7 +237,6 @@ def get_orders(session, pk=None, customer_id=None, other_fields=""):
                 .order_by(Order.order_date).all()
                 )
             )
-        return order
     
 def add_order(
     session, 
@@ -244,7 +246,7 @@ def add_order(
     is_paid=False, 
     notes=""
 ):
-    """Adds a new order to the database"""
+    """Adds a new order to the database and return its ID"""
 
     try:
         order = Order(
@@ -256,31 +258,36 @@ def add_order(
         )
         session.add(order)
         session.commit()
+        order_id = order.order_id
+        # print(f"NEW ORDER ID: {order_id}")
+        return order_id
     except Exception as e:
-        print(e)     
+        print(e)
+        raise Exception(f"An error occurred while adding the order: {e}")   
     
 
 def update_order(
     session, 
     pk=None,
-    order_date=datetime.today(),
+    # order_date=datetime.today(),
     description="", 
-    customer_id=None, 
+    # customer_id=None, 
     is_paid=False, 
     notes=""
 ):
     try:
-        session.query(Order).get(pk).update({
-            Order.corder_date:order_date,
+        session.query(Order).filter(Order.order_id==pk).update({
+            # Order.order_date:order_date,
             Order.description:description, 
-            Order.customer_id:customer_id, 
+            # Order.customer_id:customer_id, 
             Order.is_paid:is_paid, 
             Order.notes:notes
         }, synchronize_session=False
         )
         session.commit()
     except Exception as e:
-        print(e)
+        print(f"Update order: {e}")
+        raise Exception(f"An error occurred while updating the order: {e}")
 
 def delete_order(session, pk):
     try:
@@ -289,6 +296,8 @@ def delete_order(session, pk):
         session.commit()
     except Exception as e:
         print(e)
+        raise Exception(f"An error occurred while deleting the order: {e}")
+
     
 
 # Quotation items -----------------------------------------------
@@ -335,7 +344,8 @@ def add_quotation_item(
                 session.commit()
                 return
             except Exception as e:
-                print(e)      
+                print(e)
+                raise Exception(f"An error occurred while adding a quote item: {e}")     
     
 
 def update_quotation_item(
@@ -347,7 +357,7 @@ def update_quotation_item(
     description=""
 ):
     try:
-        session.query(QuotationItem).get(pk).update({
+        session.query(QuotationItem).filter(QuotationItem.quote_item_id==pk).update({
             QuotationItem.quote_id:quote_id,
             QuotationItem.product_id:product_id, 
             QuotationItem.quantity:quantity,
@@ -357,6 +367,7 @@ def update_quotation_item(
         session.commit()
     except Exception as e:
         print(e)
+        raise Exception(f"An error occurred while updating a quote item: {e}")
     
 
 def delete_quotation_item(session, pk):
@@ -383,52 +394,52 @@ def add_order_item(
     quantity=1,
     description=""
 ):
-    """Adds a new item to the order"""
+    """Add new item to the order"""
 
     if order_id and product_id:
         order = session.query(Order).get(order_id)
-        if order.is_paid:
-            print("THIS ORDER IS CLOSED")
-            return
-        else:
-            # Check if the product is already in the order
-            order_item = session.query(OrderItem).filter(OrderItem.product_id == product_id).one_or_none()
-            if order_item:
-                # order_item.quantity += 1
-                print("THE SELECTED PRODUCT IS ALREADY ON THE ORDER")
-                return
-            try:
-                order_item = OrderItem(
-                    order_id=order_id,
-                    product_id=product_id, 
-                    quantity=quantity,
-                    description=description
-                )
-                session.add(order_item)
-                session.commit()
-            except Exception as e:
-                print(e)      
+        # Check if the product is already in the order
+        if order.order_items: # If there are items in th order
+            order_items = order.order_items
+            for item in order_items:
+                if item.product_id == product_id:
+                    raise Exception(f"Duplicate of product {item.product_id} found: Increase/decrease the quantity of the existing item instead.")
+        try:
+            order_item = OrderItem(
+            order_id=order_id,
+            product_id=product_id, 
+            quantity=quantity,
+            description=description
+        )
+            session.add(order_item)
+            session.commit()
+        except Exception as e:
+            print(e)
+            raise Exception(f"An error occurred while adding an order item: {e}")
+    else:
+        raise Exception ("Error: An item cannot be added without an order/product ID!")
     
 
 def update_order_item(
     session, 
     pk=None,
-    order_id=None,
-    product_id=None, 
+    # order_id=None,
+    # product_id=None, 
     quantity=0,
     description=""
 ):
     try:
-        session.query(OrderItem).get(pk).update({
-            OrderItem.order_id:order_id,
-            OrderItem.product_id:product_id, 
+        session.query(OrderItem).filter(OrderItem.order_item_id==pk).update({
+            # OrderItem.order_id:order_id,
+            # OrderItem.product_id:product_id, 
             OrderItem.quantity:quantity,
             OrderItem.description:description
         }, synchronize_session = False
         )
         session.commit()
     except Exception as e:
-        print(e)
+        print(f"Update order item: {e}")
+        raise Exception(f"An error occurred while updating an order item: {e}")
     
 
 def delete_order_item(session, pk):
@@ -507,7 +518,7 @@ def update_product(
     quantity=0
 ):
     try:
-        session.query(Product).get(pk).update({
+        session.query(Product).filter(Product.product_id==pk).update({
             Product.sku:sku,
             Product.barcode:barcode, 
             Product.product_name:product_name,

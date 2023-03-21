@@ -606,3 +606,124 @@ def setup_customer_list_tab(notebook, parent_frame, session):
                     title='Error'
                 )
                     return error_message
+                
+
+def update_order(self):
+        order_id = self.order_id_ent.get()
+        try:
+            order_date=datetime.strptime(self.order_date_ent.get(), '%Y/%m/%d').date()
+        except Exception as e:
+            error_message = messagebox.showerror(
+            message="Invalid date entered.",
+            detail=e,
+            title='Error'
+        )
+            return error_message
+        # try:
+        #     customer_id = self.customers_dict[self.order_customer_cbx.get()][0]
+        # except Exception as e:
+        #     error_message = messagebox.showerror(
+        #     message="Invalid customer entered.",
+        #     detail=e,
+        #     title='Error'
+        # )
+        #     return error_message
+        description = self.order_description_ent.get()
+        is_paid = self.is_paid.get()
+        notes = self.order_notes_txt.get("1.0", END)
+        try:
+            db.update_order(
+                self.session,
+                pk=order_id,
+                # order_date=order_date,
+                description=description, 
+                # customer_id=customer_id, 
+                is_paid=is_paid, 
+                notes=notes)
+        except Exception as e:
+            error_message = messagebox.showerror(
+            message="Oops! Order update encountered an error.",
+            detail=e,
+            title='Error'
+        )
+            return error_message 
+        if self.order_items_tree.get_children(): # If there are items on the list
+            items = []
+            item_ids = set()
+            old_items = self.session.query(OrderItem).filter(OrderItem.order_id==order_id).all()
+            old_item_ids = [item.order_item_id for item in old_items]
+            for item in self.order_items_tree.get_children():
+                items.append(self.order_items_tree.item(item))
+                item_ids.add(self.order_items_tree.item(item)["values"][1])
+            # print(f"ITEM IDs: {item_ids}")
+            # print(f"OLD ITEM IDs: {old_item_ids}")
+            for item in items:
+                if not item["values"][1]: # If it's new item (has no id)
+                    db.add_order_item(
+                        self.session,
+                        order_id=order_id,
+                        product_id=item["values"][0],
+                        quantity=item["values"][4],
+                        description=item["values"][3]
+                    )
+                else:
+                    try:
+                        db.update_order_item(
+                            self.session, 
+                            pk=item["values"][1],
+                            quantity=item["values"][4],
+                            description=item["values"][3]
+                        )
+                    except Exception as e:
+                        error_message = messagebox.showerror(
+                            message="Oops! Some items could not be updated.",
+                            detail=e,
+                            title='Error'
+                        )
+                        return error_message
+            for id in old_item_ids:
+                if id not in item_ids:
+                    db.delete_order_item(self.session, pk=id)
+            # Update item list
+            order_items = self.session.query(Product, OrderItem).join(OrderItem).filter(OrderItem.order_id == order_id).all()
+            order_amount = Money("0.00", NAD)
+            for item in self.order_items_tree.get_children():
+                self.order_items_tree.delete(item)
+            for product,item in order_items:
+                unit_price = Money(product.price, NAD)
+                total_price = unit_price*item.quantity
+                self.order_items_tree.insert('', 'end', iid=f"{product.product_id}",
+                    values=(
+                        product.product_id,
+                        item.order_item_id,
+                        product.product_name,
+                        item.description,
+                        item.quantity,
+                        unit_price.amount,
+                        total_price.amount
+                        )
+                    )
+                order_amount += total_price
+            self.order_amount.set(f"Total Cost:\tN${order_amount.amount}")
+            self.order_save_update.set("Update Order")
+            # self.notebook.select(self.order_frame)
+            if self.is_paid.get(): # or order['values'][5] == "True":
+                self.order_customer_cbx.state(["disabled"])
+                self.order_description_ent.state(["disabled"])
+                self.order_date_ent.state(["disabled"])
+                # self.order_paid_chk.state(["!disabled"])
+                # self.order_paid_chk.invoke()
+                self.order_paid_chk.state(["disabled"])
+                self.order_input_product_cbx.state(["disabled"])
+                self.order_input_description_ent.state(["disabled"])
+                self.order_input_quantity_spx.state(["disabled"])
+                self.order_input_add_btn.state(["disabled"])
+                self.order_save_update_btn.state(["disabled"])
+                self.change_to_order_btn.state(["disabled"])
+                # self.mark_closed_btn.state(["disabled"])
+                self.order_input_delete_btn.state(["disabled"])
+            success_message = messagebox.showinfo(
+                message='Order was successfully updated!',
+                title='Success'
+            )
+            return success_message

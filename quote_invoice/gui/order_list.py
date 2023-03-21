@@ -197,8 +197,9 @@ class OrderListTab():
         self.notebook.select(6) # Change to tab name instead of index (same on customer)
     
     def view_order(self):
+        """View the oder details of the order selected in the order list treeview"""
         # print(f"SELECTED RECORD: {self.selected_order}")
-        order = self.selected_order
+        order = db.get_orders(self.session, pk=self.selected_order['values'][0])
         if not self.selected_order:
             error_message = messagebox.showerror(
                 message='No record is selected!',
