@@ -57,7 +57,6 @@ class QuotationListTab():
         self.tree['yscrollcommand'] = y_scroll.set
         self.tree['xscrollcommand'] = x_scroll.set
 
-
         # Define Our Columns
         self.tree['columns'] = (
             "ID",
@@ -96,48 +95,10 @@ class QuotationListTab():
         self.tree.heading("Closed", text="Closed", anchor=CENTER)
         self.tree.heading("Notes", text="Notes", anchor=W)
 
-        customers = self.session.query(Customer).all()
-        self.customers_dict = dict()
-        for customer in customers:
-            if customer.customer_type == "Person":
-                key = f"{customer.last_name} {customer.first_name} >> {customer.phone}"
-            else:
-                key = f"{customer.entity_name} >> {customer.phone}"
-            self.customers_dict.update({
-                key:[
-                    customer.customer_id,
-                    customer.customer_type,
-                    customer.first_name,
-                    customer.last_name,
-                    customer.entity_name,
-                    customer.email,
-                    customer.phone
-                    ]
-                }
-            )
-        # print(f"CUSTOMERS: {customers_dict}")
-        # Create a dict of customer_id:customer_name for use in update customer
-        self.customer_id_name_dict = dict()
-        for name in tuple(self.customers_dict):
-            self.customer_id_name_dict.update({self.customers_dict[name][0]:name })
-        # print(f"CUSTOMER_ID_NAME DICT: {self.customer_id_name_dict}")
-
         self.quotations = self.session.query(Quotation).order_by(Quotation.quote_date).all()
-        # print(f"TOTAL QUOTATIONS: {len(quotations)}")
-        for quote in self.quotations:
-            self.tree.insert('', 'end', iid=f"{quote.quote_id}",
-            values=(
-                f"{quote.quote_id}",
-                self.customer_id_name_dict[quote.customer_id],
-                quote.description,
-                quote.quote_date,
-                quote.is_accepted,
-                quote.is_closed,
-                quote.notes
-                )
-            )
-
+        self.list_quotations(self.quotations)
         self.tree.grid(column=0, row=0, sticky=(N, S, W, E))
+        
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
         #-------------------------------BOTTOM FRAME-----------------------------------------#
@@ -192,6 +153,50 @@ class QuotationListTab():
         self.search_quotation_btn.grid(column=4, row=1, sticky=E)
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
        
+    def list_quotations(self, quotations, from_customer=False):
+        """List all quotations in the database or of a specific customer if from_customer"""
+        if not from_customer:
+            customers = self.session.query(Customer).all()
+        else:
+            customers = self.session.query(Customer).filter(Customer.customer_id==quotations[0].customer_id)
+            print(f"CUSTOMERS={customers}")
+        self.customers_dict = dict()
+        for customer in customers:
+            if customer.customer_type == "Person":
+                key = f"{customer.last_name} {customer.first_name} >> {customer.phone}"
+            else:
+                key = f"{customer.entity_name} >> {customer.phone}"
+            self.customers_dict.update({
+                key:[
+                    customer.customer_id,
+                    customer.customer_type,
+                    customer.first_name,
+                    customer.last_name,
+                    customer.entity_name,
+                    customer.email,
+                    customer.phone
+                    ]
+                }
+            )
+        # Create a dict of customer_id:customer_name for use in update customer
+        self.customer_id_name_dict = dict()
+        for name in tuple(self.customers_dict):
+            self.customer_id_name_dict.update({self.customers_dict[name][0]:name })
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        for quote in quotations:
+            self.tree.insert('', 'end', iid=f"{quote.quote_id}",
+            values=(
+                f"{quote.quote_id}",
+                self.customer_id_name_dict[quote.customer_id],
+                quote.description,
+                quote.quote_date,
+                quote.is_accepted,
+                quote.is_closed,
+                quote.notes
+                )
+            )
+
     def select_record(self, event):
         # print("Record selected")
         record = self.tree.focus()

@@ -194,14 +194,13 @@ class CustomerListTab():
         self.notebook.select(2)
     
     def view_customer(self):
-        print(f"SELECTED RECORD: {self.selected_customer}")
-        customer = self.selected_customer
         if not self.selected_customer:
             error_message = messagebox.showerror(
                 message='No record is selected!',
                 title='Error'
             )
             return error_message
+        customer = db.get_customers(self.session, pk=self.selected_customer['values'][0])
         self.customer_details_tab.populate_fields(customer)
         self.notebook.select(2)
 

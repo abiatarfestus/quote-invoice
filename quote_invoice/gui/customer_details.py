@@ -1,12 +1,15 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from datetime import datetime
+from datetime import datetime, date
 from quote_invoice.db import operations as db
 
 class CustomerDetailsTab():
-    def __init__(self, notebook, parent_frame, session):
+    def __init__(self, notebook, parent_frame, quotation_list_tab, order_list_tab, session):
         """Configure the customer form tab"""
+        self.notebook =notebook
+        self.quotation_list_tab = quotation_list_tab
+        self.order_list_tab = order_list_tab
         self.session = session
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
@@ -36,7 +39,7 @@ class CustomerDetailsTab():
             borderwidth=5, 
             relief="solid"
         )
-        self.mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W))
+        self.mid_frame.grid(column=0, row=1, columnspan=3, sticky=(N, W, E, S))
         self.mid_frame.columnconfigure(0, weight=5)
         self.mid_frame.columnconfigure(1, weight=1)
         self.mid_frame.columnconfigure(2, weight=1)
@@ -153,7 +156,7 @@ class CustomerDetailsTab():
             anchor=E,
             # style="heading.TLabel",
         )
-        self.notes_lbl.grid(column=4, row=0, sticky=(E, ))
+        self.notes_lbl.grid(column=4, columnspan=4, row=0, sticky=(E, ))
 
         # Entries:
         self.id_ent = ttk.Entry(
@@ -163,6 +166,8 @@ class CustomerDetailsTab():
             # anchor="",
             # style="heading.TLabel",
         )
+        self.id_ent.insert(0, "New")
+        self.id_ent.state(["disabled"])
         self.id_ent.grid(column=1, row=1, sticky=(N, S, E, W))
 
         self.first_name_ent = ttk.Entry(
@@ -235,6 +240,7 @@ class CustomerDetailsTab():
             # anchor="",
             # style="heading.TLabel",
         )
+        self.country_ent.insert(0, "Namibia")
         self.country_ent.grid(column=1, row=10, sticky=(N, S, E, W))
 
         self.since_ent = ttk.Entry(
@@ -244,6 +250,7 @@ class CustomerDetailsTab():
             # anchor="",
             # style="heading.TLabel",
         )
+        self.since_ent.insert(0, date.today().strftime('%Y/%m/%d'))
         self.since_ent.grid(column=1, row=11, sticky=(N, S, E, W))
 
         # Comboboxes
@@ -288,21 +295,23 @@ class CustomerDetailsTab():
         )
         self.new_customer_btn.grid(column=2, row=6, sticky=(N, S, E, W))
 
+        self.quotes_btn = ttk.Button(
+            self.mid_frame, 
+            text="View Quotes",
+            # style="home_btns.TButton",
+            padding=5,
+            command=self.view_customer_quotations
+        )
+        self.quotes_btn.grid(column=3, row=6, sticky=(N, S, E, W))
+
         self.orders_btn = ttk.Button(
             self.mid_frame, 
-            text="Orders",
+            text="View Orders",
             # style="home_btns.TButton",
             padding=5
         )
-        self.orders_btn.grid(column=3, row=6, sticky=(N, S, E, W))
-
-        self.contacts_btn = ttk.Button(
-            self.mid_frame, 
-            text="Contacts",
-            # style="home_btns.TButton",
-            padding=5
-        )
-        self.contacts_btn.grid(column=4, row=6, sticky=(N, S, E, W))
+        self.orders_btn.grid(column=4, columnspan=2, row=6, sticky=(N, S, E, W))
+        self.disable_buttons()
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
         #-------------------------------BOTTOM FRAME-----------------------------------------#
@@ -330,9 +339,13 @@ class CustomerDetailsTab():
         self.address_ent.delete(0, END)
         self.town_ent.delete(0, END)
         self.country_ent.delete(0, END)
+        self.country_ent.insert(0, "Namibia")
+        self.since_ent.state(["!disabled"])
         self.since_ent.delete(0, END)
+        self.since_ent.insert(0, date.today().strftime('%Y/%m/%d'))
         self.notes_txt.delete("1.0", END)
         self.save_btn.configure(text="Save Record")
+        self.disable_buttons()
 
     def create_or_update_customer(self):
         customer_id = self.id_ent.get()
@@ -349,10 +362,13 @@ class CustomerDetailsTab():
                 address=self.address_ent.get(), 
                 town=self.town_ent.get(), 
                 country=self.country_ent.get(),
-                customer_since=datetime.strptime(self.since_ent.get(), '%Y-%m-%d').date(),
+                customer_since=datetime.strptime(self.since_ent.get(), '%Y/%m/%d').date(),
                 notes=self.notes_txt.get("1.0", END)
             )
-                self.open_blank_customer_form()
+                # self.open_blank_customer_form()
+                self.since_ent.state(["disabled"])
+                self.enable_buttons()
+                self.save_btn.configure(text="Update Record")
                 success_message = messagebox.showinfo(
                 message='Customer was successfully created!',
                 title='Success'
@@ -377,7 +393,7 @@ class CustomerDetailsTab():
                 customer.address = self.address_ent.get()
                 customer.town = self.town_ent.get()
                 customer.country = self.country_ent.get()
-                customer.customer_since = datetime.strptime(self.since_ent.get(), '%Y-%m-%d').date()
+                # customer.customer_since = datetime.strptime(self.since_ent.get(), '%Y/%m/%d').date()
                 customer.notes = self.notes_txt.get("1.0", END)
                 self.session.commit()
                 success_message = messagebox.showinfo(
@@ -396,27 +412,56 @@ class CustomerDetailsTab():
     def populate_fields(self, customer):
         self.id_ent.state(["!disabled"])
         self.id_ent.delete(0, END)
-        self.id_ent.insert(0, customer['values'][0])
+        self.id_ent.insert(0, customer.customer_id)
         self.id_ent.state(["disabled"])
-        self.type_cbx.set(customer['values'][1])
+        self.type_cbx.set(customer.customer_type)
         self.first_name_ent.delete(0, END)
-        self.first_name_ent.insert(0, customer['values'][2])
+        self.first_name_ent.insert(0, customer.first_name)
         self.last_name_ent.delete(0, END)
-        self.last_name_ent.insert(0, customer['values'][3])
+        self.last_name_ent.insert(0, customer.last_name)
         self.entity_ent.delete(0, END)
-        self.entity_ent.insert(0, customer['values'][4])
+        self.entity_ent.insert(0, customer.entity_name)
         self.email_ent.delete(0, END)
-        self.email_ent.insert(0, customer['values'][6])
+        self.email_ent.insert(0, customer.email)
         self.phone_ent.delete(0, END)
-        self.phone_ent.insert(0, customer['values'][7])
+        self.phone_ent.insert(0, customer.phone)
         self.address_ent.delete(0, END)
-        self.address_ent.insert(0, customer['values'][8])
+        self.address_ent.insert(0, customer.address)
         self.town_ent.delete(0, END)
-        self.town_ent.insert(0, customer['values'][9])
+        self.town_ent.insert(0, customer.town)
         self.country_ent.delete(0, END)
-        self.country_ent.insert(0, customer['values'][10])
+        self.country_ent.insert(0, customer.country)
         self.since_ent.delete(0, END)
-        self.since_ent.insert(0, customer['values'][11])
+        self.since_ent.insert(0, customer.customer_since)
+        self.since_ent.state(["disabled"])
         self.notes_txt.delete("1.0", END)
-        self.notes_txt.insert("1.0", customer['values'][12])
+        self.notes_txt.insert("1.0", customer.notes)
         self.save_btn.configure(text="Update Record")
+        self.enable_buttons()
+
+    def enable_buttons(self):
+        self.orders_btn.state(["!disabled"])
+        self.quotes_btn.state(["!disabled"])
+
+    def disable_buttons(self):
+        self.orders_btn.state(["disabled"])
+        self.quotes_btn.state(["disabled"])
+
+    def view_customer_quotations(self):
+        customer_id = self.id_ent.get()
+        if customer_id == "New":
+            return messagebox.showerror(
+                    message='Cannot open quotations of an unsaved customer!',
+                    title='Error'
+                )
+        quotations = db.get_quotations(self.session, customer_id=customer_id)
+        if not quotations:
+            return messagebox.showinfo(
+                    message='No quotations found for this customer.',
+                    title='Info'
+                )
+        self.quotation_list_tab.list_quotations(quotations, from_customer=True)
+        self.notebook.select(3)
+        
+    def view_customer_orders(self):
+        pass

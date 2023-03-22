@@ -122,23 +122,7 @@ class QuoteDetailsTab():
             # style="heading.TLabel",
         )
         self.notes_lbl.grid(column=3, row=0, sticky=(E, ))
-
-        # product_description_lbl = ttk.Label(
-        #     bottom_frame,
-        #     text="Product Description",
-        #     anchor=E,
-        #     # style="heading.TLabel",
-        # )
-        # product_description_lbl.grid(column=0, row=0, sticky=(W, ))
-
-        # total_lbl = ttk.Label(
-        #     mid_frame,
-        #     text="Total Cost:",
-        #     anchor=E,
-        #     # style="heading.TLabel",
-        # )
-        # total_lbl.grid(column=3, row=6, sticky=(N, S, W, E))
-
+        
         self.quote_amount = StringVar(value="Total Cost:\tN$0.00")
         self.amount_lbl = ttk.Label(
             self.mid_frame,
@@ -457,9 +441,7 @@ class QuoteDetailsTab():
                 return
         record = self.quote_items_tree.focus()
         selected_item = self.quote_items_tree.item(record)
-        # print(f"SELECTED ITEM: {selected_item}")
         self.quote_input_product_cbx.state(["!disabled"])
-        # self.quote_input_product_cbx.delete(0, END)
         self.quote_input_product_cbx.set(f"{self.products_dict2[selected_item['values'][0]]}")
         self.quote_input_description_ent.state(["!disabled"])
         self.quote_input_description_ent.delete(0, END)
@@ -473,10 +455,6 @@ class QuoteDetailsTab():
         product = self.quote_input_product_cbx.get()
         description = self.quote_input_description_ent.get()
         quantity = self.quote_input_quantity_spx.get()
-        # print(f"PRODUCT: {product}")
-        # print(f"PRODUCT ID: {products_dict[product][0]}")
-        # print(f"DESCRIPTION: {description}")
-        # print(f"QUANTITY: {quantity}")
         if product == "" or quantity == "":
             print("INVALID ITEM")
             error_message = messagebox.showerror(
@@ -490,7 +468,6 @@ class QuoteDetailsTab():
         if self.quote_items_tree.exists(product_id):
             selected_item = self.quote_items_tree.set(product_id, column="Total Price")
             selected_item_total_price = Money(selected_item, NAD)
-            # print(f"SELECTED ITEM TOTAL PRICE: {selected_item_total_price}")
             quote_amount = Money(self.quote_amount.get()[14:], NAD)
             quote_amount = quote_amount-selected_item_total_price
             self.quote_items_tree.set(product_id, column="Description", value=description)
@@ -563,10 +540,8 @@ class QuoteDetailsTab():
         self.reset_quote_input_fields()
         self.quote_input_add_btn.state(["!disabled"])
         self.quote_save_update_btn.state(["!disabled"])
-        # self.generate_order_btn.state(["!disabled"])
         self.mark_closed_btn.state(["!disabled"])
         self.clear_quote_items_btn.state(["!disabled"])
-        # self.reuse_quote_btn.state(["!disabled"])
         self.reset_quote_btn.state(["!disabled"])
         self.quote_input_delete_btn.state(["!disabled"])
         for item in self.quote_items_tree.get_children():

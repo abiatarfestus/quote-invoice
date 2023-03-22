@@ -5,15 +5,6 @@ from sqlalchemy.sql import asc, desc, func
 from . models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
 
 
-# def get_connection():
-#     return create_engine(f"sqlite:///app_database.db")
-
-# # class DatabaseOps():
-# engine = get_connection()
-# Session = sessionmaker()
-# Session.configure(bind=engine)
-# session = Session()
-
 def get_customers(session, pk=None, other_fields=""):
     """Get a list of customer objects sorted by last name"""
     if pk:
@@ -183,20 +174,14 @@ def add_quotation(
 def update_quotation(
     session, 
     pk=None,
-    # quote_date=datetime.today().date(),
     description="", 
-    # customer_id=None, 
     is_accepted=False,
-    # is_closed=False,
     notes=""
 ):
     try:
         session.query(Quotation).filter(Quotation.quote_id==pk).update({
-            # Quotation.quote_date:quote_date,
-            Quotation.description:description, 
-            # Quotation.customer_id:customer_id, 
-            Quotation.is_accepted:is_accepted, 
-            # Quotation.is_closed:is_closed,
+            Quotation.description:description,
+            Quotation.is_accepted:is_accepted,
             Quotation.notes:notes
         }, synchronize_session=False
         )
@@ -259,7 +244,6 @@ def add_order(
         session.add(order)
         session.commit()
         order_id = order.order_id
-        # print(f"NEW ORDER ID: {order_id}")
         return order_id
     except Exception as e:
         print(e)
@@ -269,17 +253,13 @@ def add_order(
 def update_order(
     session, 
     pk=None,
-    # order_date=datetime.today(),
     description="", 
-    # customer_id=None, 
     is_paid=False, 
     notes=""
 ):
     try:
         session.query(Order).filter(Order.order_id==pk).update({
-            # Order.order_date:order_date,
-            Order.description:description, 
-            # Order.customer_id:customer_id, 
+            Order.description:description,
             Order.is_paid:is_paid, 
             Order.notes:notes
         }, synchronize_session=False
@@ -325,12 +305,10 @@ def add_quotation_item(
             return
         else:
             # Check if the product is already in the quotation
-            # quotation_item = session.query(QuotationItem).filter(QuotationItem.product_id == product_id).one_or_none()
             if quotation.quotation_items: # If there are items in th quotation
                 quote_items = quotation.quotation_items
                 for item in quote_items:
                     if item.product_id == product_id:
-                        # quotation_item.quantity += 1
                         print("THE SELECTED PRODUCT IS ALREADY ON THE QUOTATION")
                         return
             try:
@@ -351,15 +329,11 @@ def add_quotation_item(
 def update_quotation_item(
     session, 
     pk=None,
-    # quote_id=None,
-    # product_id=None, 
     quantity=0,
     description=""
 ):
     try:
         session.query(QuotationItem).filter(QuotationItem.quote_item_id==pk).update({
-            # QuotationItem.quote_id:quote_id,
-            # QuotationItem.product_id:product_id, 
             QuotationItem.quantity:quantity,
             QuotationItem.description:description
         }, synchronize_session = False
@@ -423,15 +397,11 @@ def add_order_item(
 def update_order_item(
     session, 
     pk=None,
-    # order_id=None,
-    # product_id=None, 
     quantity=0,
     description=""
 ):
     try:
         session.query(OrderItem).filter(OrderItem.order_item_id==pk).update({
-            # OrderItem.order_id:order_id,
-            # OrderItem.product_id:product_id, 
             OrderItem.quantity:quantity,
             OrderItem.description:description
         }, synchronize_session = False
