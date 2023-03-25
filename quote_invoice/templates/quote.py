@@ -12,6 +12,7 @@ class Quote():
         self.quote = db.get_quotations(self.session, pk=quote_id)
         # self.templates_dir = templates_dir
         # self.output_dir = output_dir
+        print(f"CWD: {os.getcwd()}")
         self.doc = DocxTemplate("quote_template.docx")
 
     def generate_quote_preview(self):
@@ -26,6 +27,7 @@ class Quote():
         context = {
             "quote_id": quote_id,
             "quote_date": self.quote.quote_date,
+            "quote_description": self.quote.description,
             "customer_id": customer_id,
             "customer_name": customer_name,
             "address": customer.address,
