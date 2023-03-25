@@ -8,6 +8,7 @@ from .quotation_list import QuotationListTab
 from .customer_details import CustomerDetailsTab
 from .quote_details import QuoteDetailsTab
 from .order_list import OrderListTab
+from .style import style
 from .order_details import OrderDetailsTab
 
 def get_connection():
@@ -30,20 +31,7 @@ class Window():
         self.selected_order = None
         self.selected_quote = None
         self.selected_order = None
-        # self.customer_id_name_dict = dict()
-
-        # Styles
-        style = ttk.Style()
-        style.theme_use("clam")
-        style.configure("notebook.TNotebook.Tab", padding=10, font=(None, 16))
-        style.configure("home_btns.TButton", font=(None, 24))
-        style.configure("heading.TLabel", font=(None, 31))
-        style.configure(
-            "main_menu.TLabel", 
-            font=(None, 24), 
-            background="blue",
-            foreground="white"
-        )
+        self.style = style()
         self.create_notebook()
         self.configure_rows_columns()
         self.home_tab = self.setup_home_tab()
