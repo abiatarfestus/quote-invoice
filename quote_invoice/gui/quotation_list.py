@@ -159,7 +159,7 @@ class QuotationListTab():
             customers = self.session.query(Customer).all()
         else:
             customers = self.session.query(Customer).filter(Customer.customer_id==quotations[0].customer_id)
-            print(f"CUSTOMERS={customers}")
+            # print(f"CUSTOMERS={customers}")
         self.customers_dict = dict()
         for customer in customers:
             if customer.customer_type == "Person":
@@ -217,113 +217,90 @@ class QuotationListTab():
         quotation = db.get_quotations(self.session, pk=self.selected_quotation['values'][0])
         self.quote_details_tab.populate_fields(quotation)
         self.notebook.select(4)
-        
-
+ 
     def search_quotation(self):
         search_option = self.quote_search_option_cbx.get()
         search_value = self.quote_search_ent.get()
+        self.list_quotations(self.quotations)
         if search_option == "Quote ID":
-            quote_id = search_value
-            if not quote_id:
-                error_message = messagebox.showerror(
-                    message="Cannot search with a blank Quote ID.",
-                    title='Error'
-                )
-                return error_message
-            try:
-                quote_id = int(quote_id)
-                try:
-                    quotation = db.get_quotations(self.session, pk=quote_id)
-                    if quotation:
-                        for item in self.tree.get_children():
-                            self.tree.delete(item)
-                        self.tree.insert('', 'end', iid=f"{quotation.quote_id}",
-                        values=(
-                            f"{quotation.quote_id}",
-                            self.customer_id_name_dict[quotation.customer_id],
-                            quotation.description,
-                            quotation.quote_date,
-                            quotation.is_accepted,
-                            quotation.is_closed,
-                            quotation.notes
-                            )
-                        )
-                    else:
-                        info_message = messagebox.showinfo(
-                        message="No matching record was found.",
-                        title='Info'
-                    )
-                        return info_message
-                except Exception as e:
-                        error_message = messagebox.showerror(
-                        message="Oops! Something went wrong.",
-                        detail=e,
-                        title='Error'
-                    )
-                        return error_message
-            except Exception as e:
-                error_message = messagebox.showerror(
-                message="Invalid Quote ID.",
-                detail=e,
-                title='Error'
-            )
-                return error_message
+            self.search_by_quote_id(search_value)
         elif search_option == "Customer ID":
-            customer_id = search_value
-            if not customer_id:
-                error_message = messagebox.showerror(
-                    message="Cannot search a with blank Customer ID.",
-                    title='Error'
+            self.search_by_customer_id(search_value)
+        else:
+            self.search_by_other_fields(search_value)
+            
+    def search_by_quote_id(self, quote_id=""):
+        if not quote_id:
+            error_message = messagebox.showerror(
+                message="Cannot search with a blank Quote ID.",
+                title='Error'
+            )
+            return error_message
+        try:
+            quote_id = int(quote_id)
+        except ValueError as e:
+            error_message = messagebox.showerror(
+            message="Invalid Quote ID.",
+            detail="Please ensure that you entered an integer value for Quote ID.",
+            title='Error'
+        )
+            return error_message
+        try:
+            quotation = db.get_quotations(self.session, pk=quote_id)
+            if quotation:
+                for item in self.tree.get_children():
+                    self.tree.delete(item)
+                self.tree.insert('', 'end', iid=f"{quotation.quote_id}",
+                values=(
+                    f"{quotation.quote_id}",
+                    self.customer_id_name_dict[quotation.customer_id],
+                    quotation.description,
+                    quotation.quote_date,
+                    quotation.is_accepted,
+                    quotation.is_closed,
+                    quotation.notes
+                    )
                 )
-                return error_message
-            try:
-                customer_id = int(customer_id)
-                try:
-                    quotations = db.get_quotations(self.session, customer_id=customer_id)
-                    if quotations:
-                        for item in self.tree.get_children():
-                            self.tree.delete(item)
-                        for quote in quotations:
-                            self.tree.insert('', 'end', iid=f"{quote.quote_id}",
-                            values=(
-                                f"{quote.quote_id}",
-                                self.customer_id_name_dict[quote.customer_id],
-                                quote.description,
-                                quote.quote_date,
-                                quote.is_accepted,
-                                quote.is_closed,
-                                quote.notes
-                                )
-                            )
-                    else:
-                        info_message = messagebox.showinfo(
-                        message="No matching record was found.",
-                        title='Info'
-                    )
-                        return info_message
-                except Exception as e:
-                        error_message = messagebox.showerror(
-                        message="Oops! Something went wrong.",
-                        detail=e,
-                        title='Error'
-                    )
-                        return error_message
-            except Exception as e:
+            else:
+                info_message = messagebox.showinfo(
+                message=f"No record with Order ID {quote_id} was found.",
+                title='Info'
+            )
+                return info_message
+        except KeyError as e:
                 error_message = messagebox.showerror(
-                message="Invalid Customer ID.",
+                message="Key Error: An error occured wile trying to retrieve customer name.",
                 detail=e,
                 title='Error'
             )
                 return error_message
-        else:
-            try:
-                quotations = db.get_quotations(self.session, other_fields=search_value)
-                if not quotations:
-                    info_message = messagebox.showinfo(
-                        message="No matching record was found.",
-                        title='Info'
-                        )
-                    return info_message
+        except Exception as e:
+                error_message = messagebox.showerror(
+                message="Oops! Something went wrong.",
+                detail=e,
+                title='Error'
+            )
+                return error_message
+        
+    def search_by_customer_id(self, customer_id=""):
+        if not customer_id:
+            error_message = messagebox.showerror(
+                message="Cannot search with a blank Customer ID.",
+                title='Error'
+            )
+            return error_message
+        try:
+            customer_id = int(customer_id)
+        except ValueError as e:
+            error_message = messagebox.showerror(
+            message="Invalid Customer ID.",
+            detail="Please ensure that you entered an integer value for Customer ID.",
+            title='Error'
+        )
+            return error_message
+        try:
+            quotations = db.get_quotations(self.session, customer_id=customer_id)
+            if quotations:
                 for item in self.tree.get_children():
                     self.tree.delete(item)
                 for quote in quotations:
@@ -338,14 +315,64 @@ class QuotationListTab():
                         quote.notes
                         )
                     )
-            except Exception as e:
+            else:
+                info_message = messagebox.showinfo(
+                message=f"No record with Customer ID {customer_id} was found.",
+                title='Info'
+            )
+                return info_message
+        except KeyError as e:
+                error_message = messagebox.showerror(
+                message="Key Error: An error occured wile trying to retrieve customer name.",
+                detail=e,
+                title='Error'
+            )
+                return error_message
+        except Exception as e:
                 error_message = messagebox.showerror(
                 message="Oops! Something went wrong.",
                 detail=e,
                 title='Error'
             )
                 return error_message
-
+        
+    def search_by_other_fields(self, other_fields=""):
+        try:
+            quotations = db.get_quotations(self.session, other_fields=other_fields)
+            if not quotations:
+                info_message = messagebox.showinfo(
+                    message=f"No record matching the term '{other_fields}' was found.",
+                    title='Info'
+                    )
+                return info_message
+            for item in self.tree.get_children():
+                self.tree.delete(item)
+            for quote in quotations:
+                self.tree.insert('', 'end', iid=f"{quote.quote_id}",
+                values=(
+                    f"{quote.quote_id}",
+                    self.customer_id_name_dict[quote.customer_id],
+                    quote.description,
+                    quote.quote_date,
+                    quote.is_accepted,
+                    quote.is_closed,
+                    quote.notes
+                    )
+                )
+        except KeyError as e:
+                error_message = messagebox.showerror(
+                message="Key Error: An error occured wile trying to retrieve customer name.",
+                detail=e,
+                title='Error'
+            )
+                return error_message
+        except Exception as e:
+                error_message = messagebox.showerror(
+                message="Oops! Something went wrong.",
+                detail=e,
+                title='Error'
+            )
+                return error_message
 
 
 

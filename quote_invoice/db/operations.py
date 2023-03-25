@@ -219,8 +219,8 @@ def get_orders(session, pk=None, customer_id=None, other_fields=""):
                         Order.description.like(f'%{other_fields}%'),
                         Order.notes.like(f'%{other_fields}%'),
                     )
-                .order_by(Order.order_date).all()
                 )
+                .order_by(Order.order_date).all()
             )
     
 def add_order(

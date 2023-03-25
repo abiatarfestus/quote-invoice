@@ -308,7 +308,8 @@ class CustomerDetailsTab():
             self.mid_frame, 
             text="View Orders",
             # style="home_btns.TButton",
-            padding=5
+            padding=5,
+            command=self.view_customer_orders
         )
         self.orders_btn.grid(column=4, columnspan=2, row=6, sticky=(N, S, E, W))
         self.disable_buttons()
@@ -464,4 +465,17 @@ class CustomerDetailsTab():
         self.notebook.select(3)
         
     def view_customer_orders(self):
-        pass
+        customer_id = self.id_ent.get()
+        if customer_id == "New":
+            return messagebox.showerror(
+                    message='Cannot open orders of an unsaved customer!',
+                    title='Error'
+                )
+        orders = db.get_orders(self.session, customer_id=customer_id)
+        if not orders:
+            return messagebox.showinfo(
+                    message='No orders found for this customer.',
+                    title='Info'
+                )
+        self.order_list_tab.list_orders(orders, from_customer=True)
+        self.notebook.select(5)
