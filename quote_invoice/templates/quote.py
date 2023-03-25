@@ -1,0 +1,72 @@
+import os
+from moneyed import Money, NAD
+from docxtpl import DocxTemplate
+from datetime import datetime, date
+from quote_invoice.db import operations as db
+from quote_invoice.db.models import Customer, QuotationItem, Product
+
+class Quote():
+    def __init__(self, session, quote_id, templates_dir="", output_dir=""):
+        self.session = session
+        self.quote_id = quote_id
+        self.quote = db.get_quotations(self.session, pk=quote_id)
+        # self.templates_dir = templates_dir
+        # self.output_dir = output_dir
+        self.doc = DocxTemplate("quote_template.docx")
+
+    def generate_quote_preview(self):
+        quote_id = self.quote.quote_id
+        customer_id = self.quote.customer_id
+        customer = db.get_customers(self.session, pk=customer_id)
+        if customer.customer_type == "Person":
+            customer_name = f"{customer.first_name} {customer.last_name}"
+        else:
+            customer_name = f"{customer.entity_name}"
+        calculated_quote = self.calculate_quote(quote_id)
+        context = {
+            "quote_id": quote_id,
+            "quote_date": self.quote.quote_date,
+            "customer_id": customer_id,
+            "customer_name": customer_name,
+            "address": customer.address,
+            "town": customer.town,
+            "country": customer.country,
+            "item_list": calculated_quote.get("item_list"),
+            "subtotal": calculated_quote.get("subtotal"),
+            "vat_rate":calculated_quote.get("vat_rate"),
+            "vat_amount": calculated_quote.get("vat_amount"),
+            "total_cost": calculated_quote.get("total_cost"),
+        }
+        self.doc.render(context)
+        self.doc.save("generated_quote.docx")
+        return 
+
+    def save_quote(self):
+        pass
+
+    def calculate_quote(self, quote_id):
+        item_list = []
+        subtotal = Money("0.00", NAD)
+        vat_rate = 0.15
+        quote_items = self.session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == quote_id).all()
+        for product,item in quote_items:
+            unit_price = Money(product.price, NAD)
+            total_price = unit_price*item.quantity
+            item_list.append([
+                product.product_name,
+                item.description,
+                item.quantity,
+                unit_price.amount,
+                total_price.amount,
+            ])
+            subtotal += total_price
+        vat_amount = subtotal*vat_rate
+        total_cost = vat_amount+subtotal
+        calculated_quote = {
+            "item_list": item_list,
+            "subtotal": subtotal,
+            "vat_rate": vat_rate,
+            "vat_amount": vat_amount,
+            "total_cost": total_cost
+        }
+        return calculated_quote

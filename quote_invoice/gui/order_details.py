@@ -1,9 +1,10 @@
-from datetime import datetime, date
-from quote_invoice.db import operations as db
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from moneyed import Money, NAD
+from datetime import datetime, date
+from quote_invoice.templates import quote
+from quote_invoice.db import operations as db
 from quote_invoice.db.models import Customer, OrderItem, Product, QuotationItem
 
 

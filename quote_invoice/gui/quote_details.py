@@ -1,9 +1,10 @@
-from datetime import datetime, date
-from quote_invoice.db import operations as db
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from moneyed import Money, NAD
+from datetime import datetime, date
+from quote_invoice import templates
+from quote_invoice.db import operations as db
 from quote_invoice.db.models import Customer, QuotationItem, Product
 
 class QuoteDetailsTab():
@@ -215,7 +216,8 @@ class QuoteDetailsTab():
             self.mid_frame,
             text="Print/Preview Quotation",
             # style="home_btns.TButton",
-            padding=(0, 10)
+            padding=(0, 10),
+            command=self.print_quote
         )
         self.quote_preview_btn.grid(column=6, row=0, rowspan=2, sticky=(N, W, E, S))
 
@@ -854,3 +856,16 @@ class QuoteDetailsTab():
         self.reset_quote_btn.state(["disabled"])
         self.mark_closed_btn.state(["disabled"])
         self.quote_input_delete_btn.state(["disabled"])
+
+    def print_quote(self):
+        try:
+            quote_id = int(self.quote_id_ent.get())
+        except ValueError as e:
+            error_message = messagebox.showerror(
+            message="Invalid Quote ID.",
+            detail="Please ensure that there is an open quotation.",
+            title='Error'
+        )
+            return error_message
+        quote_template = templates.quote.Quote(self.session, quote_id)
+        quote_template.generate_quote_preview()
