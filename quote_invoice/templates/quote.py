@@ -1,7 +1,7 @@
 import os
 from moneyed import Money, NAD
 from docxtpl import DocxTemplate
-from datetime import datetime, date
+from datetime import datetime, timedelta
 from quote_invoice.db import operations as db
 from quote_invoice.db.models import Customer, QuotationItem, Product
 
@@ -12,13 +12,15 @@ class Quote():
         self.quote = db.get_quotations(self.session, pk=quote_id)
         # self.templates_dir = templates_dir
         # self.output_dir = output_dir
-        print(f"CWD: {os.getcwd()}")
         self.doc = DocxTemplate("quote_template.docx")
 
     def generate_quote_preview(self):
         quote_id = self.quote.quote_id
         customer_id = self.quote.customer_id
         customer = db.get_customers(self.session, pk=customer_id)
+        expiry_date = self.quote.quote_date + timedelta(days=30)
+        expiry_date = str(expiry_date).replace("-", "/")
+        quote_date = str(self.quote.quote_date).replace("-", "/")
         if customer.customer_type == "Person":
             customer_name = f"{customer.first_name} {customer.last_name}"
         else:
@@ -26,7 +28,8 @@ class Quote():
         calculated_quote = self.calculate_quote(quote_id)
         context = {
             "quote_id": quote_id,
-            "quote_date": self.quote.quote_date,
+            "quote_date": quote_date,
+            "expiry_date": expiry_date,
             "quote_description": self.quote.description,
             "customer_id": customer_id,
             "customer_name": customer_name,
@@ -41,6 +44,7 @@ class Quote():
         }
         self.doc.render(context)
         self.doc.save("generated_quote.docx")
+        os.startfile("generated_quote.docx")
         return 
 
     def save_quote(self):
@@ -64,11 +68,14 @@ class Quote():
             subtotal += total_price
         vat_amount = subtotal*vat_rate
         total_cost = vat_amount+subtotal
+        vat_amount = str(vat_amount)
+        subtotal = str(subtotal)
+        total_cost = str(total_cost)
         calculated_quote = {
             "item_list": item_list,
-            "subtotal": subtotal,
-            "vat_rate": vat_rate,
-            "vat_amount": vat_amount,
-            "total_cost": total_cost
+            "subtotal": f"N${subtotal[3:]}",
+            "vat_rate": f"{vat_rate:.0%}",
+            "vat_amount": f"N${vat_amount[3:]}",
+            "total_cost": f"N${total_cost[3:]}"
         }
         return calculated_quote

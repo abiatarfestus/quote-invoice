@@ -1,9 +1,12 @@
 from tkinter import *
 from tkinter import ttk
+from quote_invoice.gui import settings
 
 class HomeTab():
-    def __init__(self, notebook, parent_frame):
+    def __init__(self, root, parent_frame):
         """Configure the home tab page"""
+        self.root = root
+        self.main_logo = PhotoImage(file='main_logo.png')
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(
@@ -18,7 +21,8 @@ class HomeTab():
         # Labels:
         self.heading_lbl = ttk.Label(
             self.top_frame,
-            text="Quote & Invoice v0.0.1",
+            # text="Quote & Invoice v0.0.1",
+            image=self.main_logo,
             anchor="center",
             style="heading.TLabel",
         )
@@ -90,7 +94,8 @@ class HomeTab():
             self.bottom_frame, 
             text="Settings",
             style="home_btns.TButton",
-            # padding=(15, 26)
+            # padding=(15, 26),
+            command=self.open_settings
         )
         self.settings_btn.grid(column=3, row=0, sticky=(N, S, E, W))
 
@@ -105,3 +110,6 @@ class HomeTab():
         for child in self.bottom_frame.winfo_children():
             child.grid_configure(padx=2, pady=5)
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
+
+    def open_settings(self):
+        settings.SettingsWindow(self.root)

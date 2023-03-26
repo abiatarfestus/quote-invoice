@@ -31,6 +31,8 @@ class Window():
         self.selected_order = None
         self.selected_quote = None
         self.selected_order = None
+        self.logo = PhotoImage(file='logo.png')
+        self.root.iconphoto(False, self.logo)
         self.style = style()
         self.create_notebook()
         self.configure_rows_columns()
@@ -137,7 +139,7 @@ class Window():
         
 
     def setup_home_tab(self):
-        home_tab = HomeTab(self.notebook, self.home_frame)
+        home_tab = HomeTab(self.root, self.home_frame)
         return home_tab
 
     def setup_customer_tab(self):
