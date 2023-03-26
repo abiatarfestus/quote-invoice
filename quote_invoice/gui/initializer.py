@@ -26,6 +26,7 @@ class Window():
     def __init__(self, root):
         self.root = root
         self.root.title("Quote & Invoice")
+        self.root.option_add('*tearOff', FALSE)
         self.selected_customer = None
         self.selected_quotation = None
         self.selected_order = None

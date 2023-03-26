@@ -7,5 +7,6 @@ def style():
     style.theme_use("clam")
     style.configure("notebook.TNotebook.Tab", padding=10, font=(None, 16))
     style.configure("home_btns.TButton", font=(None, 16))
-    style.configure("heading.TLabel", font=(None, 31))
+    style.configure("heading.TLabel", font=(None, 25))
+    style.configure("heading2.TLabel", font=(None, 16))
     return style

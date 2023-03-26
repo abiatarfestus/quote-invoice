@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from quote_invoice.gui import settings
+from quote_invoice.gui.settings.settings import SettingsWindow
 
 class HomeTab():
     def __init__(self, root, parent_frame):
@@ -112,4 +112,5 @@ class HomeTab():
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
 
     def open_settings(self):
-        settings.SettingsWindow(self.root)
+        # settings_menu = Menu(win)
+        SettingsWindow(self.root)

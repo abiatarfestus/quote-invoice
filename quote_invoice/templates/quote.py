@@ -45,10 +45,7 @@ class Quote():
         self.doc.render(context)
         self.doc.save("generated_quote.docx")
         os.startfile("generated_quote.docx")
-        return 
-
-    def save_quote(self):
-        pass
+        return
 
     def calculate_quote(self, quote_id):
         item_list = []

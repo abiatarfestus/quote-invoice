@@ -32,5 +32,6 @@ entity person
 - [ ] Refactor update_order in order details to connect to db's method
 - [ ] Disable order_date when in editing mode
 - [ ] Reset variables on open_new blank form and open record
-- [ ] Check if !disabled is necessary before modifying the widget
+- [x] Check if !disabled is necessary before modifying the widget
 - [ ] Fix customer selction: ID vs display name
+- [ ] Prevent settings window from disappearing when dialog box pops up

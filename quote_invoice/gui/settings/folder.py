@@ -7,13 +7,14 @@ from tkinter import filedialog
 # filename = filedialog.asksaveasfilename()
 # dirname = filedialog.askdirectory()
 
-class SettingsWindow():
-    def __init__(self, parent):
-        self.window = Toplevel(parent)    
+class FolderSettingsTab():
+    def __init__(self, parent_frame):
+        # self.settings_window = settings_window
+        self.parent_frame = parent_frame 
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(
-            self.window,
+            self.parent_frame,
             borderwidth=5, 
             # relief="solid"
         )
@@ -24,9 +25,9 @@ class SettingsWindow():
         # Labels:
         self.heading_lbl = ttk.Label(
             self.top_frame,
-            text="Directories Settings",
+            text="Folder Settings",
             anchor="center",
-            style="heading.TLabel",
+            style="heading2.TLabel",
         )
         self.heading_lbl.grid(row=0, sticky=(N, S, W, E))
         #-------------------------------TOP FRAME ENDS--------------------------------------#
@@ -34,27 +35,27 @@ class SettingsWindow():
         #-------------------------------MID FRAME-------------------------------------------#
         # Frames:
         self.mid_frame = ttk.Frame(
-            self.window, 
+            self.parent_frame, 
             borderwidth=5, 
             # relief="solid"
         )
         self.mid_frame.grid(row=1, sticky=(N, W, E, S))
         # Labels:
-        self.id_lbl = ttk.Label(
+        self.quote_template_lbl = ttk.Label(
             self.mid_frame,
             text="Quotation Template",
             anchor=W,
             # style="heading.TLabel",
         )
-        self.id_lbl.grid(column=0, row=0, sticky=(W, ))
+        self.quote_template_lbl.grid(column=0, row=0, sticky=(W, ))
 
-        self.type_lbl = ttk.Label(
+        self.output_folder_lbl = ttk.Label(
             self.mid_frame,
             text="Output Folder",
             anchor=W,
             # style="heading.TLabel",
         )
-        self.type_lbl.grid(column=0, row=1, sticky=(W, ))
+        self.output_folder_lbl.grid(column=0, row=1, sticky=(W, ))
 
         # Entries:
         self.quote_template_ent = ttk.Entry(
@@ -82,7 +83,7 @@ class SettingsWindow():
             text="Select Template",
             # style="home_btns.TButton",
             padding=5,
-            # command=self.select_template
+            command=self.set_template
         )
         self.select_template_btn.grid(column=3, row=0, sticky=(E, W))
 
@@ -91,7 +92,7 @@ class SettingsWindow():
             text="Select Output Folder",
             # style="home_btns.TButton",
             padding=5,
-            # command=self.select_output_folder
+            command=self.set_output_folder
         )
         self.select_output_folder_btn.grid(column=3, row=1, sticky=(N, S, E, W))
 
@@ -119,28 +120,21 @@ class SettingsWindow():
         #-------------------------------BOTTOM FRAME-----------------------------------------#
         # Frames:
         self.bottom_frame = ttk.Frame(
-            self.window,
+            self.parent_frame,
             borderwidth=5, 
             # relief="solid"
         )
         self.bottom_frame.grid(row=2, sticky=(N, W, E, S))
-
-        # # Buttons:
-        # self.save_btn = ttk.Button(
-        #     self.bottom_frame, 
-        #     text="Save",
-        #     # style="home_btns.TButton",
-        #     padding=5,
-        #     # command=self.save_changes
-        # )
-        # self.save_btn.grid(row=0, sticky=(N, S, E, W))
-
-        # self.cancel_btn = ttk.Button(
-        #     self.bottom_frame, 
-        #     text="Cancel",
-        #     # style="home_btns.TButton",
-        #     padding=5,
-        #     # command=self.view_customer_orders
-        # )
-        # self.cancel_btn.grid(column=3, columnspan=3, row=0, sticky=(N, S, E, W))
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
+
+    def set_template(self):
+        file_path = filedialog.askopenfilename()
+        self.quote_template_ent.delete(0, END)
+        self.quote_template_ent.insert(0, file_path)        
+        print(file_path)
+
+    def set_output_folder(self):
+        folder_path = filedialog.askdirectory()
+        self.output_folder_ent.delete(0, END)
+        self.output_folder_ent.insert(0, folder_path)        
+        print(folder_path)
