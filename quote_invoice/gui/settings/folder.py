@@ -2,14 +2,9 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 
-
-# filename = filedialog.askopenfilename()
-# filename = filedialog.asksaveasfilename()
-# dirname = filedialog.askdirectory()
-
 class FolderSettingsTab():
     def __init__(self, parent_frame):
-        # self.settings_window = settings_window
+        # self.parent_window = parent_window
         self.parent_frame = parent_frame 
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
@@ -43,7 +38,7 @@ class FolderSettingsTab():
         # Labels:
         self.quote_template_lbl = ttk.Label(
             self.mid_frame,
-            text="Quotation Template",
+            text="Quotation Template:",
             anchor=W,
             # style="heading.TLabel",
         )
@@ -51,7 +46,7 @@ class FolderSettingsTab():
 
         self.output_folder_lbl = ttk.Label(
             self.mid_frame,
-            text="Output Folder",
+            text="Output Folder:",
             anchor=W,
             # style="heading.TLabel",
         )
@@ -111,7 +106,7 @@ class FolderSettingsTab():
             text="Cancel",
             # style="home_btns.TButton",
             padding=5,
-            # command=self.view_customer_orders
+            command=self.close_window
         )
         self.cancel_btn.grid(column=2, columnspan=2, row=2, pady=2, sticky=(N, S, E, W))
         
@@ -130,11 +125,16 @@ class FolderSettingsTab():
     def set_template(self):
         file_path = filedialog.askopenfilename()
         self.quote_template_ent.delete(0, END)
-        self.quote_template_ent.insert(0, file_path)        
+        self.quote_template_ent.insert(0, file_path)
+        self.parent_frame.master.master.lift()           
         print(file_path)
 
     def set_output_folder(self):
         folder_path = filedialog.askdirectory()
         self.output_folder_ent.delete(0, END)
-        self.output_folder_ent.insert(0, folder_path)        
+        self.output_folder_ent.insert(0, folder_path)
+        self.parent_frame.master.master.lift()     
         print(folder_path)
+
+    def close_window(self):
+        self.parent_frame.master.master.destroy()

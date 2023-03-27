@@ -30,6 +30,7 @@ class SettingsWindow():
         self.general_settings_tab = self.create_general_settings_tab()
         self.folder_settings_tab = self.create_folder_settings_tab()
         # self.user_settings_tab = self.create_user_settings_tab()
+        self.settings_window.resizable(False, False)
     
     def create_notebook(self):
         """Create a Notebook and Frames"""
@@ -72,3 +73,6 @@ class SettingsWindow():
     def create_user_settings_tab(self):
         quote_details_tab = UserSettingsTab(self.user_settings_frame)
         return quote_details_tab
+    
+    def close_window(self):
+        self.settings_window.destroy()

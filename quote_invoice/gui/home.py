@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from quote_invoice.gui.settings.settings import SettingsWindow
 
 class HomeTab():
@@ -103,7 +104,7 @@ class HomeTab():
             self.bottom_frame, 
             text="Exit",
             style="home_btns.TButton",
-            # padding=(15, 26)
+            command=self.close_window
         )
         self.exit_btn.grid(column=4, row=0, sticky=(N, S, E, W))
 
@@ -114,3 +115,13 @@ class HomeTab():
     def open_settings(self):
         # settings_menu = Menu(win)
         SettingsWindow(self.root)
+
+
+    def close_window(self):   
+        if not messagebox.askyesno(
+            message='Are you sure you want to exit?',
+            icon='question',
+            title='Exit Application'
+        ):
+            return
+        self.root.destroy() 

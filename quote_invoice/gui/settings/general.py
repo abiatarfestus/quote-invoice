@@ -101,7 +101,7 @@ class GeneralSettingsTab():
             padding=5,
             # command=self.save_changes
         )
-        self.save_btn.grid(column=1, row=2, pady=2, sticky=(N, S, E, W))
+        self.save_btn.grid(column=0, row=2, pady=2, sticky=(N, S, E, W))
 
         self.cancel_btn = ttk.Button(
             self.mid_frame, 
@@ -110,7 +110,7 @@ class GeneralSettingsTab():
             padding=5,
             # command=self.view_customer_orders
         )
-        self.cancel_btn.grid(column=2, row=2, pady=2, sticky=(N, S, E, W))
+        self.cancel_btn.grid(column=1, columnspan=2, row=2, pady=2, sticky=(N, S, E, W))
         
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
