@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Table, Date, Boolean
+from sqlalchemy import create_engine, Column, Float, Integer, String, ForeignKey, Date, Boolean
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -104,6 +104,16 @@ class Product(Base):
     description = Column(String(100))
     price = Column(String)
     quantity = Column(Integer)
+
+class Settings(Base):
+    __tablename__ = "settings"
+    settings_id = Column(Integer, primary_key=True)
+    quote_template = Column(String)
+    invoice_template = Column(String)
+    quote_output_folder = Column(String)
+    invoice_output_folder = Column(String)
+    vat_rate = Column(Float)
+    quote_validity = Column(Integer)
 
 
 

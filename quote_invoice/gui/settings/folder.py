@@ -38,19 +38,35 @@ class FolderSettingsTab():
         # Labels:
         self.quote_template_lbl = ttk.Label(
             self.mid_frame,
-            text="Quotation Template:",
+            text="Quote Template:",
             anchor=W,
             # style="heading.TLabel",
         )
         self.quote_template_lbl.grid(column=0, row=0, sticky=(W, ))
 
-        self.output_folder_lbl = ttk.Label(
+        self.quote_output_folder_lbl = ttk.Label(
             self.mid_frame,
-            text="Output Folder:",
+            text="Quote Output Folder:",
             anchor=W,
             # style="heading.TLabel",
         )
-        self.output_folder_lbl.grid(column=0, row=1, sticky=(W, ))
+        self.quote_output_folder_lbl.grid(column=0, row=1, sticky=(W, ))
+
+        self.invoice_template_lbl = ttk.Label(
+            self.mid_frame,
+            text="Invoice Template:",
+            anchor=W,
+            # style="heading.TLabel",
+        )
+        self.invoice_template_lbl.grid(column=0, row=2, sticky=(W, ))
+
+        self.invoice_output_folder_lbl = ttk.Label(
+            self.mid_frame,
+            text="Invoice Output Folder:",
+            anchor=W,
+            # style="heading.TLabel",
+        )
+        self.invoice_output_folder_lbl.grid(column=0, row=3, sticky=(W, ))
 
         # Entries:
         self.quote_template_ent = ttk.Entry(
@@ -63,33 +79,71 @@ class FolderSettingsTab():
         # self.id_ent.insert(0, "New")
         self.quote_template_ent.grid(column=1, columnspan=2, row=0, sticky=(N, S, E, W))
 
-        self.output_folder_ent = ttk.Entry(
+        self.quote_output_folder_ent = ttk.Entry(
             self.mid_frame,
             width=40,
             # textvariable="",
             # anchor="",
             # style="heading.TLabel",
         )
-        self.output_folder_ent.grid(column=1, columnspan=2, row=1, sticky=(N, S, E, W))
+        self.quote_output_folder_ent.grid(column=1, columnspan=2, row=1, sticky=(N, S, E, W))
+
+        self.invoice_template_ent = ttk.Entry(
+            self.mid_frame,
+            width=40,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+        # self.id_ent.insert(0, "New")
+        self.invoice_template_ent.grid(column=1, columnspan=2, row=2, sticky=(N, S, E, W))
+
+        self.invoice_output_folder_ent = ttk.Entry(
+            self.mid_frame,
+            width=40,
+            # textvariable="",
+            # anchor="",
+            # style="heading.TLabel",
+        )
+        self.invoice_output_folder_ent.grid(column=1, columnspan=2, row=3, sticky=(N, S, E, W))
+
 
         # Buttons:
-        self.select_template_btn = ttk.Button(
+        self.select_quote_template_btn = ttk.Button(
             self.mid_frame,
-            text="Select Template",
+            text="Select Quote Template",
             # style="home_btns.TButton",
             padding=5,
-            command=self.set_template
+            command=self.set_quote_template
         )
-        self.select_template_btn.grid(column=3, row=0, sticky=(E, W))
+        self.select_quote_template_btn.grid(column=3, row=0, sticky=(E, W))
 
-        self.select_output_folder_btn = ttk.Button(
+        self.select_quote_output_folder_btn = ttk.Button(
             self.mid_frame,
-            text="Select Output Folder",
+            text="Select Quote Output Folder",
             # style="home_btns.TButton",
             padding=5,
-            command=self.set_output_folder
+            command=self.set_quote_output_folder
         )
-        self.select_output_folder_btn.grid(column=3, row=1, sticky=(N, S, E, W))
+        self.select_quote_output_folder_btn.grid(column=3, row=1, sticky=(N, S, E, W))
+
+        self.select_invoice_template_btn = ttk.Button(
+            self.mid_frame,
+            text="Select Invoice Template",
+            # style="home_btns.TButton",
+            padding=5,
+            command=self.set_invoice_template
+        )
+        self.select_invoice_template_btn.grid(column=3, row=2, sticky=(E, W))
+
+        self.select_invoice_output_folder_btn = ttk.Button(
+            self.mid_frame,
+            text="Select Invoice Output Folder",
+            # style="home_btns.TButton",
+            padding=5,
+            command=self.set_invoice_output_folder
+        )
+        self.select_invoice_output_folder_btn.grid(column=3, row=3, sticky=(N, S, E, W))
 
         # Buttons:
         self.save_btn = ttk.Button(
@@ -99,7 +153,7 @@ class FolderSettingsTab():
             padding=5,
             # command=self.save_changes
         )
-        self.save_btn.grid(column=0, columnspan=2, row=2, pady=2, sticky=(N, S, E, W))
+        self.save_btn.grid(column=0, columnspan=2, row=4, pady=2, sticky=(N, S, E, W))
 
         self.cancel_btn = ttk.Button(
             self.mid_frame, 
@@ -108,7 +162,7 @@ class FolderSettingsTab():
             padding=5,
             command=self.close_window
         )
-        self.cancel_btn.grid(column=2, columnspan=2, row=2, pady=2, sticky=(N, S, E, W))
+        self.cancel_btn.grid(column=2, columnspan=2, row=4, pady=2, sticky=(N, S, E, W))
         
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
@@ -122,17 +176,31 @@ class FolderSettingsTab():
         self.bottom_frame.grid(row=2, sticky=(N, W, E, S))
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
 
-    def set_template(self):
+    def set_quote_template(self):
         file_path = filedialog.askopenfilename()
         self.quote_template_ent.delete(0, END)
         self.quote_template_ent.insert(0, file_path)
         self.parent_frame.master.master.lift()           
         print(file_path)
 
-    def set_output_folder(self):
+    def set_quote_output_folder(self):
         folder_path = filedialog.askdirectory()
-        self.output_folder_ent.delete(0, END)
-        self.output_folder_ent.insert(0, folder_path)
+        self.quote_output_folder_ent.delete(0, END)
+        self.quote_output_folder_ent.insert(0, folder_path)
+        self.parent_frame.master.master.lift()     
+        print(folder_path)
+
+    def set_invoice_template(self):
+        file_path = filedialog.askopenfilename()
+        self.invoice_template_ent.delete(0, END)
+        self.invoice_template_ent.insert(0, file_path)
+        self.parent_frame.master.master.lift()           
+        print(file_path)
+
+    def set_invoice_output_folder(self):
+        folder_path = filedialog.askdirectory()
+        self.invoice_output_folder_ent.delete(0, END)
+        self.invoice_output_folder_ent.insert(0, folder_path)
         self.parent_frame.master.master.lift()     
         print(folder_path)
 
