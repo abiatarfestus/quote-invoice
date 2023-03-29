@@ -80,6 +80,7 @@ class HomeTab():
             style="home_btns.TButton",
             # padding=(15, 26)
         )
+        self.login_logout_btn.state(["disabled"])
         self.login_logout_btn.grid(column=1, row=0, sticky=(N, S, E, W))
 
         
@@ -89,6 +90,7 @@ class HomeTab():
             style="home_btns.TButton",
             # padding=(15, 26)
         )
+        self.help_btn.state(["disabled"])
         self.help_btn.grid(column=2, row=0, sticky=(N, S, E, W))
 
         self.settings_btn = ttk.Button(

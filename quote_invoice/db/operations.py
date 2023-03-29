@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import and_, or_, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import asc, desc, func
-from . models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
+from . models import Customer, Order, OrderItem, Quotation, QuotationItem, Product, Settings
 
 
 def get_customers(session, pk=None, other_fields=""):
@@ -509,4 +509,65 @@ def delete_product(session, pk):
         session.commit()
     except Exception as e:
         print(e)
+
+# Settings: -----------------------------------------------------------------
+def add_settings(
+    session, 
+    quote_template="",
+    invoice_template="",
+    quote_output_folder="",
+    invoice_output_folder="",
+    vat_rate=15.0,
+    quote_validity=30
+):
+    """Add a new app settings to the database"""
+
+    try:
+        settings = Settings(
+            quote_template=quote_template,
+            invoice_template=invoice_template,
+            quote_output_folder=quote_output_folder,
+            invoice_output_folder=invoice_output_folder,
+            vat_rate=vat_rate,
+            quote_validity=quote_validity
+        )        
+        session.add(settings)
+        session.commit()
+        return True
+    except Exception as e:
+        raise Exception(f"An error occurred while adding new settings: {e}")
     
+def get_settings(session):
+    return session.query(Settings).first()
+
+
+def update_general_settings(session,
+                        vat_rate,
+                        quote_validity
+                    ):
+    settings = get_settings(session)
+    if settings:
+        try:
+            settings.vat_rate = vat_rate
+            settings.quote_validity = quote_validity
+            session.commit()
+        except Exception as e:
+            raise Exception(f"An error occurred while adding new settings: {e}")
+
+def update_folder_settings(session,
+                        quote_template,
+                        invoice_template,
+                        quote_output_folder,
+                        invoice_output_folder
+                    ):
+    settings = get_settings(session)
+    if settings:
+        try:
+            settings.quote_template = quote_template
+            settings.invoice_template = invoice_template
+            settings.quote_output_folder = quote_output_folder
+            settings.invoice_output_folder = invoice_output_folder
+            session.commit()
+        except Exception as e:
+            raise Exception(f"An error occurred while adding new settings: {e}")
+        

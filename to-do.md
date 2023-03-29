@@ -35,3 +35,4 @@ entity person
 - [x] Check if !disabled is necessary before modifying the widget
 - [ ] Fix customer selction: ID vs display name
 - [ ] Prevent settings window from disappearing when dialog box pops up
+- [ ] Managing session in the app

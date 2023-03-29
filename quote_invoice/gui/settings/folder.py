@@ -1,11 +1,14 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from tkinter import filedialog
+from quote_invoice.db.models import Settings
+from quote_invoice.db.operations import get_settings, add_settings, update_folder_settings
 
 class FolderSettingsTab():
-    def __init__(self, parent_frame):
-        # self.parent_window = parent_window
-        self.parent_frame = parent_frame 
+    def __init__(self, session, parent_frame):
+        self.session = session
+        self.parent_frame = parent_frame
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(
@@ -151,7 +154,7 @@ class FolderSettingsTab():
             text="Save",
             # style="home_btns.TButton",
             padding=5,
-            # command=self.save_changes
+            command=self.add_or_update_settings
         )
         self.save_btn.grid(column=0, columnspan=2, row=4, pady=2, sticky=(N, S, E, W))
 
@@ -175,6 +178,15 @@ class FolderSettingsTab():
         )
         self.bottom_frame.grid(row=2, sticky=(N, W, E, S))
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
+        self.populate_settings()
+
+    def populate_settings(self):
+        settings = get_settings(self.session)
+        if settings:
+            self.quote_template_ent.insert(0, settings.quote_template)
+            self.quote_output_folder_ent.insert(0, settings.quote_output_folder)
+            self.invoice_template_ent.insert(0, settings.invoice_template)
+            self.invoice_output_folder_ent.insert(0, settings.invoice_output_folder)
 
     def set_quote_template(self):
         file_path = filedialog.askopenfilename()
@@ -206,3 +218,48 @@ class FolderSettingsTab():
 
     def close_window(self):
         self.parent_frame.master.master.destroy()
+
+    def add_or_update_settings(self):
+        quote_template = self.quote_template_ent.get()
+        invoice_template = self.invoice_template_ent.get()
+        quote_output_folder = self.quote_output_folder_ent.get()
+        invoice_output_folder = self.invoice_output_folder_ent.get()
+        settings = get_settings(self.session)
+        if not settings:
+            try:
+                print("CALLING ADD SETTINGS FROM FOLDER")
+                add_settings(
+                    self.session,
+                    quote_template=quote_template,
+                    invoice_template=invoice_template,
+                    quote_output_folder=quote_output_folder,
+                    invoice_output_folder=invoice_output_folder,
+                )
+                return messagebox.showinfo(
+                    message='Settings successfully created!',
+                    title='Success'
+                )
+            except Exception as e:
+                return messagebox.showerror(
+                    message=e,
+                    title='Error'
+                )
+        else:
+            try:
+                print("CALLING UPDATE SETTINGS FROM FOLDER")
+                update_folder_settings(
+                    self.session,
+                    quote_template,
+                    invoice_template,
+                    quote_output_folder,
+                    invoice_output_folder,
+                )
+                return messagebox.showinfo(
+                    message='Settings successfully updated!',
+                    title='Success'
+                )
+            except Exception as e:
+                return messagebox.showerror(
+                    message=e,
+                    title='Error'
+                )

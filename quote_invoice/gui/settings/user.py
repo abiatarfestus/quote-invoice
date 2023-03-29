@@ -8,8 +8,8 @@ from tkinter import filedialog
 # dirname = filedialog.askdirectory()
 
 class UserSettingsTab():
-    def __init__(self, parent_frame):
-        # self.settings_window = settings_window
+    def __init__(self, session, parent_frame):
+        self.session = session
         self.parent_frame = parent_frame 
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:

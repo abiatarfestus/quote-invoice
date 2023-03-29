@@ -19,6 +19,7 @@ session = Session()
 class SettingsWindow():
     """ Initialize the settings window of the application"""
     def __init__(self, parent):
+        # self.session = session
         self.settings_window = Toplevel(parent)
         self.settings_window.title("Settings")
         # self.root.option_add('*tearOff', FALSE)
@@ -63,15 +64,15 @@ class SettingsWindow():
         self.user_settings_frame.rowconfigure(0, weight=1)
 
     def create_general_settings_tab(self):
-        general_settings_tab = GeneralSettingsTab(self.general_settings_frame)
+        general_settings_tab = GeneralSettingsTab(session, self.general_settings_frame)
         return general_settings_tab
 
     def create_folder_settings_tab(self):
-        folder_settings_tab = FolderSettingsTab(self.folder_settings_frame)
+        folder_settings_tab = FolderSettingsTab(session, self.folder_settings_frame)
         return folder_settings_tab
     
     def create_user_settings_tab(self):
-        quote_details_tab = UserSettingsTab(self.user_settings_frame)
+        quote_details_tab = UserSettingsTab(session, self.self.user_settings_frame)
         return quote_details_tab
     
     def close_window(self):

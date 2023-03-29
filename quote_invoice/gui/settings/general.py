@@ -1,16 +1,13 @@
 from tkinter import *
 from tkinter import ttk
-from tkinter import filedialog
-
-
-# filename = filedialog.askopenfilename()
-# filename = filedialog.asksaveasfilename()
-# dirname = filedialog.askdirectory()
+from tkinter import messagebox
+from quote_invoice.db.models import Settings
+from quote_invoice.db.operations import get_settings, add_settings, update_general_settings
 
 class GeneralSettingsTab():
-    def __init__(self, parent_frame):
-        # self.settings_window = settings_window
-        self.parent_frame = parent_frame 
+    def __init__(self, session, parent_frame):
+        self.session = session
+        self.parent_frame = parent_frame
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(
@@ -58,32 +55,15 @@ class GeneralSettingsTab():
         )
         self.quote_validity_lbl.grid(column=0, row=1, sticky=(W, ))
 
-        # Entries:
-        # self.vat_rate_ent = ttk.Entry(
-        #     self.mid_frame,
-        #     width=40,
-        #     # textvariable="",
-        #     # anchor="",
-        #     # style="heading.TLabel",
-        # )
-        # # self.id_ent.insert(0, "New")
-        # self.vat_rate_ent.grid(column=1, columnspan=2, row=0, sticky=(N, S, E, W))
-
-        # self.quote_validity_ent = ttk.Entry(
-        #     self.mid_frame,
-        #     width=40,
-        #     # textvariable="",
-        #     # anchor="",
-        #     # style="heading.TLabel",
-        # )
-        # self.quote_validity_ent.grid(column=1, columnspan=2, row=1, sticky=(N, S, E, W))
-
         # Spinboxes:
         self.vat_rate_spx = ttk.Spinbox(
             self.mid_frame,
             from_=0.0,
             to=100.0,
+            format="%.2f",
+            increment=0.01
         )
+        # self.vat_rate_spx.state(['readonly'])
         self.vat_rate_spx.grid(column=1, columnspan=2, row=0, sticky=(S, N, E, W))
 
         self.quote_validity_spx = ttk.Spinbox(
@@ -91,6 +71,7 @@ class GeneralSettingsTab():
             from_=1,
             to=100,
         )
+        # self.quote_validity_spx.state(['readonly'])
         self.quote_validity_spx.grid(column=1, columnspan=2, row=1, sticky=(S, N, E, W))
 
          # Buttons:
@@ -99,7 +80,7 @@ class GeneralSettingsTab():
             text="Save",
             # style="home_btns.TButton",
             padding=5,
-            # command=self.save_changes
+            command=self.add_or_update_settings
         )
         self.save_btn.grid(column=0, row=2, pady=2, sticky=(N, S, E, W))
 
@@ -108,7 +89,7 @@ class GeneralSettingsTab():
             text="Cancel",
             # style="home_btns.TButton",
             padding=5,
-            # command=self.view_customer_orders
+            command=self.close_window
         )
         self.cancel_btn.grid(column=1, columnspan=2, row=2, pady=2, sticky=(N, S, E, W))
         
@@ -122,7 +103,54 @@ class GeneralSettingsTab():
             # relief="solid"
         )
         self.bottom_frame.grid(column=0, row=2, sticky=(N, W, E, S))
-
-       
-        
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
+        self.populate_settings()
+
+    def populate_settings(self):
+        settings = get_settings(self.session)
+        print(f"CURRENT SETTINGS: {settings}")
+        if settings:
+            self.vat_rate_spx.insert(0, settings.vat_rate)
+            self.quote_validity_spx.insert(0, settings.quote_validity)
+
+    def close_window(self):
+        self.parent_frame.master.master.destroy()
+
+    def add_or_update_settings(self):
+        vat_rate = float(self.vat_rate_spx.get())
+        quote_validity = int(self.quote_validity_spx.get())
+        settings = get_settings(self.session)
+        if not settings:
+            try:
+                print("CALLING ADD SETTINGS FROM GENERAL")
+                add_settings(
+                    self.session,
+                    vat_rate=vat_rate,
+                    quote_validity=quote_validity
+                )
+                return messagebox.showinfo(
+                    message='Settings successfully created!',
+                    title='Success'
+                )
+            except Exception as e:
+                return messagebox.showerror(
+                    message=e,
+                    title='Error'
+                )
+        else:
+            try:
+                print("CALLING UPDATE SETTINGS FROM GENERAL")
+                update_general_settings(
+                    self.session,
+                    vat_rate,
+                    quote_validity
+                )
+                return messagebox.showinfo(
+                    message='Settings successfully updated!',
+                    title='Success'
+                )
+            except Exception as e:
+                return messagebox.showerror(
+                    message=e,
+                    title='Error'
+                )
