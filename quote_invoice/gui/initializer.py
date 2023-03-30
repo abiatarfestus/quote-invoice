@@ -10,6 +10,7 @@ from .quote_details import QuoteDetailsTab
 from .order_list import OrderListTab
 from .style import style
 from .order_details import OrderDetailsTab
+# from quote_invoice.db import queries
 
 def get_connection():
     return create_engine(f"sqlite:///app_database.db")

@@ -1,7 +1,8 @@
 from datetime import datetime
 from sqlalchemy import and_, or_, create_engine
 from sqlalchemy.orm import sessionmaker
-from . models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
+# from . models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
+from quote_invoice.db.operations import delete_settings
 
 def get_connection():
     return create_engine(f"sqlite:///app_database.db")
@@ -49,15 +50,17 @@ session = Session()
 #             print(quote)
 
 # show customers with their orders---------------------------------
-customers = session.query(Customer).all()
+# customers = session.query(Customer).all()
 
-for customer in customers:
-    if len(customer.orders) > 0:
-        print("")
-        if customer.first_name:
-            print(f"Customer: {customer.first_name} {customer.last_name}")
-        else:
-            print(f"Customer: {customer.entity_name}")
-        for order in customer.orders:
-            print(order)
+# for customer in customers:
+#     if len(customer.orders) > 0:
+#         print("")
+#         if customer.first_name:
+#             print(f"Customer: {customer.first_name} {customer.last_name}")
+#         else:
+#             print(f"Customer: {customer.entity_name}")
+#         for order in customer.orders:
+#             print(order)
 
+# Delete settings
+delete_settings(session)

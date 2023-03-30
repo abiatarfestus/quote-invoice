@@ -36,3 +36,5 @@ entity person
 - [ ] Fix customer selction: ID vs display name
 - [ ] Prevent settings window from disappearing when dialog box pops up
 - [ ] Managing session in the app
+- [ ] Check data entry formatting e.g., .lower() etc
+- [ ] Add on_delete restrictions

@@ -570,4 +570,11 @@ def update_folder_settings(session,
             session.commit()
         except Exception as e:
             raise Exception(f"An error occurred while adding new settings: {e}")
-        
+
+def delete_settings(session):
+    try:
+        settings = session.query(Settings).first()
+        session.delete(settings)
+        session.commit()
+    except Exception as e:
+        print(e)

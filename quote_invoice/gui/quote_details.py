@@ -773,7 +773,7 @@ class QuoteDetailsTab():
         if quote_id == "New":
             messagebox.showerror(
                 message='An unsaved quote cannot be reset!',
-                title='Info'
+                title='Error'
             )
             return
         quotation = db.get_quotations(self.session, pk=quote_id)
@@ -785,7 +785,7 @@ class QuoteDetailsTab():
         if quote_id == "New":
             messagebox.showerror(
                 message='An unsaved quote cannot be reused!',
-                title='Info'
+                title='Error'
             )
             return
         quotation = db.get_quotations(self.session, pk=quote_id)
@@ -803,7 +803,7 @@ class QuoteDetailsTab():
         if quote_id == "New":
             messagebox.showerror(
                 message='Cannot generate an order from an unsaved quotation!',
-                title='Info'
+                title='Error'
             )
             return
         quotation = db.get_quotations(self.session, pk=quote_id)
@@ -868,4 +868,11 @@ class QuoteDetailsTab():
         )
             return error_message
         quote_template = templates.quote.Quote(self.session, quote_id)
-        quote_template.generate_quote_preview()
+        try:
+            quote_template.generate_quote_preview()
+        except Exception as e:
+            messagebox.showerror(
+                message=e,
+                title='Error'
+            )
+            return

@@ -128,12 +128,12 @@ class GeneralSettingsTab():
                     vat_rate=vat_rate,
                     quote_validity=quote_validity
                 )
-                return messagebox.showinfo(
+                messagebox.showinfo(
                     message='Settings successfully created!',
                     title='Success'
                 )
             except Exception as e:
-                return messagebox.showerror(
+                messagebox.showerror(
                     message=e,
                     title='Error'
                 )
@@ -145,12 +145,13 @@ class GeneralSettingsTab():
                     vat_rate,
                     quote_validity
                 )
-                return messagebox.showinfo(
+                messagebox.showinfo(
                     message='Settings successfully updated!',
                     title='Success'
                 )
             except Exception as e:
-                return messagebox.showerror(
+                messagebox.showerror(
                     message=e,
                     title='Error'
                 )
+        self.parent_frame.master.master.lift()  

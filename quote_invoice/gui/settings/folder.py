@@ -235,12 +235,12 @@ class FolderSettingsTab():
                     quote_output_folder=quote_output_folder,
                     invoice_output_folder=invoice_output_folder,
                 )
-                return messagebox.showinfo(
+                messagebox.showinfo(
                     message='Settings successfully created!',
                     title='Success'
                 )
             except Exception as e:
-                return messagebox.showerror(
+                messagebox.showerror(
                     message=e,
                     title='Error'
                 )
@@ -254,12 +254,13 @@ class FolderSettingsTab():
                     quote_output_folder,
                     invoice_output_folder,
                 )
-                return messagebox.showinfo(
+                messagebox.showinfo(
                     message='Settings successfully updated!',
                     title='Success'
                 )
             except Exception as e:
-                return messagebox.showerror(
+                messagebox.showerror(
                     message=e,
                     title='Error'
                 )
+        self.parent_frame.master.master.lift()  
