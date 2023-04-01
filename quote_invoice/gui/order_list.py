@@ -52,8 +52,8 @@ class OrderListTab():
         # Scrollbar
         y_scroll = ttk.Scrollbar(self.mid_frame, orient=VERTICAL, command=self.tree.yview)
         x_scroll = ttk.Scrollbar(self.mid_frame, orient=HORIZONTAL, command=self.tree.xview)
-        y_scroll.grid(column=1, row=0, sticky=(N, S, W, E))
-        x_scroll.grid(column=0, row=1, sticky=(E, W))
+        y_scroll.grid(column=1, row=0, sticky=(N,S, W))
+        x_scroll.grid(column=0, row=1, sticky=(N, E, W))
         self.tree['yscrollcommand'] = y_scroll.set
         self.tree['xscrollcommand'] = x_scroll.set
 
@@ -77,10 +77,10 @@ class OrderListTab():
         )
 
         # Format Our Columns
-        self.tree.column("ID", anchor=CENTER)
-        self.tree.column("Customer", anchor=W)
-        self.tree.column("Description", anchor=W)
-        self.tree.column("Order Date", anchor=E)
+        self.tree.column("ID",  width=100, anchor=CENTER)
+        self.tree.column("Customer",  width=250, anchor=W)
+        self.tree.column("Description", width=600, anchor=W)
+        self.tree.column("Order Date",  width=100, anchor=E)
         self.tree.column("Paid", anchor=CENTER)
         # self.tree.column("Notes", anchor=W)
 
@@ -353,7 +353,7 @@ class OrderListTab():
                 )
         except KeyError as e:
                 error_message = messagebox.showerror(
-                message="Key Error: An error occured wile trying to retrieve customer name.",
+                message="Key Error: An error occured while trying to retrieve customer name.",
                 detail=e,
                 title='Error'
             )

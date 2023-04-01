@@ -432,8 +432,8 @@ def get_products(session, pk=None, sku=None, barcode=None, product_name=""):
             return session.query(Product).filter(
                 Product.barcode.like(f'%{barcode}%')
             ).order_by(Product.product_name).all()
-        elif product_name == "":
-            return session.query(Product).order_by(Product.product_name).all()
+        # elif product_name == "":
+        #     return session.query(Product).order_by(Product.product_name).all()
         else:
             return session.query(Product).filter(
                 Product.product_name.like(f'%{product_name}%')

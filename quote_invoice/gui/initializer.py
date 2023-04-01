@@ -6,6 +6,7 @@ from .home import HomeTab
 from .customer_list import CustomerListTab
 from .quotation_list import QuotationListTab
 from .customer_details import CustomerDetailsTab
+from .product_details import ProductDetailsTab
 from .quote_details import QuoteDetailsTab
 from .order_list import OrderListTab
 from .style import style
@@ -47,6 +48,7 @@ class Window():
         self.quotation_list_tab = self.setup_quotation_list_tab()
         self.customer_details_tab = self.setup_customer_tab()
         self.customer_list_tab = self.setup_customer_list_tab()
+        self.product_details_tab = self.setup_product_tab()
 
     
     def create_notebook(self):
@@ -193,3 +195,10 @@ class Window():
             session
         )
         return order_list_tab
+    
+    def setup_product_tab(self):
+        product_details_tab = ProductDetailsTab(
+            self.notebook,
+            self.product_frame,
+            session)
+        return product_details_tab

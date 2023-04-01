@@ -101,10 +101,10 @@ class Product(Base):
     sku = Column(String(50), unique=True)
     barcode = Column(String(50), unique=True)
     product_name = Column(String(50), unique=True)
-    description = Column(String(100))
+    description = Column(String(250))
     price = Column(String)
-    quantity = Column(Integer)
-    # taxable = Column(Boolean)
+    quantity = Column(Integer) # For inventory?
+    # is_taxable = Column(Boolean)
 
 class Settings(Base):
     __tablename__ = "settings"
