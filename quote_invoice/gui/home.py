@@ -3,11 +3,13 @@ from tkinter import ttk
 from tkinter import messagebox
 from quote_invoice.gui.settings.settings import SettingsWindow
 
+main_logo_path = r"quote_invoice\assets\main_logo.png"
+
 class HomeTab():
     def __init__(self, root, parent_frame):
         """Configure the home tab page"""
         self.root = root
-        self.main_logo = PhotoImage(file='main_logo.png')
+        self.main_logo = PhotoImage(file=main_logo_path)
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(

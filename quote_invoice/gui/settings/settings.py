@@ -6,6 +6,8 @@ from .folder import FolderSettingsTab
 from .general import GeneralSettingsTab
 from .user import UserSettingsTab
 
+settings_icon_path = r"quote_invoice\assets\settings_icon.png"
+
 def get_connection():
     return create_engine(f"sqlite:///app_database.db")
 
@@ -23,7 +25,7 @@ class SettingsWindow():
         self.settings_window = Toplevel(parent)
         self.settings_window.title("Settings")
         # self.root.option_add('*tearOff', FALSE)
-        self.logo = PhotoImage(file='settings_icon.png')
+        self.logo = PhotoImage(file=settings_icon_path)
         self.settings_window.iconphoto(False, self.logo)
         # self.style = style()
         self.create_notebook()

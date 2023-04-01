@@ -12,6 +12,8 @@ from .style import style
 from .order_details import OrderDetailsTab
 # from quote_invoice.db import queries
 
+logo_path = r"quote_invoice\assets\logo.png"
+
 def get_connection():
     return create_engine(f"sqlite:///app_database.db")
 
@@ -33,7 +35,7 @@ class Window():
         self.selected_order = None
         self.selected_quote = None
         self.selected_order = None
-        self.logo = PhotoImage(file='logo.png')
+        self.logo = PhotoImage(file=logo_path)
         self.root.iconphoto(False, self.logo)
         self.style = style()
         self.create_notebook()

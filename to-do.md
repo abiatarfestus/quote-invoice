@@ -38,3 +38,5 @@ entity person
 - [ ] Managing session in the app
 - [ ] Check data entry formatting e.g., .lower() etc
 - [ ] Add on_delete restrictions
+- [ ] Where to calculate Tax?/ Add VAT to Product table
+- [ ] Prefix for invoice/quote number (add it to settings)

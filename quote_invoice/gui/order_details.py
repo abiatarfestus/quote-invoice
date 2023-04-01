@@ -3,8 +3,8 @@ from tkinter import ttk
 from tkinter import messagebox
 from moneyed import Money, NAD
 from datetime import datetime, date
-from quote_invoice.templates import quote
 from quote_invoice.db import operations as db
+from quote_invoice.templates.invoice import Invoice
 from quote_invoice.db.models import Customer, OrderItem, Product, QuotationItem
 
 
@@ -230,7 +230,8 @@ class OrderDetailsTab():
             self.mid_frame,
             text="Print/Preview Order",
             # style="home_btns.TButton",
-            padding=(0, 10)
+            padding=(0, 10),
+            command=self.print_invoice
         )
         self.order_preview_btn.grid(column=4, row=0, rowspan=2, sticky=(N, W, E, S))
 
@@ -828,3 +829,23 @@ class OrderDetailsTab():
         self.clear_order_items_btn.state(["disabled"])
         self.reset_order_btn.state(["disabled"])
         self.order_input_delete_btn.state(["disabled"])
+
+    def print_invoice(self):
+        try:
+            order_id = int(self.order_id_ent.get())
+        except ValueError as e:
+            error_message = messagebox.showerror(
+            message="Invalid Order ID.",
+            detail="Please ensure that there is an open order.",
+            title='Error'
+        )
+            return error_message
+        invoice_template = Invoice(self.session, order_id)
+        try:
+            invoice_template.generate_invoice_preview()
+        except Exception as e:
+            messagebox.showerror(
+                message=e,
+                title='Error'
+            )
+            return

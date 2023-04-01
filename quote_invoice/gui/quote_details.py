@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from moneyed import Money, NAD
 from datetime import datetime, date
-from quote_invoice import templates
+from quote_invoice.templates.quote import Quote
 from quote_invoice.db import operations as db
 from quote_invoice.db.models import Customer, QuotationItem, Product
 
@@ -867,7 +867,7 @@ class QuoteDetailsTab():
             title='Error'
         )
             return error_message
-        quote_template = templates.quote.Quote(self.session, quote_id)
+        quote_template = Quote(self.session, quote_id)
         try:
             quote_template.generate_quote_preview()
         except Exception as e:

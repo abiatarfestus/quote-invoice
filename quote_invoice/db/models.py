@@ -104,6 +104,7 @@ class Product(Base):
     description = Column(String(100))
     price = Column(String)
     quantity = Column(Integer)
+    # taxable = Column(Boolean)
 
 class Settings(Base):
     __tablename__ = "settings"
