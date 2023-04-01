@@ -38,7 +38,7 @@ class QuoteDetailsTab():
         self.top_frame = ttk.Frame(
             parent_frame,
             borderwidth=5, 
-            relief="solid"
+            # relief="solid"
         )
         self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
@@ -88,7 +88,7 @@ class QuoteDetailsTab():
             self.mid_frame,
             text="Quote ID",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.id_lbl.grid(column=0, row=0, sticky=(W, ))
 
@@ -96,7 +96,7 @@ class QuoteDetailsTab():
             self.mid_frame,
             text="Quote Date",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.date_lbl.grid(column=0, row=1, sticky=(W, ))
 
@@ -104,7 +104,7 @@ class QuoteDetailsTab():
             self.mid_frame,
             text="Quote Description",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.quote_description_lbl.grid(column=0, row=2, sticky=(W, ))
 
@@ -112,7 +112,7 @@ class QuoteDetailsTab():
             self.mid_frame,
             text="Customer",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.customer_lbl.grid(column=0, row=3, sticky=(W, ))
 
@@ -120,7 +120,7 @@ class QuoteDetailsTab():
             self.mid_frame,
             text="Notes",
             anchor=E,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.notes_lbl.grid(column=3, row=0, sticky=(E, ))
         
@@ -129,7 +129,7 @@ class QuoteDetailsTab():
             self.mid_frame,
             textvariable=self.quote_amount,
             anchor=E,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.amount_lbl.grid(column=7, row=6, sticky=(N, S, W, E))
 
@@ -215,7 +215,7 @@ class QuoteDetailsTab():
         self.quote_preview_btn = ttk.Button(
             self.mid_frame,
             text="Print/Preview Quotation",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=(0, 10),
             command=self.print_quote
         )
@@ -224,7 +224,7 @@ class QuoteDetailsTab():
         self.add_quote_btn = ttk.Button(
             self.mid_frame,
             text="Add a New Quotation",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=10,
             command=self.open_blank_quote_form
         )
@@ -234,7 +234,7 @@ class QuoteDetailsTab():
         self.quote_save_update_btn = ttk.Button(
             self.mid_frame, 
             textvariable=self.quote_save_update,
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.create_or_update_quotation
         )
@@ -243,7 +243,7 @@ class QuoteDetailsTab():
         self.generate_order_btn = ttk.Button(
             self.mid_frame,
             text="Generate Order",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=10,
             command=self.qenerate_order_from_quote
         )
@@ -252,7 +252,7 @@ class QuoteDetailsTab():
         self.mark_closed_btn = ttk.Button(
             self.mid_frame,
             text="Mark as Closed",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=10,
             command=self.mark_quote_closed
         )
@@ -261,7 +261,7 @@ class QuoteDetailsTab():
         self.reuse_quote_btn = ttk.Button(
             self.mid_frame,
             text="Reuse Quotation",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=10,
             command=self.reuse_quotation
         )
@@ -270,7 +270,7 @@ class QuoteDetailsTab():
         self.clear_quote_items_btn = ttk.Button(
             self.mid_frame,
             text="Clear Quote Items",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=10,
             command=self.clear_quote_items
         )
@@ -279,7 +279,7 @@ class QuoteDetailsTab():
         self.reset_quote_btn = ttk.Button(
             self.mid_frame,
             text="Reset Quote",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=10,
             command=self.reset_quote
         )
@@ -338,7 +338,7 @@ class QuoteDetailsTab():
         self.bottom_frame = ttk.Frame(
             parent_frame,
             borderwidth=5, 
-            relief="solid"
+            # relief="solid"
         )
         self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E))
         self.bottom_frame.columnconfigure(0, weight=1)
@@ -405,7 +405,7 @@ class QuoteDetailsTab():
         self.quote_input_delete_btn = ttk.Button(
             self.bottom_frame, 
             text="Delete Item",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.delete_item
         )
@@ -414,7 +414,7 @@ class QuoteDetailsTab():
         self.quote_input_add_btn = ttk.Button(
             self.bottom_frame, 
             text="Add Item",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.add_item
         )

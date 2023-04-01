@@ -86,7 +86,7 @@ class OrderDetailsTab():
             self.mid_frame,
             text="Order ID",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.id_lbl.grid(column=0, row=0, sticky=(W, ))
 
@@ -94,7 +94,7 @@ class OrderDetailsTab():
             self.mid_frame,
             text="Order Date",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.date_lbl.grid(column=0, row=1, sticky=(W, ))
 
@@ -102,7 +102,7 @@ class OrderDetailsTab():
             self.mid_frame,
             text="Order Description",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.order_description_lbl.grid(column=0, row=2, sticky=(W, ))
 
@@ -110,7 +110,7 @@ class OrderDetailsTab():
             self.mid_frame,
             text="Customer",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.customer_lbl.grid(column=0, row=3, sticky=(W, ))
 
@@ -118,7 +118,7 @@ class OrderDetailsTab():
             self.mid_frame,
             text="Notes",
             anchor=E,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.notes_lbl.grid(column=3, row=0, sticky=(E, ))
 
@@ -143,7 +143,7 @@ class OrderDetailsTab():
             self.mid_frame,
             textvariable=self.order_amount,
             anchor=E,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.amount_lbl.grid(column=4, row=6, sticky=(N, S, W, E))
 
@@ -229,7 +229,7 @@ class OrderDetailsTab():
         self.order_preview_btn = ttk.Button(
             self.mid_frame,
             text="Print/Preview Order",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=(0, 10),
             command=self.print_invoice
         )
@@ -238,7 +238,7 @@ class OrderDetailsTab():
         self.add_order_btn = ttk.Button(
             self.mid_frame,
             text="Add a New Order",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=10,
             command=self.open_blank_order_form
         )
@@ -248,7 +248,7 @@ class OrderDetailsTab():
         self.order_save_update_btn = ttk.Button(
             self.mid_frame, 
             textvariable=self.order_save_update,
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.create_or_update_order
         )
@@ -257,7 +257,7 @@ class OrderDetailsTab():
         self.clear_order_items_btn = ttk.Button(
             self.mid_frame,
             text="Clear Order Items",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=10,
             command=self.clear_order_items
         )
@@ -266,7 +266,7 @@ class OrderDetailsTab():
         self.reuse_order_btn = ttk.Button(
             self.mid_frame,
             text="Reuse Order",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=10,
             command=self.reuse_order
         )
@@ -275,7 +275,7 @@ class OrderDetailsTab():
         self.reset_order_btn = ttk.Button(
             self.mid_frame,
             text="Reset Order",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=10,
             command=self.reset_order
         )
@@ -401,7 +401,7 @@ class OrderDetailsTab():
         self.order_input_delete_btn = ttk.Button(
             self.bottom_frame, 
             text="Delete Item",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.delete_item
         )
@@ -410,7 +410,7 @@ class OrderDetailsTab():
         self.order_input_add_btn = ttk.Button(
             self.bottom_frame, 
             text="Add Item",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.add_item
         )

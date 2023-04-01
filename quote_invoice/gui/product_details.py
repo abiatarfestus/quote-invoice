@@ -57,7 +57,7 @@ class ProductDetailsTab():
         self.search_btn = ttk.Button(
             self.mid_frame, 
             text="Search Product",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=(10, 21),
             command=self.search_product
         )
@@ -154,7 +154,7 @@ class ProductDetailsTab():
             self.bottom_frame,
             text="Product ID",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.id_lbl.grid(column=0, row=0, sticky=(W, ))
 
@@ -162,7 +162,7 @@ class ProductDetailsTab():
             self.bottom_frame,
             text="SKU",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.sku_lbl.grid(column=0, row=1, sticky=(W, ))
 
@@ -170,7 +170,7 @@ class ProductDetailsTab():
             self.bottom_frame,
             text="Barcode",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.barcode_lbl.grid(column=0, row=2, sticky=(W, ))
 
@@ -178,7 +178,7 @@ class ProductDetailsTab():
             self.bottom_frame,
             text="Product Name",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.product_name_lbl.grid(column=0, row=3, sticky=(W, ))
 
@@ -186,7 +186,7 @@ class ProductDetailsTab():
             self.bottom_frame,
             text="Description",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.description_lbl.grid(column=0, row=4, sticky=(W, ))
 
@@ -194,7 +194,7 @@ class ProductDetailsTab():
             self.bottom_frame,
             text="Price",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.price_lbl.grid(column=0, row=5, sticky=(W, ))
 
@@ -202,7 +202,7 @@ class ProductDetailsTab():
             self.bottom_frame,
             text="Quantity",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.quantity_lbl.grid(column=0, row=6, sticky=(W, ))
 
@@ -210,7 +210,7 @@ class ProductDetailsTab():
             self.bottom_frame,
             text="Taxable",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.is_taxable_lbl.grid(column=0, row=7, sticky=(W, ))
 
@@ -220,7 +220,7 @@ class ProductDetailsTab():
             width=40,
             # textvariable="",
             # anchor="",
-            # style="heading.TLabel",
+            style="txt.TEntry",
         )
         self.id_ent.insert(0, "New")
         self.id_ent.state(["disabled"])
@@ -231,7 +231,7 @@ class ProductDetailsTab():
             width=40,
             # textvariable="",
             # anchor="",
-            # style="heading.TLabel",
+            style="txt.TEntry",
         )
         self.sku_ent.grid(column=1, columnspan=2, row=1, sticky=(N, S, E, W))
 
@@ -240,7 +240,7 @@ class ProductDetailsTab():
             width=40,
             # textvariable="",
             # anchor="",
-            # style="heading.TLabel",
+            style="txt.TEntry",
         )
         self.barcode_ent.grid(column=1, columnspan=2, row=2, sticky=(N, S, E, W))
 
@@ -249,7 +249,7 @@ class ProductDetailsTab():
             width=40,
             # textvariable="",
             # anchor="",
-            # style="heading.TLabel",
+            style="txt.TEntry",
         )
         self.product_name_ent.grid(column=1, columnspan=2, row=3, sticky=(N, S, E, W))
 
@@ -258,7 +258,7 @@ class ProductDetailsTab():
             width=40,
             # textvariable="",
             # anchor="",
-            # style="heading.TLabel",
+            style="txt.TEntry",
         )
         self.description_ent.grid(column=1, columnspan=2, row=4, sticky=(N, S, E, W))
 
@@ -267,7 +267,7 @@ class ProductDetailsTab():
             width=40,
             # textvariable="",
             # anchor="",
-            # style="heading.TLabel",
+            style="txt.TEntry",
         )
         self.price_ent.grid(column=1, columnspan=2, row=5, sticky=(N, S, E, W))
 
@@ -276,7 +276,7 @@ class ProductDetailsTab():
             width=40,
             # textvariable="",
             # anchor="",
-            # style="heading.TLabel",
+            style="txt.TEntry",
         )
         self.quantity_ent.grid(column=1, columnspan=2, row=6, sticky=(N, S, E, W))
 
@@ -296,7 +296,7 @@ class ProductDetailsTab():
         self.save_btn = ttk.Button(
             self.bottom_frame,
             text="Save Product",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.create_or_update_product
         )
@@ -305,7 +305,7 @@ class ProductDetailsTab():
         self.new_product_btn = ttk.Button(
             self.bottom_frame,
             text="New Product",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.open_blank_product_form
         )
@@ -344,6 +344,7 @@ class ProductDetailsTab():
         self.populate_fields(product)
 
     def open_blank_product_form(self):
+        self.update_item_list_tree()
         self.id_ent.state(["!disabled"])
         self.id_ent.delete(0, END)
         self.id_ent.insert(0, "New")
@@ -370,12 +371,10 @@ class ProductDetailsTab():
                 product_name=self.product_name_ent.get(), 
                 description=self.description_ent.get(), 
                 price=self.price_ent.get(), 
-                quantit=self.quantity_ent.get(), 
+                quantity=self.quantity_ent.get(), 
                 # is_taxable=self.is_taxable.get()
             )
                 self.open_blank_product_form()
-                # self.enable_buttons()
-                # self.save_btn.configure(text="Update Product")
                 success_message = messagebox.showinfo(
                 message='New product was successfully added!',
                 title='Success'
@@ -468,20 +467,7 @@ class ProductDetailsTab():
         try:
             product = db.get_products(self.session, pk=product_id)
             if product:
-                for item in self.products_tree.get_children():
-                    self.products_tree.delete(item)
-                self.products_tree.insert('', 'end', iid=f"{product.product_id}",
-                values=(
-                    product.product_id,
-                    product.sku,
-                    product.barcode,
-                    product.product_name,
-                    product.description,
-                    f"N${product.price}",
-                    product.quantity,
-                    # product.taxable
-                    )
-                )
+                self.update_item_list_tree(query=[product])
             else:
                 info_message = messagebox.showinfo(
                 message=f"No record with Product ID {product_id} was found.",
@@ -490,7 +476,7 @@ class ProductDetailsTab():
                 return info_message
         except Exception as e:
                 error_message = messagebox.showerror(
-                message="Oops! An error occured while getting or listing products",
+                message="Oops! An error occured while getting or listing the product",
                 detail=e,
                 title='Error'
             )
@@ -505,21 +491,7 @@ class ProductDetailsTab():
                 title='Info'
             )
                 return info_message
-            for item in self.products_tree.get_children():
-                self.products_tree.delete(item)
-            for product in products:
-                self.products_tree.insert('', 'end', iid=f"{product.product_id}",
-                values=(
-                    product.product_id,
-                    product.sku,
-                    product.barcode,
-                    product.product_name,
-                    product.description,
-                    f"N${product.price}",
-                    product.quantity,
-                    # product.taxable
-                    )
-            ) 
+            self.update_item_list_tree(query=products)
         except Exception as e:
                 error_message = messagebox.showerror(
                 message="Oops! An error occured while getting or listing products",
@@ -537,21 +509,7 @@ class ProductDetailsTab():
                 title='Info'
             )
                 return info_message
-            for item in self.products_tree.get_children():
-                self.products_tree.delete(item)
-            for product in products:
-                self.products_tree.insert('', 'end', iid=f"{product.product_id}",
-                values=(
-                    product.product_id,
-                    product.sku,
-                    product.barcode,
-                    product.product_name,
-                    product.description,
-                    f"N${product.price}",
-                    product.quantity,
-                    # product.taxable
-                    )
-            )
+            self.update_item_list_tree(query=products)
         except Exception as e:
                 error_message = messagebox.showerror(
                 message="Oops! An error occured while getting or listing products",
@@ -569,21 +527,7 @@ class ProductDetailsTab():
                 title='Info'
             )
                 return info_message
-            for item in self.products_tree.get_children():
-                self.products_tree.delete(item)
-            for product in products:
-                self.products_tree.insert('', 'end', iid=f"{product.product_id}",
-                values=(
-                    product.product_id,
-                    product.sku,
-                    product.barcode,
-                    product.product_name,
-                    product.description,
-                    f"N${product.price}",
-                    product.quantity,
-                    # product.taxable
-                    )
-            )
+            self.update_item_list_tree(products)
         except Exception as e:
                 error_message = messagebox.showerror(
                 message="Oops! An error occured while getting or listing products",

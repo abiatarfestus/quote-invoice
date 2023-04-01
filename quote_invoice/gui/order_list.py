@@ -124,7 +124,7 @@ class OrderListTab():
         self.open_order_btn = ttk.Button(
             self.bottom_frame,
             text="Open Selected Record",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=21,
             command=self.view_order
         )
@@ -133,7 +133,7 @@ class OrderListTab():
         self.add_order_btn = ttk.Button(
             self.bottom_frame, 
             text="Add New Order",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=(10, 21),
             command=self.open_blank_order_form
         )
@@ -142,7 +142,7 @@ class OrderListTab():
         self.search_order_btn = ttk.Button(
             self.bottom_frame, 
             text="Search Order",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=(10, 21),
             command=self.search_order
         )

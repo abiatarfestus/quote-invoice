@@ -16,7 +16,7 @@ class QuotationListTab():
         self.top_frame = ttk.Frame(
             parent_frame,
             borderwidth=5, 
-            relief="solid"
+            # relief="solid"
         )
         self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
@@ -106,7 +106,7 @@ class QuotationListTab():
         self.bottom_frame = ttk.Frame(
             parent_frame,
             borderwidth=5, 
-            relief="solid"
+            # relief="solid"
         )
         self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
 
@@ -128,7 +128,7 @@ class QuotationListTab():
         self.open_quotation_btn = ttk.Button(
             self.bottom_frame,
             text="Open Selected Record",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=21,
             command=self.view_quotation
         )
@@ -137,7 +137,7 @@ class QuotationListTab():
         self.add_quotation_btn = ttk.Button(
             self.bottom_frame, 
             text="Add New Quotation",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=(10, 21),
             command=self.open_blank_quote_form
         )
@@ -146,7 +146,7 @@ class QuotationListTab():
         self.search_quotation_btn = ttk.Button(
             self.bottom_frame, 
             text="Search Quotation",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=(10, 21),
             command=self.search_quotation
         )

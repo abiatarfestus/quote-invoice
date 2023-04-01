@@ -16,7 +16,7 @@ class CustomerListTab():
         self.top_frame = ttk.Frame(
             parent_frame,
             borderwidth=5, 
-            relief="solid"
+            # relief="solid"
         )
         self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
@@ -91,11 +91,79 @@ class CustomerListTab():
         self.tree.heading("Phone", text="Phone", anchor=W)
         self.tree.heading("Email", text="Email", anchor=W)
         self.tree.heading("Customer Since", text="Customr Since", anchor=E)
+        self.tree.grid(column=0, row=0, sticky=(N, S, W, E))
+        self.tree.bind('<ButtonRelease-1>', self.select_record)
 
         # Insert the data in Treeview widget
-        customers = session.query(Customer).order_by(Customer.customer_id).all()
-        print(f"TOTAL CUSTOMERS: {len(customers)}")
-        # for i in range(1, total_customers+1):
+        self.update_customer_list_tree()
+        
+        # Scrollbars:
+        y_scroll = ttk.Scrollbar(self.mid_frame, orient=VERTICAL, command=self.tree.yview)
+        x_scroll = ttk.Scrollbar(self.mid_frame, orient=HORIZONTAL, command=self.tree.xview)
+        y_scroll.grid(column=1, row=0, sticky=(N, S, W, E))
+        x_scroll.grid(column=0, row=1, sticky=(E, W))
+        self.tree['yscrollcommand'] = y_scroll.set
+        self.tree['xscrollcommand'] = x_scroll.set
+        #-------------------------------MID FRAME ENDS---------------------------------------#
+
+        #-------------------------------BOTTOM FRAME-----------------------------------------#
+        # Frames:
+        self.bottom_frame = ttk.Frame(
+            parent_frame,
+            borderwidth=5, 
+            # relief="solid"
+        )
+        self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
+        
+        # Entries:
+        self.search_ent = ttk.Entry(
+            self.bottom_frame,
+        )
+        self.search_ent.grid(column=3, row=1, sticky=(S, N, W, E))
+        
+        # Comboboxes:
+        self.search_option_cbx = ttk.Combobox(
+            self.bottom_frame,
+            width=38,
+            values=("Customer ID", "Other Variables"),
+        )
+        self.search_option_cbx.grid(column=2, row=1, padx=2, sticky=(S, N, W, E))
+
+        # Buttons:
+        self.open_customer_btn = ttk.Button(
+            self.bottom_frame,
+            text="Open Selected Record",
+            style="btns.TButton",
+            padding=21,
+            command=self.view_customer
+        )
+        self.add_customer_btn = ttk.Button(
+            self.bottom_frame, 
+            text="Add New Customer",
+            style="btns.TButton",
+            padding=(10, 21),
+            command=self.open_blank_customer_form
+        )
+        self.search_customer_btn = ttk.Button(
+            self.bottom_frame, 
+            text="Search Customer",
+            style="btns.TButton",
+            padding=(10, 21),
+            command=self.search_customer
+        )
+        self.open_customer_btn.grid(column=0, row=1, sticky=E)
+        self.add_customer_btn.grid(column=1, row=1, sticky=E)
+        self.search_customer_btn.grid(column=4, row=1, sticky=E)
+        #-------------------------------BOTTOM FRAME ENDS------------------------------------#
+        # self.bind_widgets_to_methods()
+    
+    def update_customer_list_tree(self, query=None):
+        if query:
+            customers = query
+        else:
+            customers = self.session.query(Customer).order_by(Customer.customer_id).all()
+        for item in self.tree.get_children():
+            self.tree.delete(item)
         for customer in customers:
             if customer.first_name and customer.last_name:
                 customer_name = f"{customer.last_name} {customer.first_name}"
@@ -118,76 +186,12 @@ class CustomerListTab():
                 customer.notes
                 )
             )
-        self.tree.grid(column=0, row=0, sticky=(N, S, W, E))
-        self.tree.bind('<ButtonRelease-1>', self.select_record)
-
-        # Scrollbars:
-        y_scroll = ttk.Scrollbar(self.mid_frame, orient=VERTICAL, command=self.tree.yview)
-        x_scroll = ttk.Scrollbar(self.mid_frame, orient=HORIZONTAL, command=self.tree.xview)
-        y_scroll.grid(column=1, row=0, sticky=(N, S, W, E))
-        x_scroll.grid(column=0, row=1, sticky=(E, W))
-        self.tree['yscrollcommand'] = y_scroll.set
-        self.tree['xscrollcommand'] = x_scroll.set
-        #-------------------------------MID FRAME ENDS---------------------------------------#
-
-        #-------------------------------BOTTOM FRAME-----------------------------------------#
-        # Frames:
-        self.bottom_frame = ttk.Frame(
-            parent_frame,
-            borderwidth=5, 
-            relief="solid"
-        )
-        self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
-        
-        # Entries:
-        self.search_ent = ttk.Entry(
-            self.bottom_frame,
-        )
-        self.search_ent.grid(column=3, row=1, sticky=(S, N, W, E))
-        
-        # Comboboxes:
-        self.search_option_cbx = ttk.Combobox(
-            self.bottom_frame,
-            width=38,
-            values=("Customer ID", "Other Variables"),
-        )
-        self.search_option_cbx.grid(column=2, row=1, padx=2, sticky=(S, N, W, E))
-
-        # Buttons:
-        self.open_customer_btn = ttk.Button(
-            self.bottom_frame,
-            text="Open Selected Record",
-            # style="home_btns.TButton",
-            padding=21,
-            command=self.view_customer
-        )
-        self.add_customer_btn = ttk.Button(
-            self.bottom_frame, 
-            text="Add New Customer",
-            # style="home_btns.TButton",
-            padding=(10, 21),
-            command=self.open_blank_customer_form
-        )
-        self.search_customer_btn = ttk.Button(
-            self.bottom_frame, 
-            text="Search Customer",
-            # style="home_btns.TButton",
-            padding=(10, 21),
-            command=self.search_customer
-        )
-        self.open_customer_btn.grid(column=0, row=1, sticky=E)
-        self.add_customer_btn.grid(column=1, row=1, sticky=E)
-        self.search_customer_btn.grid(column=4, row=1, sticky=E)
-        #-------------------------------BOTTOM FRAME ENDS------------------------------------#
-        # self.bind_widgets_to_methods()
         
 
     def select_record(self, event):
         print("Record selected")
         record = self.tree.focus()
         self.selected_customer = self.tree.item(record)
-    
-    
     
     def open_blank_customer_form(self):
         self.customer_details_tab.open_blank_customer_form()
@@ -219,39 +223,16 @@ class CustomerListTab():
                 customer_id = int(customer_id)
                 try:
                     customer = db.get_customers(self.session, pk=customer_id)
-                    if customer:
-                        if customer.first_name and customer.last_name:
-                            customer_name = f"{customer.last_name} {customer.first_name}"
-                        else:
-                            customer_name = customer.entity_name
-                        for item in self.tree.get_children():
-                            self.tree.delete(item)
-                        self.tree.insert('', 'end', iid=f"{customer.customer_id}",
-                        values=(
-                            f"{customer.customer_id}",
-                            customer.customer_type,
-                            customer.first_name,
-                            customer.last_name,
-                            customer.entity_name,
-                            customer_name,
-                            customer.email,
-                            customer.phone,
-                            customer.address,
-                            customer.town,
-                            customer.country,
-                            customer.customer_since,
-                            customer.notes
-                            )
-                        )
-                    else:
+                    if not customer:
                         info_message = messagebox.showinfo(
                         message="No matching record was found.",
                         title='Info'
                     )
                         return info_message
+                    self.update_customer_list_tree(query=[customer])
                 except Exception as e:
                         error_message = messagebox.showerror(
-                        message="Oops! Something went wrong.",
+                        message="Oops! An error occurred while getting or listing the customer.",
                         detail=e,
                         title='Error'
                     )
@@ -272,33 +253,10 @@ class CustomerListTab():
                         title='Info'
                         )
                     return info_message
-                for item in self.tree.get_children():
-                    self.tree.delete(item)
-                for customer in customers:
-                    if customer.first_name and customer.last_name:
-                        customer_name = f"{customer.last_name} {customer.first_name}"
-                    else:
-                        customer_name = customer.entity_name
-                    self.tree.insert('', 'end', iid=f"{customer.customer_id}",
-                    values=(
-                        f"{customer.customer_id}",
-                        customer.customer_type,
-                        customer.first_name,
-                        customer.last_name,
-                        customer.entity_name,
-                        customer_name,
-                        customer.email,
-                        customer.phone,
-                        customer.address,
-                        customer.town,
-                        customer.country,
-                        customer.customer_since,
-                        customer.notes
-                        )
-                    )
+                self.update_customer_list_tree(query=customers)
             except Exception as e:
                 error_message = messagebox.showerror(
-                message="Oops! Something went wrong.",
+                message="Oops! Oops! An error occurred while getting or listing customers.",
                 detail=e,
                 title='Error'
             )

@@ -66,7 +66,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Customer ID",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.id_lbl.grid(column=0, row=1, sticky=(W, ))
 
@@ -74,7 +74,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Customer Type",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.type_lbl.grid(column=0, row=2, sticky=(W, ))
 
@@ -82,7 +82,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="First Name",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.first_name_lbl.grid(column=0, row=3, sticky=(W, ))
 
@@ -90,7 +90,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Last Name",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.last_name_lbl.grid(column=0, row=4, sticky=(W, ))
 
@@ -98,7 +98,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Entity Name",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.entity_lbl.grid(column=0, row=5, sticky=(W, ))
 
@@ -106,7 +106,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Email",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.email_lbl.grid(column=0, row=6, sticky=(W, ))
 
@@ -114,7 +114,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Phone",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.phone_lbl.grid(column=0, row=7, sticky=(W, ))
 
@@ -122,7 +122,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Address",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.address_lbl.grid(column=0, row=8, sticky=(W, ))
 
@@ -130,7 +130,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Town",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.town_lbl.grid(column=0, row=9, sticky=(W, ))
 
@@ -138,7 +138,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Country",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.country_lbl.grid(column=0, row=10, sticky=(W, ))
 
@@ -146,7 +146,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Customer Since",
             anchor=W,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.since_lbl.grid(column=0, row=11, sticky=(W, ))
 
@@ -154,7 +154,7 @@ class CustomerDetailsTab():
             self.mid_frame,
             text="Notes",
             anchor=E,
-            # style="heading.TLabel",
+            style="txt.TLabel",
         )
         self.notes_lbl.grid(column=4, columnspan=4, row=0, sticky=(E, ))
 
@@ -274,13 +274,13 @@ class CustomerDetailsTab():
             # anchor="",
             # style="heading.TLabel",
         )
-        self.notes_txt.grid(column=2, columnspan=3,row=1, rowspan=5, sticky=(N, S, E, W))
+        self.notes_txt.grid(column=2, columnspan=4,row=1, rowspan=5, sticky=(N, S, E, W))
 
         # Buttons:
         self.save_btn = ttk.Button(
             self.mid_frame,
             text="Save Record",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.create_or_update_customer
         )
@@ -289,7 +289,7 @@ class CustomerDetailsTab():
         self.new_customer_btn = ttk.Button(
             self.mid_frame,
             text="New Customer",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.open_blank_customer_form
         )
@@ -298,7 +298,7 @@ class CustomerDetailsTab():
         self.quotes_btn = ttk.Button(
             self.mid_frame, 
             text="View Quotes",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.view_customer_quotations
         )
@@ -307,7 +307,7 @@ class CustomerDetailsTab():
         self.orders_btn = ttk.Button(
             self.mid_frame, 
             text="View Orders",
-            # style="home_btns.TButton",
+            style="btns.TButton",
             padding=5,
             command=self.view_customer_orders
         )
@@ -385,18 +385,20 @@ class CustomerDetailsTab():
         else:
             try:
                 customer = db.get_customers(self.session, customer_id)
-                customer.customer_type = self.type_cbx.get()
-                customer.first_name = self.first_name_ent.get()
-                customer.last_name = self.last_name_ent.get()
-                customer.entity_name = self.entity_ent.get()
-                customer.email = self.email_ent.get()
-                customer.phone = self.phone_ent.get()
-                customer.address = self.address_ent.get()
-                customer.town = self.town_ent.get()
-                customer.country = self.country_ent.get()
-                # customer.customer_since = datetime.strptime(self.since_ent.get(), '%Y/%m/%d').date()
-                customer.notes = self.notes_txt.get("1.0", END)
-                self.session.commit()
+                db.update_customer(
+                    self.session,
+                    pk=customer.customer_id,
+                    customer_type=self.type_cbx.get(),
+                    first_name=self.first_name_ent.get(),
+                    last_name=self.last_name_ent.get(),
+                    entity_name=self.entity_ent.get(),
+                    email=self.email_ent.get(),
+                    phone=self.phone_ent.get(),
+                    address=self.address_ent.get(),
+                    town=self.town_ent.get(),
+                    country=self.country_ent.get(),
+                    notes=self.notes_txt.get("1.0", END)
+                )
                 success_message = messagebox.showinfo(
                 message='Record was successfully updated!',
                 title='Success'

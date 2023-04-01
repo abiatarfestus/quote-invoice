@@ -79,18 +79,17 @@ def add_customer(
 
 def update_customer(
     session, 
-    pk=None,
-    customer_type="Person", 
-    first_name="", 
-    last_name="", 
-    entity_name="", 
-    email="", 
-    phone="", 
-    address="", 
-    town="", 
-    country="Namibia",
-    customer_since=None,
-    notes=""
+    pk,
+    customer_type, 
+    first_name, 
+    last_name, 
+    entity_name, 
+    email, 
+    phone, 
+    address, 
+    town, 
+    country,
+    notes
 ):
     try:
         session.query(Customer).filter(Customer.customer_id==pk).update({
@@ -103,7 +102,7 @@ def update_customer(
             Customer.address:address, 
             Customer.town:town, 
             Customer.country:country,
-            Customer.customer_since:customer_since,
+            # Customer.customer_since:customer_since,
             Customer.notes:notes
         }, synchronize_session=False
         )
@@ -479,13 +478,13 @@ def add_product(
 
 def update_product(
     session, 
-    pk=None,
-    sku="",
-    barcode="", 
-    product_name="",
-    description="",
-    price=0.00,
-    quantity=0
+    pk,
+    sku,
+    barcode, 
+    product_name,
+    description,
+    price,
+    quantity
 ):
     try:
         session.query(Product).filter(Product.product_id==pk).update({

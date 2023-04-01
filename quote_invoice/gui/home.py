@@ -79,7 +79,7 @@ class HomeTab():
         self.login_logout_btn = ttk.Button(
             self.bottom_frame, 
             text="Login",
-            style="home_btns.TButton",
+            style="btns.TButton",
             # padding=(15, 26)
         )
         self.login_logout_btn.state(["disabled"])
@@ -89,7 +89,7 @@ class HomeTab():
         self.help_btn = ttk.Button(
             self.bottom_frame, 
             text="Help",
-            style="home_btns.TButton",
+            style="btns.TButton",
             # padding=(15, 26)
         )
         self.help_btn.state(["disabled"])
@@ -98,7 +98,7 @@ class HomeTab():
         self.settings_btn = ttk.Button(
             self.bottom_frame, 
             text="Settings",
-            style="home_btns.TButton",
+            style="btns.TButton",
             # padding=(15, 26),
             command=self.open_settings
         )
@@ -107,7 +107,7 @@ class HomeTab():
         self.exit_btn = ttk.Button(
             self.bottom_frame, 
             text="Exit",
-            style="home_btns.TButton",
+            style="btns.TButton",
             command=self.close_window
         )
         self.exit_btn.grid(column=4, row=0, sticky=(N, S, E, W))
