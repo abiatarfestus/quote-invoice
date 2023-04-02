@@ -313,6 +313,9 @@ class CustomerDetailsTab():
         )
         self.orders_btn.grid(column=4, columnspan=2, row=6, sticky=(N, S, E, W))
         self.disable_buttons()
+
+        for child in self.mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
         #-------------------------------BOTTOM FRAME-----------------------------------------#

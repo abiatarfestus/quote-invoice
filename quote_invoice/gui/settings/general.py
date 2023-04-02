@@ -92,6 +92,9 @@ class GeneralSettingsTab():
             command=self.close_window
         )
         self.cancel_btn.grid(column=1, columnspan=2, row=2, pady=2, sticky=(N, S, E, W))
+
+        for child in self.mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
@@ -108,7 +111,7 @@ class GeneralSettingsTab():
 
     def populate_settings(self):
         settings = get_settings(self.session)
-        print(f"CURRENT SETTINGS: {settings}")
+        # print(f"CURRENT SETTINGS: {settings}")
         if settings:
             self.vat_rate_spx.insert(0, settings.vat_rate)
             self.quote_validity_spx.insert(0, settings.quote_validity)
@@ -122,7 +125,7 @@ class GeneralSettingsTab():
         settings = get_settings(self.session)
         if not settings:
             try:
-                print("CALLING ADD SETTINGS FROM GENERAL")
+                # print("CALLING ADD SETTINGS FROM GENERAL")
                 add_settings(
                     self.session,
                     vat_rate=vat_rate,
@@ -139,7 +142,7 @@ class GeneralSettingsTab():
                 )
         else:
             try:
-                print("CALLING UPDATE SETTINGS FROM GENERAL")
+                # print("CALLING UPDATE SETTINGS FROM GENERAL")
                 update_general_settings(
                     self.session,
                     vat_rate,

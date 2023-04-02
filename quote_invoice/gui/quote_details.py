@@ -331,6 +331,9 @@ class QuoteDetailsTab():
         x_scroll.grid(column=0, columnspan=8, row=5, sticky=(E, W))
         self.quote_items_tree['yscrollcommand'] = y_scroll.set
         self.quote_items_tree['xscrollcommand'] = x_scroll.set
+
+        for child in self.mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
         #-------------------------------BOTTOM FRAME-----------------------------------------#
@@ -419,6 +422,9 @@ class QuoteDetailsTab():
             command=self.add_item
         )
         self.quote_input_add_btn.grid(column=3, row=1, rowspan=2, sticky=(N, S, W, E))
+
+        for child in self.bottom_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
 
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
     

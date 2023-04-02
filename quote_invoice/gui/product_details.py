@@ -41,6 +41,7 @@ class ProductDetailsTab():
         # Entries:
         self.search_ent = ttk.Entry(
             self.mid_frame,
+            # font=('Century 16')
         )
         self.search_ent.grid(column=10, row=2, pady=2, padx=2, sticky=(S, N, W, E))
 
@@ -49,6 +50,7 @@ class ProductDetailsTab():
             self.mid_frame,
             width=38,
             values=("Product ID", "SKU", "Barcode", "Product Name"),
+            style="txt.TCombobox"
         )
         self.search_option_cbx.grid(column=9, row=2, pady=2, padx=2, sticky=(S, N, E))
 
@@ -117,6 +119,9 @@ class ProductDetailsTab():
         x_scroll.grid(column=0, columnspan=12, row=1, sticky=(E, W))
         self.products_tree['yscrollcommand'] = y_scroll.set
         self.products_tree['xscrollcommand'] = x_scroll.set
+
+        for child in self.mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
 
         #-------------------------------MID FRAME ENDS--------------------------------------#
 
@@ -310,6 +315,8 @@ class ProductDetailsTab():
             command=self.open_blank_product_form
         )
         self.new_product_btn.grid(column=3, row=2, rowspan=2, sticky=(N, S, E, W))
+        for child in self.bottom_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
         self.open_blank_product_form()

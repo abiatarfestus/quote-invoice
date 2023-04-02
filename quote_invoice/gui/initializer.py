@@ -66,11 +66,11 @@ class Window():
 
         # Add tabs/pages to the Notebook
         self.notebook.add(self.home_frame, text="Home")
-        self.notebook.add(self.customer_list_frame, text="Customer List")
+        self.notebook.add(self.customer_list_frame, text="Customers")
         self.notebook.add(self.customer_frame, text="Customer Details")
-        self.notebook.add(self.quotation_list_frame, text="Quotation List")
+        self.notebook.add(self.quotation_list_frame, text="Quotations")
         self.notebook.add(self.quotation_frame, text="Quote Details")
-        self.notebook.add(self.order_list_frame, text="Order List")
+        self.notebook.add(self.order_list_frame, text="Orders")
         self.notebook.add(self.order_frame, text="Order Details")
         self.notebook.add(self.product_frame, text="Products & Services")
         self.notebook.add(self.report_frame, text="Reports")

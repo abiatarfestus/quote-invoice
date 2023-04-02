@@ -166,6 +166,9 @@ class FolderSettingsTab():
             command=self.close_window
         )
         self.cancel_btn.grid(column=2, columnspan=2, row=4, pady=2, sticky=(N, S, E, W))
+
+        for child in self.mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
@@ -193,28 +196,28 @@ class FolderSettingsTab():
         self.quote_template_ent.delete(0, END)
         self.quote_template_ent.insert(0, file_path)
         self.parent_frame.master.master.lift()           
-        print(file_path)
+        # print(file_path)
 
     def set_quote_output_folder(self):
         folder_path = filedialog.askdirectory()
         self.quote_output_folder_ent.delete(0, END)
         self.quote_output_folder_ent.insert(0, folder_path)
         self.parent_frame.master.master.lift()     
-        print(folder_path)
+        # print(folder_path)
 
     def set_invoice_template(self):
         file_path = filedialog.askopenfilename()
         self.invoice_template_ent.delete(0, END)
         self.invoice_template_ent.insert(0, file_path)
         self.parent_frame.master.master.lift()           
-        print(file_path)
+        # print(file_path)
 
     def set_invoice_output_folder(self):
         folder_path = filedialog.askdirectory()
         self.invoice_output_folder_ent.delete(0, END)
         self.invoice_output_folder_ent.insert(0, folder_path)
         self.parent_frame.master.master.lift()     
-        print(folder_path)
+        # print(folder_path)
 
     def close_window(self):
         self.parent_frame.master.master.destroy()
@@ -227,7 +230,7 @@ class FolderSettingsTab():
         settings = get_settings(self.session)
         if not settings:
             try:
-                print("CALLING ADD SETTINGS FROM FOLDER")
+                # print("CALLING ADD SETTINGS FROM FOLDER")
                 add_settings(
                     self.session,
                     quote_template=quote_template,
@@ -246,7 +249,7 @@ class FolderSettingsTab():
                 )
         else:
             try:
-                print("CALLING UPDATE SETTINGS FROM FOLDER")
+                # print("CALLING UPDATE SETTINGS FROM FOLDER")
                 update_folder_settings(
                     self.session,
                     quote_template,

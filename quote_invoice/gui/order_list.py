@@ -16,7 +16,7 @@ class OrderListTab():
         self.top_frame = ttk.Frame(
             parent_frame,
             borderwidth=5, 
-            relief="solid"
+            # relief="solid"
         )
         self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
@@ -95,6 +95,9 @@ class OrderListTab():
         self.orders = self.session.query(Order).order_by(Order.order_date).all()
         self.list_orders(self.orders)
         self.tree.grid(column=0, row=0, sticky=(N, S, W, E))
+
+        for child in self.mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
         #-------------------------------BOTTOM FRAME-----------------------------------------#
@@ -102,7 +105,7 @@ class OrderListTab():
         self.bottom_frame = ttk.Frame(
             parent_frame,
             borderwidth=5, 
-            relief="solid"
+            # relief="solid"
         )
         self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
 
@@ -147,6 +150,9 @@ class OrderListTab():
             command=self.search_order
         )
         self.search_order_btn.grid(column=4, row=1, sticky=E)
+
+        for child in self.bottom_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
     def list_orders(self, orders, from_customer=False):
         """List all orders in the database or of a specific customer if from_customer"""

@@ -38,7 +38,7 @@ class OrderDetailsTab():
         self.top_frame = ttk.Frame(
             parent_frame,
             borderwidth=5, 
-            relief="solid"
+            # relief="solid"
         )
         self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
@@ -327,6 +327,9 @@ class OrderDetailsTab():
         x_scroll.grid(column=0, columnspan=5, row=5, sticky=(E, W))
         self.order_items_tree['yscrollcommand'] = y_scroll.set
         self.order_items_tree['xscrollcommand'] = x_scroll.set
+
+        for child in self.mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
         #-------------------------------BOTTOM FRAME-----------------------------------------#
@@ -334,7 +337,7 @@ class OrderDetailsTab():
         self.bottom_frame = ttk.Frame(
             parent_frame,
             borderwidth=5, 
-            relief="solid"
+            # relief="solid"
         )
         self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E))
         self.bottom_frame.columnconfigure(0, weight=1)
@@ -415,6 +418,9 @@ class OrderDetailsTab():
             command=self.add_item
         )
         self.order_input_add_btn.grid(column=3, row=1, rowspan=2, sticky=(N, S, W, E))
+
+        for child in self.bottom_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
 
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
     

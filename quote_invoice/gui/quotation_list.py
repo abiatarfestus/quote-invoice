@@ -98,6 +98,9 @@ class QuotationListTab():
         self.quotations = self.session.query(Quotation).order_by(Quotation.quote_date).all()
         self.list_quotations(self.quotations)
         self.tree.grid(column=0, row=0, sticky=(N, S, W, E))
+
+        for child in self.mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
@@ -151,6 +154,9 @@ class QuotationListTab():
             command=self.search_quotation
         )
         self.search_quotation_btn.grid(column=4, row=1, sticky=E)
+
+        for child in self.bottom_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
        
     def list_quotations(self, quotations, from_customer=False):

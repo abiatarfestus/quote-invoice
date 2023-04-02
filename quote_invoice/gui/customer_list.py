@@ -104,6 +104,9 @@ class CustomerListTab():
         x_scroll.grid(column=0, row=1, sticky=(E, W))
         self.tree['yscrollcommand'] = y_scroll.set
         self.tree['xscrollcommand'] = x_scroll.set
+
+        for child in self.mid_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
         #-------------------------------BOTTOM FRAME-----------------------------------------#
@@ -154,6 +157,9 @@ class CustomerListTab():
         self.open_customer_btn.grid(column=0, row=1, sticky=E)
         self.add_customer_btn.grid(column=1, row=1, sticky=E)
         self.search_customer_btn.grid(column=4, row=1, sticky=E)
+
+        for child in self.bottom_frame.winfo_children():
+            child.grid_configure(padx=2, pady=2)
         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
         # self.bind_widgets_to_methods()
     
