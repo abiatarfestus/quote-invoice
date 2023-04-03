@@ -6,7 +6,7 @@ def style():
     """Configure the style of the application"""
     # style = ttk.Style()
     style = Style()
-    style.theme_use("darkly")
+    style.theme_use("flatly")
     style.configure(".", font=("Segoe UI", 10))
     style.configure("TNotebook.Tab", padding=10, font=("Segoe UI", 16))
     style.configure("TButton", font=("Segoe UI", 13))

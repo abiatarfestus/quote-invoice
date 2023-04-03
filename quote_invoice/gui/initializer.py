@@ -3,6 +3,7 @@ from tkinter import ttk
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from .home import HomeTab
+from .user_auth import UserAuthentication
 from .customer_list import CustomerListTab
 from .quotation_list import QuotationListTab
 from .customer_details import CustomerDetailsTab
@@ -11,12 +12,10 @@ from .quote_details import QuoteDetailsTab
 from .order_list import OrderListTab
 from .style import style
 from .order_details import OrderDetailsTab
-# from quote_invoice.db import queries
-
-logo_path = r"quote_invoice\assets\logo.png"
+from quote_invoice.common.constants import DB_PATH, LOGO_PATH
 
 def get_connection():
-    return create_engine(f"sqlite:///app_database.db")
+    return create_engine(DB_PATH)
 
 # class DatabaseOps():
 engine = get_connection()
@@ -28,6 +27,7 @@ session = Session()
 class Window():
     """ Initialize the main window of the application"""
     def __init__(self, root):
+        self.is_authenticated = False
         self.root = root
         self.root.title("Quote & Invoice")
         self.root.option_add('*tearOff', FALSE)
@@ -36,7 +36,7 @@ class Window():
         self.selected_order = None
         self.selected_quote = None
         self.selected_order = None
-        self.logo = PhotoImage(file=logo_path)
+        self.logo = PhotoImage(file=LOGO_PATH)
         self.root.iconphoto(False, self.logo)
         self.style = style()
         self.create_notebook()
@@ -49,6 +49,9 @@ class Window():
         self.customer_details_tab = self.setup_customer_tab()
         self.customer_list_tab = self.setup_customer_list_tab()
         self.product_details_tab = self.setup_product_tab()
+        if not self.is_authenticated:
+            user = UserAuthentication(self.root, DB_PATH)
+            
 
     
     def create_notebook(self):

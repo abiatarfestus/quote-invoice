@@ -116,7 +116,14 @@ class Settings(Base):
     vat_rate = Column(Float)
     quote_validity = Column(Integer)
 
-
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    username = Column(String, unique=True)
+    password = Column(String)
+    first_name = Column(String)
+    last_name = Column(String)
+    user_type = Column(String)
 
 # engine = get_connection()
 # Base.metadata.create_all(engine)
