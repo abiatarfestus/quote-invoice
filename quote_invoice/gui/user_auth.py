@@ -61,7 +61,7 @@ class UserAuthentication:
             self.popup,
             text="Login",
             padding=5,
-            # command=self.set_quote_template
+            command=self.login
         )
         self.login_btn.grid(column=1, row=3, sticky=(E, W))
 
@@ -69,7 +69,7 @@ class UserAuthentication:
             self.popup,
             text="Register",
             padding=5,
-            # command=self.set_quote_template
+            command=self.register
         )
         self.register_btn.grid(column=2, row=3, sticky=(E, W))
         for child in self.popup.winfo_children():
@@ -81,8 +81,8 @@ class UserAuthentication:
         self.session = Session()
     
     def login(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
+        username = self.username_ent.get()
+        password = self.password_ent.get()
         
         user = self.session.query(User).filter_by(username=username, password=password).first()
         if user:
@@ -93,8 +93,8 @@ class UserAuthentication:
             error_message.pack()
     
     def register(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
+        username = self.username_ent.get()
+        password = self.password_ent.get()
         
         user = self.session.query(User).filter_by(username=username).first()
         if user:

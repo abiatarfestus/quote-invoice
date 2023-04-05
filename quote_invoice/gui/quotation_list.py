@@ -166,7 +166,7 @@ class QuotationListTab():
         else:
             customers = self.session.query(Customer).filter(Customer.customer_id==quotations[0].customer_id)
             # print(f"CUSTOMERS={customers}")
-        self.customers_dict = dict()
+        self.customers_dict = dict() # {customer display name: [customer details]}
         for customer in customers:
             if customer.customer_type == "Person":
                 key = f"{customer.last_name} {customer.first_name} >> {customer.phone}"
@@ -185,7 +185,7 @@ class QuotationListTab():
                 }
             )
         # Create a dict of customer_id:customer_name for use in update customer
-        self.customer_id_name_dict = dict()
+        self.customer_id_name_dict = dict() # {customer_id:customer displa name}
         for name in tuple(self.customers_dict):
             self.customer_id_name_dict.update({self.customers_dict[name][0]:name })
         for item in self.tree.get_children():

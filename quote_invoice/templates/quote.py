@@ -22,7 +22,7 @@ class Quote():
             self.quote_output_file = os.path.join(self.quote_output_folder, "generated_quote.docx")
         else:
             self.default_settings = True
-            self.vat_rate = 0.15
+            self.vat_rate = 15.0
             self.quote_validity = 30
             self.quote_template = "quote_template.docx"
             self.quote_output_file = "generated_quote.docx"
@@ -97,7 +97,7 @@ class Quote():
         calculated_quote = {
             "item_list": item_list,
             "subtotal": f"N${subtotal[3:]}",
-            "vat_rate": self.settings.vat_rate, #f"{vat_rate:.2%}",
+            "vat_rate": vat_rate, #f"{vat_rate:.2%}",
             "vat_amount": f"N${vat_amount[3:]}",
             "total_cost": f"N${total_cost[3:]}"
         }

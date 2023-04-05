@@ -104,7 +104,7 @@ class Product(Base):
     description = Column(String(250))
     price = Column(String)
     quantity = Column(Integer) # For inventory?
-    # is_taxable = Column(Boolean)
+    is_taxable = Column(Boolean, default=True)
 
 class Settings(Base):
     __tablename__ = "settings"
@@ -123,7 +123,8 @@ class User(Base):
     password = Column(String)
     first_name = Column(String)
     last_name = Column(String)
-    user_type = Column(String)
+    is_admin = Column(Boolean)
+
 
 # engine = get_connection()
 # Base.metadata.create_all(engine)

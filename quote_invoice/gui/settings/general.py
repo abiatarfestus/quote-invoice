@@ -120,8 +120,14 @@ class GeneralSettingsTab():
         self.parent_frame.master.master.destroy()
 
     def add_or_update_settings(self):
-        vat_rate = float(self.vat_rate_spx.get())
-        quote_validity = int(self.quote_validity_spx.get())
+        try:
+            vat_rate = float(self.vat_rate_spx.get())
+            quote_validity = int(self.quote_validity_spx.get())
+        except ValueError:
+            messagebox.showerror(
+                    message='Value Error: Please ensure that VAT rate is a float and quote validity is an integer.',
+                    title='Error'
+                )
         settings = get_settings(self.session)
         if not settings:
             try:

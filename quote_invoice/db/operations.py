@@ -445,7 +445,8 @@ def add_product(
     product_name="",
     description="",
     price=0.00,
-    quantity=0
+    quantity=0,
+    is_taxable=True
 ):
     """Adds a new product to the database"""
 
@@ -468,7 +469,8 @@ def add_product(
                 product_name=product_name,
                 description=description,
                 price=price,
-                quantity=quantity
+                quantity=quantity,
+                is_taxable=is_taxable
             )
             session.add(product)
             session.commit()
@@ -484,7 +486,8 @@ def update_product(
     product_name,
     description,
     price,
-    quantity
+    quantity,
+    is_taxable
 ):
     try:
         session.query(Product).filter(Product.product_id==pk).update({
@@ -494,6 +497,7 @@ def update_product(
             Product.description:description,
             Product.price:price,
             Product.quantity:quantity,
+            Product.is_taxable:is_taxable
         }, synchronize_session = False
         )
         session.commit()

@@ -379,7 +379,7 @@ class ProductDetailsTab():
                 description=self.description_ent.get(), 
                 price=self.price_ent.get(), 
                 quantity=self.quantity_ent.get(), 
-                # is_taxable=self.is_taxable.get()
+                is_taxable=self.is_taxable.get()
             )
                 self.open_blank_product_form()
                 success_message = messagebox.showinfo(
@@ -406,7 +406,7 @@ class ProductDetailsTab():
                     description=self.description_ent.get(), 
                     price=self.price_ent.get(), 
                     quantity=self.quantity_ent.get(), 
-                    # is_taxable=self.is_taxable.get()
+                    is_taxable=self.is_taxable.get()
                 )
                 self.open_blank_product_form()
                 success_message = messagebox.showinfo(
