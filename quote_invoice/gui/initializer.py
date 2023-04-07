@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 # from quote_invoice.data import db_data
 from .home import HomeTab
-from .user_auth import UserAuthentication
+from .login import UserAuthentication
 from .customer_list import CustomerListTab
 from .quotation_list import QuotationListTab
 from .customer_details import CustomerDetailsTab
@@ -25,20 +25,22 @@ Session.configure(bind=engine)
 session = Session()
 
 
-class Window():
+class App(Tk):
     """ Initialize the main window of the application"""
-    def __init__(self, root):
+    def __init__(self):
+        super().__init__()
         self.is_authenticated = False
-        self.root = root
-        self.root.title("Quote & Invoice")
-        self.root.option_add('*tearOff', FALSE)
+        self.authenticated_user = None
+        self.authenticated_user_name = "Logged Out"
+        self.title("Quote & Invoice")
+        self.option_add('*tearOff', FALSE)
         self.selected_customer = None
         self.selected_quotation = None
         self.selected_order = None
         self.selected_quote = None
         self.selected_order = None
         self.logo = PhotoImage(file=LOGO_PATH)
-        self.root.iconphoto(False, self.logo)
+        self.iconphoto(False, self.logo)
         self.style = style()
         self.create_notebook()
         self.configure_rows_columns()
@@ -85,13 +87,13 @@ class Window():
     def configure_rows_columns(self):
         """Configure the rows and columns resizing behaviour"""
         # Root
-        self.root.columnconfigure(0, weight=1)
-        self.root.columnconfigure(1, weight=1)
-        self.root.rowconfigure(0, weight=1)
-        self.root.rowconfigure(1, weight=1)
-        self.root.rowconfigure(2, weight=1)
-        self.root.rowconfigure(3, weight=1)
-        self.root.rowconfigure(4, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
+        self.rowconfigure(0, weight=1)
+        self.rowconfigure(1, weight=1)
+        self.rowconfigure(2, weight=1)
+        self.rowconfigure(3, weight=1)
+        self.rowconfigure(4, weight=1)
 
         self.home_frame.columnconfigure(0, weight=1)
         self.home_frame.columnconfigure(1, weight=1)

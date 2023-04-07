@@ -11,6 +11,8 @@ class HomeTab():
         """Configure the home tab page"""
         self.root = root
         self.main_logo = PhotoImage(file=MAIN_LOGO_PATH)
+        self.logged_in_user = StringVar()
+        self.logged_in_user.set(parent_frame.master.authenticated_user_name)
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(
@@ -64,7 +66,7 @@ class HomeTab():
         # Labels:
         self.user_lbl = ttk.Label(
             self.bottom_frame,
-            text="Loggen in User: None",
+            text=f"Loggen in User: {self.logged_in_user}",
             anchor="w",
         )
         self.user_lbl.grid(column=0, row=0, sticky=(S, W))

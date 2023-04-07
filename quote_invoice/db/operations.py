@@ -2,7 +2,16 @@ from datetime import datetime
 from sqlalchemy import and_, or_, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import asc, desc, func
-from . models import Customer, Order, OrderItem, Quotation, QuotationItem, Product, Settings
+from . models import (
+    Customer,
+    Order,
+    OrderItem,
+    Quotation,
+    QuotationItem,
+    Product,
+    Settings,
+    User
+)
 
 
 def get_customers(session, pk=None, other_fields=""):
@@ -536,7 +545,7 @@ def add_settings(
         )        
         session.add(settings)
         session.commit()
-        return True
+        return
     except Exception as e:
         raise Exception(f"An error occurred while adding new settings: {e}")
     
@@ -581,3 +590,68 @@ def delete_settings(session):
         session.commit()
     except Exception as e:
         print(e)
+
+# Users: -----------------------------------------------------------------
+def get_user(session, pk):
+    return session.query(User).get(pk)
+
+def get_admin_user(session):
+    return session.query(User).filter_by(is_admin=True).first()
+
+def add_user(
+    session, 
+    username,
+    password,
+    first_name,
+    last_name,
+    email,
+    is_admin
+):
+    """Add a new user to the database"""
+
+    if is_admin:
+        # Check if an admin already exists in the database
+        user = session.query(User).filter_by(is_admin=True ).first()
+        if user:
+            raise Exception("An Admin user already exist. This version only allows one admin user.")
+    try:
+        new_user = User(
+            session=session,
+            username=username,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            is_admin=is_admin
+        )        
+        session.add(new_user)
+        session.commit()
+        return
+    except Exception as e:
+        raise Exception(f"An error occurred while adding a new user: {e}")
+
+
+def update_user(
+    session,
+    pk,
+    username,
+    password,
+    first_name,
+    last_name,
+    email,
+    is_admin
+):
+    user = get_user(session, pk)
+    if user:
+        try:
+            user.username=username,
+            user.password=password,
+            user.first_name=first_name,
+            user.last_name=last_name,
+            user.email=email,
+            user.is_admin=is_admin
+            session.commit()
+            return
+        except Exception as e:
+            raise Exception(f"An error occurred while adding new settings: {e}")
+    raise Exception(f"User with user ID {e} was not found.")

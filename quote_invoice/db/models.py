@@ -100,11 +100,15 @@ class Product(Base):
     product_id = Column(Integer, primary_key=True)
     sku = Column(String(50), unique=True)
     barcode = Column(String(50), unique=True)
-    product_name = Column(String(50), unique=True)
+    product_name = Column(String(50), unique=True, nullable=False)
     description = Column(String(250))
-    price = Column(String)
+    price = Column(String, nullable=False)
     quantity = Column(Integer) # For inventory?
     is_taxable = Column(Boolean, default=True)
+    # is_countable = Column(Boolean, default=True)
+
+    def __repr__(self):
+        return f"{self.product_name}"
 
 class Settings(Base):
     __tablename__ = "settings"
@@ -118,11 +122,12 @@ class Settings(Base):
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    username = Column(String, unique=True)
-    password = Column(String)
-    first_name = Column(String)
-    last_name = Column(String)
+    user_id = Column(Integer, primary_key=True)
+    username = Column(String, unique=True, nullable=False)
+    password = Column(String, nullable=False)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
+    email = Column(String, unique=True)
     is_admin = Column(Boolean)
 
 

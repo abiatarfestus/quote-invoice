@@ -9,6 +9,5 @@ def run():
     Base.metadata.create_all(engine)
     root = Tk()
     root.state('zoomed')
-    # root.geometry("500x500")
     app = Window(root)
     root.mainloop()
