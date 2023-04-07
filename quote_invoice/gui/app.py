@@ -3,6 +3,7 @@ from tkinter import ttk
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 # from quote_invoice.data import db_data
+from quote_invoice.db.models import get_connection, Base
 from .home import HomeTab
 from .login import UserAuthentication
 from .customer_list import CustomerListTab
@@ -31,7 +32,10 @@ class App(Tk):
         super().__init__()
         self.is_authenticated = False
         self.authenticated_user = None
-        self.authenticated_user_name = "Logged Out"
+        self.authenticated_user_name = StringVar()
+        self.login_out = StringVar()
+        self.login_out.set("Login")
+        self.authenticated_user_name.set("User: Logged Out")
         self.title("Quote & Invoice")
         self.option_add('*tearOff', FALSE)
         self.selected_customer = None
@@ -39,6 +43,7 @@ class App(Tk):
         self.selected_order = None
         self.selected_quote = None
         self.selected_order = None
+        self.state('zoomed')
         self.logo = PhotoImage(file=LOGO_PATH)
         self.iconphoto(False, self.logo)
         self.style = style()
@@ -53,13 +58,13 @@ class App(Tk):
         self.customer_list_tab = self.setup_customer_list_tab()
         self.product_details_tab = self.setup_product_tab()
         if not self.is_authenticated:
-            user = UserAuthentication(self.root, DB_PATH)
+            user = UserAuthentication(self, DB_PATH)
             
 
     
     def create_notebook(self):
         """Create a Notebook and Frames"""
-        self.notebook = ttk.Notebook(self.root, style="notebook.TNotebook",)
+        self.notebook = ttk.Notebook(self, style="notebook.TNotebook",)
         self.home_frame = ttk.Frame(self.notebook)
         self.customer_list_frame = ttk.Frame(self.notebook)
         self.customer_frame = ttk.Frame(self.notebook)
@@ -151,7 +156,7 @@ class App(Tk):
         
 
     def setup_home_tab(self):
-        home_tab = HomeTab(self.root, self.home_frame)
+        home_tab = HomeTab(self, self.home_frame)
         return home_tab
 
     def setup_customer_tab(self):
@@ -208,3 +213,9 @@ class App(Tk):
             self.product_frame,
             session)
         return product_details_tab
+
+def run():
+    engine = get_connection()
+    Base.metadata.create_all(engine)
+    app = App()
+    app.mainloop()

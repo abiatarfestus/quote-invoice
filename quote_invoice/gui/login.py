@@ -21,12 +21,10 @@ class UserAuthentication:
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
 
-    
-
     def __init__(self, parent, db_path):
         self.popup = Toplevel()
         w = 380 # Width 
-        h = 180 # Height 
+        h = 200 # Height 
         screen_width = self.popup.winfo_screenwidth()  # Width of the screen
         screen_height = self.popup.winfo_screenheight() # Height of the screen
         # Calculate Starting X and Y coordinates for Window
@@ -109,11 +107,12 @@ class UserAuthentication:
         
         user = self.session.query(User).filter_by(username=username, password=password).first()
         if user:
-            self.popup.destroy()
-            self.parent.grab_set()
             self.parent.is_authenticated = True
             self.parent.authenticated_user = user
-            self.parent.authenticated_user_name = user.username
+            self.parent.authenticated_user_name.set(f"User: {user.username}")
+            self.parent.login_out.set("Logout")
+            self.popup.destroy()
+            self.parent.grab_set()
         else:
             error_message = ttk.Label(
                 self.popup,
@@ -122,7 +121,6 @@ class UserAuthentication:
                 anchor=CENTER
             )
             error_message.grid(column=1, columnspan=2, row=4, sticky=(E, W))
-            self.login()
     
     def register(self):
         self.popup.destroy()

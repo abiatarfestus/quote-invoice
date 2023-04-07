@@ -161,8 +161,8 @@ class UserRegistration:
         username = self.username_ent.get().strip()
         password1 = self.password1_ent.get().strip()
         password2 = self.password2_ent.get().strip()
-        first_name = self.first_name_ent.get().strip()
-        last_name = self.last_name_ent.get().strip()
+        first_name = self.first_name_ent.get().strip().capitalize()
+        last_name = self.last_name_ent.get().strip().capitalize()
         email = self.email_ent.get().strip()
         is_admin = self.is_admin.get()
         valid, message = self.validate_registration(
@@ -192,9 +192,13 @@ class UserRegistration:
                 is_admin = is_admin
                 )
             messagebox.showinfo(
-            message='User successfully created!',
+            message='User successfully added!',
             title='Success'
         )
+            self.parent.is_authenticated = True
+            self.parent.authenticated_user = new_user
+            self.parent.authenticated_user_name.set(f"User: {new_user.username}")
+            self.parent.login_out.set("Logout")
             self.popup.destroy()
             self.parent.grab_set()
         except Exception as e:
@@ -214,7 +218,7 @@ class UserRegistration:
             return (False, "Username cannot be less than 4 characters!")
         elif not self.validate_email(email):
             return (False, "Invalid email address entered!")
-        return (True,)
+        return (True,"Valid registration.")
   
     def validate_email(self, email):
         regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'

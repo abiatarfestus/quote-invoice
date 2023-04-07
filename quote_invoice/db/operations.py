@@ -616,7 +616,6 @@ def add_user(
             raise Exception("An Admin user already exist. This version only allows one admin user.")
     try:
         new_user = User(
-            session=session,
             username=username,
             password=password,
             first_name=first_name,
@@ -626,7 +625,7 @@ def add_user(
         )        
         session.add(new_user)
         session.commit()
-        return
+        return new_user
     except Exception as e:
         raise Exception(f"An error occurred while adding a new user: {e}")
 

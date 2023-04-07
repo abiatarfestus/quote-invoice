@@ -1,18 +1,18 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from quote_invoice.common.constants import MAIN_LOGO_PATH
+from .login import UserAuthentication
+from quote_invoice.common.constants import MAIN_LOGO_PATH, DB_PATH
 from quote_invoice.gui.settings.settings import SettingsWindow
 
 
 
 class HomeTab():
-    def __init__(self, root, parent_frame):
+    def __init__(self, parent, parent_frame):
         """Configure the home tab page"""
-        self.root = root
+        self.parent = parent
         self.main_logo = PhotoImage(file=MAIN_LOGO_PATH)
-        self.logged_in_user = StringVar()
-        self.logged_in_user.set(parent_frame.master.authenticated_user_name)
+        # self.logged_in_user = self.parent.logged_in_user_name.get()
         #-------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(
@@ -66,10 +66,11 @@ class HomeTab():
         # Labels:
         self.user_lbl = ttk.Label(
             self.bottom_frame,
-            text=f"Loggen in User: {self.logged_in_user}",
+            textvariable=self.parent.authenticated_user_name,
             anchor="w",
+            style="BlueLabel.TLabel"
         )
-        self.user_lbl.grid(column=0, row=0, sticky=(S, W))
+        self.user_lbl.grid(column=0, row=0, sticky=(W))
 
         self.creator_lbl = ttk.Label(
             self.bottom_frame,
@@ -81,11 +82,12 @@ class HomeTab():
         # Buttons:
         self.login_logout_btn = ttk.Button(
             self.bottom_frame, 
-            text="Login",
-            style="btns.TButton",
+            textvariable=self.parent.login_out,
+            # style="Danger.TButton",
+            command=self.logout
             # padding=(15, 26)
         )
-        self.login_logout_btn.state(["disabled"])
+        # self.login_logout_btn.state(["disabled"])
         self.login_logout_btn.grid(column=1, row=0, sticky=(N, S, E, W))
 
         
@@ -95,7 +97,7 @@ class HomeTab():
             style="btns.TButton",
             # padding=(15, 26)
         )
-        self.help_btn.state(["disabled"])
+        # self.help_btn.state(["disabled"])
         self.help_btn.grid(column=2, row=0, sticky=(N, S, E, W))
 
         self.settings_btn = ttk.Button(
@@ -110,7 +112,7 @@ class HomeTab():
         self.exit_btn = ttk.Button(
             self.bottom_frame, 
             text="Exit",
-            style="btns.TButton",
+            # style="Danger.TButton",
             command=self.close_window
         )
         self.exit_btn.grid(column=4, row=0, sticky=(N, S, E, W))
@@ -121,7 +123,7 @@ class HomeTab():
 
     def open_settings(self):
         # settings_menu = Menu(win)
-        SettingsWindow(self.root)
+        SettingsWindow(self.parent)
 
 
     def close_window(self):   
@@ -131,4 +133,11 @@ class HomeTab():
             title='Exit Application'
         ):
             return
-        self.root.destroy() 
+        self.parent.destroy() 
+
+    def logout(self):
+        self.parent.is_authenticated = False
+        self.parent.authenticated_user = None
+        self.parent.authenticated_user_name.set("User: Logged Out")
+        self.parent.login_out.set("Login")
+        user = UserAuthentication(self, DB_PATH)
