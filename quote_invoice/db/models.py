@@ -1,26 +1,12 @@
 from sqlalchemy import create_engine, Column, Float, Integer, String, ForeignKey, Date, Boolean
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, validates
 from sqlalchemy.ext.declarative import declarative_base
+from quote_invoice.auth.password_validation import Password
 
 Base = declarative_base()
 
 def get_connection():
     return create_engine(f"sqlite:///app_database.db")
-
-
-# author_publisher = Table(
-#     "author_publisher",
-#     Base.metadata,
-#     Column("author_id", Integer, ForeignKey("author.author_id")),
-#     Column("publisher_id", Integer, ForeignKey("publisher.publisher_id")),
-# )
-
-# book_publisher = Table(
-#     "book_publisher",
-#     Base.metadata,
-#     Column("book_id", Integer, ForeignKey("book.book_id")),
-#     Column("publisher_id", Integer, ForeignKey("publisher.publisher_id")),
-# )
 
 class Customer(Base):
     __tablename__ = "customer"
@@ -124,11 +110,15 @@ class User(Base):
     __tablename__ = 'users'
     user_id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
+    password = Column(Password, nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email = Column(String, unique=True)
     is_admin = Column(Boolean)
+
+    @validates('password')
+    def _validate_password(self, key, password):
+        return getattr(type(self), key).type.validator(password)
 
 
 # engine = get_connection()

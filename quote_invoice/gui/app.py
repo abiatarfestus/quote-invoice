@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-# from quote_invoice.data import db_data
+from quote_invoice.data import db_data
 from quote_invoice.db.models import get_connection, Base
 from .home import HomeTab
 from .login import UserAuthentication
