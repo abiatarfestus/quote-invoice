@@ -1,15 +1,19 @@
 from tkinter import *
 from tkinter import ttk
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from .folder import FolderSettingsTab
 from .general import GeneralSettingsTab
 from .user import UserSettingsTab
 
 settings_icon_path = r"quote_invoice\assets\settings_icon.png"
 
+
 def get_connection():
     return create_engine(f"sqlite:///app_database.db")
+
 
 # class DatabaseOps():
 engine = get_connection()
@@ -18,8 +22,9 @@ Session.configure(bind=engine)
 session = Session()
 
 
-class SettingsWindow():
-    """ Initialize the settings window of the application"""
+class SettingsWindow:
+    """Initialize the settings window of the application"""
+
     def __init__(self, parent):
         # self.session = session
         self.settings_window = Toplevel(parent)
@@ -34,10 +39,13 @@ class SettingsWindow():
         self.folder_settings_tab = self.create_folder_settings_tab()
         # self.user_settings_tab = self.create_user_settings_tab()
         self.settings_window.resizable(False, False)
-    
+
     def create_notebook(self):
         """Create a Notebook and Frames"""
-        self.notebook = ttk.Notebook(self.settings_window, style="notebook.TNotebook",)
+        self.notebook = ttk.Notebook(
+            self.settings_window,
+            style="notebook.TNotebook",
+        )
         self.general_settings_frame = ttk.Frame(self.notebook)
         self.folder_settings_frame = ttk.Frame(self.notebook)
         self.user_settings_frame = ttk.Frame(self.notebook)
@@ -46,7 +54,7 @@ class SettingsWindow():
         self.notebook.add(self.general_settings_frame, text="General Settings")
         self.notebook.add(self.folder_settings_frame, text="Folder Settings")
         self.notebook.add(self.user_settings_frame, text="User Settings")
-        
+
         # Grid Notebook
         self.notebook.grid(column=0, row=0, sticky=(N, W, E, S))
 
@@ -72,10 +80,10 @@ class SettingsWindow():
     def create_folder_settings_tab(self):
         folder_settings_tab = FolderSettingsTab(session, self.folder_settings_frame)
         return folder_settings_tab
-    
+
     def create_user_settings_tab(self):
         quote_details_tab = UserSettingsTab(session, self.self.user_settings_frame)
         return quote_details_tab
-    
+
     def close_window(self):
         self.settings_window.destroy()

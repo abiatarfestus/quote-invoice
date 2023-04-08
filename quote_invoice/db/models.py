@@ -1,12 +1,24 @@
-from sqlalchemy import create_engine, Column, Float, Integer, String, ForeignKey, Date, Boolean
-from sqlalchemy.orm import relationship, validates
+from sqlalchemy import (
+    Boolean,
+    Column,
+    Date,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    create_engine,
+)
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, validates
+
 from quote_invoice.auth.password_validation import Password
 
 Base = declarative_base()
 
+
 def get_connection():
     return create_engine(f"sqlite:///app_database.db")
+
 
 class Customer(Base):
     __tablename__ = "customer"
@@ -24,7 +36,7 @@ class Customer(Base):
     notes = Column(String(250))
     quotations = relationship("Quotation", back_populates="customer")
     orders = relationship("Order", back_populates="customer")
-    
+
 
 class Quotation(Base):
     __tablename__ = "quotation"
@@ -36,11 +48,15 @@ class Quotation(Base):
     is_closed = Column(Boolean)
     notes = Column(String(250))
     customer = relationship("Customer", back_populates="quotations")
-    quotation_items = relationship("QuotationItem", back_populates="quotation", cascade="all, delete, delete-orphan")
+    quotation_items = relationship(
+        "QuotationItem",
+        back_populates="quotation",
+        cascade="all, delete, delete-orphan",
+    )
 
     def __repr__(self):
         return f"Quotation {self.quote_id}: {self.description}"
-    
+
 
 class QuotationItem(Base):
     __tablename__ = "quotation_item"
@@ -54,6 +70,7 @@ class QuotationItem(Base):
     # def __repr__(self):
     #     return f"Item {self.quote_item_id}: x{self.quantity} of Product: {self.product_id}"
 
+
 class Order(Base):
     __tablename__ = "order"
     order_id = Column(Integer, primary_key=True)
@@ -63,11 +80,13 @@ class Order(Base):
     is_paid = Column(Boolean)
     notes = Column(String(250))
     customer = relationship("Customer", back_populates="orders")
-    order_items = relationship("OrderItem", back_populates="order", cascade="all, delete, delete-orphan")
+    order_items = relationship(
+        "OrderItem", back_populates="order", cascade="all, delete, delete-orphan"
+    )
 
     def __repr__(self):
         return f"Order {self.order_id}: {self.description}"
-    
+
 
 class OrderItem(Base):
     __tablename__ = "order_item"
@@ -79,7 +98,10 @@ class OrderItem(Base):
     order = relationship("Order", back_populates="order_items")
 
     def __repr__(self):
-        return f"Item {self.order_item_id}: x{self.quantity} of Product: {self.product_id}"
+        return (
+            f"Item {self.order_item_id}: x{self.quantity} of Product: {self.product_id}"
+        )
+
 
 class Product(Base):
     __tablename__ = "product"
@@ -89,12 +111,13 @@ class Product(Base):
     product_name = Column(String(50), unique=True, nullable=False)
     description = Column(String(250))
     price = Column(String, nullable=False)
-    quantity = Column(Integer) # For inventory?
+    quantity = Column(Integer)  # For inventory?
     is_taxable = Column(Boolean, default=True)
     # is_countable = Column(Boolean, default=True)
 
     def __repr__(self):
         return f"{self.product_name}"
+
 
 class Settings(Base):
     __tablename__ = "settings"
@@ -106,8 +129,9 @@ class Settings(Base):
     vat_rate = Column(Float)
     quote_validity = Column(Integer)
 
+
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
     user_id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, nullable=False)
     password = Column(Password, nullable=False)
@@ -116,11 +140,10 @@ class User(Base):
     email = Column(String, unique=True)
     is_admin = Column(Boolean)
 
-    @validates('password')
+    @validates("password")
     def _validate_password(self, key, password):
         return getattr(type(self), key).type.validator(password)
 
 
 # engine = get_connection()
 # Base.metadata.create_all(engine)
-

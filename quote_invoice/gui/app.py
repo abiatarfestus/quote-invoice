@@ -1,23 +1,28 @@
 from tkinter import *
 from tkinter import ttk
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from quote_invoice.data import db_data
-from quote_invoice.db.models import get_connection, Base
+
+from quote_invoice.common.constants import DB_PATH, LOGO_PATH
+# from quote_invoice.data import db_data
+from quote_invoice.db.models import Base, get_connection
+
+from .customer_details import CustomerDetailsTab
+from .customer_list import CustomerListTab
 from .home import HomeTab
 from .login import UserAuthentication
-from .customer_list import CustomerListTab
-from .quotation_list import QuotationListTab
-from .customer_details import CustomerDetailsTab
-from .product_details import ProductDetailsTab
-from .quote_details import QuoteDetailsTab
-from .order_list import OrderListTab
-from .style import style
 from .order_details import OrderDetailsTab
-from quote_invoice.common.constants import DB_PATH, LOGO_PATH
+from .order_list import OrderListTab
+from .product_details import ProductDetailsTab
+from .quotation_list import QuotationListTab
+from .quote_details import QuoteDetailsTab
+from .style import style
+
 
 def get_connection():
     return create_engine(DB_PATH)
+
 
 # class DatabaseOps():
 engine = get_connection()
@@ -27,7 +32,8 @@ session = Session()
 
 
 class App(Tk):
-    """ Initialize the main window of the application"""
+    """Initialize the main window of the application"""
+
     def __init__(self):
         super().__init__()
         self.is_authenticated = False
@@ -37,13 +43,13 @@ class App(Tk):
         self.login_out.set("Login")
         self.authenticated_user_name.set("User: Logged Out")
         self.title("Quote & Invoice")
-        self.option_add('*tearOff', FALSE)
+        self.option_add("*tearOff", FALSE)
         self.selected_customer = None
         self.selected_quotation = None
         self.selected_order = None
         self.selected_quote = None
         self.selected_order = None
-        self.state('zoomed')
+        self.state("zoomed")
         self.logo = PhotoImage(file=LOGO_PATH)
         self.iconphoto(False, self.logo)
         self.style = style()
@@ -59,12 +65,13 @@ class App(Tk):
         self.product_details_tab = self.setup_product_tab()
         # if not self.is_authenticated:
         #     user = UserAuthentication(self, DB_PATH)
-            
 
-    
     def create_notebook(self):
         """Create a Notebook and Frames"""
-        self.notebook = ttk.Notebook(self, style="notebook.TNotebook",)
+        self.notebook = ttk.Notebook(
+            self,
+            style="notebook.TNotebook",
+        )
         self.home_frame = ttk.Frame(self.notebook)
         self.customer_list_frame = ttk.Frame(self.notebook)
         self.customer_frame = ttk.Frame(self.notebook)
@@ -85,9 +92,11 @@ class App(Tk):
         self.notebook.add(self.order_frame, text="Order Details")
         self.notebook.add(self.product_frame, text="Products & Services")
         self.notebook.add(self.report_frame, text="Reports")
-        
+
         # Grid Notebook
-        self.notebook.grid(column=0, row=0, columnspan=2, rowspan=12, sticky=(N, W, E, S))
+        self.notebook.grid(
+            column=0, row=0, columnspan=2, rowspan=12, sticky=(N, W, E, S)
+        )
 
     def configure_rows_columns(self):
         """Configure the rows and columns resizing behaviour"""
@@ -153,7 +162,6 @@ class App(Tk):
         self.report_frame.rowconfigure(0, weight=1)
         self.report_frame.rowconfigure(1, weight=1)
         self.report_frame.rowconfigure(2, weight=1)
-        
 
     def setup_home_tab(self):
         home_tab = HomeTab(self, self.home_frame)
@@ -165,54 +173,45 @@ class App(Tk):
             self.customer_frame,
             self.quotation_list_tab,
             self.order_list_tab,
-            session)
+            session,
+        )
         return customer_details_tab
-    
+
     def setup_customer_list_tab(self):
         customer_list_tab = CustomerListTab(
-            self.notebook, 
-            self.customer_list_frame, 
-            self.customer_details_tab, 
-            session
+            self.notebook, self.customer_list_frame, self.customer_details_tab, session
         )
         return customer_list_tab
-    
+
     def setup_quote_tab(self):
         quote_details_tab = QuoteDetailsTab(
-            self.notebook, 
-            self.quotation_frame, 
-            self.order_details_tab,
-            session)
+            self.notebook, self.quotation_frame, self.order_details_tab, session
+        )
         return quote_details_tab
-    
+
     def setup_quotation_list_tab(self):
         quotation_list_tab = QuotationListTab(
-            self.notebook, 
-            self.quotation_list_frame, 
-            self.quote_details_tab, 
-            session
+            self.notebook, self.quotation_list_frame, self.quote_details_tab, session
         )
         return quotation_list_tab
+
     # Pass customer_details_tab object to the list_tab object, enables calling customer_details_tab methods from list
     def setup_order_tab(self):
         order_details_tab = OrderDetailsTab(self.notebook, self.order_frame, session)
         return order_details_tab
-    
+
     def setup_order_list_tab(self):
         order_list_tab = OrderListTab(
-            self.notebook, 
-            self.order_list_frame, 
-            self.order_details_tab, 
-            session
+            self.notebook, self.order_list_frame, self.order_details_tab, session
         )
         return order_list_tab
-    
+
     def setup_product_tab(self):
         product_details_tab = ProductDetailsTab(
-            self.notebook,
-            self.product_frame,
-            session)
+            self.notebook, self.product_frame, session
+        )
         return product_details_tab
+
 
 def run():
     engine = get_connection()

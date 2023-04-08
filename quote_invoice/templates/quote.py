@@ -1,25 +1,30 @@
 import os
-from moneyed import Money, NAD
-from docxtpl import DocxTemplate
 from datetime import timedelta
 from tkinter import messagebox
-from quote_invoice.db import operations as db
-from quote_invoice.db.operations import get_settings
-from quote_invoice.db.models import QuotationItem, Product
 
-class Quote():
+from docxtpl import DocxTemplate
+from moneyed import NAD, Money
+
+from quote_invoice.db import operations as db
+from quote_invoice.db.models import Product, QuotationItem
+from quote_invoice.db.operations import get_settings
+
+
+class Quote:
     def __init__(self, session, quote_id, templates_dir="", output_dir=""):
         self.session = session
         self.quote_id = quote_id
         self.quote = db.get_quotations(self.session, pk=quote_id)
-        self.settings =  get_settings(self.session)
+        self.settings = get_settings(self.session)
         self.default_settings = False
         if self.settings and self.settings.quote_template:
-            self.vat_rate = float(self.settings.vat_rate)/100.0
+            self.vat_rate = float(self.settings.vat_rate) / 100.0
             self.quote_validity = int(self.settings.quote_validity)
             self.quote_template = self.settings.quote_template
             self.quote_output_folder = self.settings.quote_output_folder
-            self.quote_output_file = os.path.join(self.quote_output_folder, "generated_quote.docx")
+            self.quote_output_file = os.path.join(
+                self.quote_output_folder, "generated_quote.docx"
+            )
         else:
             self.default_settings = True
             self.vat_rate = 15.0
@@ -32,8 +37,8 @@ class Quote():
         if self.default_settings:
             if not messagebox.askyesno(
                 message="Some settings have not been set. Default settings will be used instead. Do you want to proceed?",
-                icon='question',
-                title='Settings Warning'
+                icon="question",
+                title="Settings Warning",
             ):
                 return
         quote_id = self.quote.quote_id
@@ -59,7 +64,7 @@ class Quote():
             "country": customer.country,
             "item_list": calculated_quote.get("item_list"),
             "subtotal": calculated_quote.get("subtotal"),
-            "vat_rate":calculated_quote.get("vat_rate"),
+            "vat_rate": calculated_quote.get("vat_rate"),
             "vat_amount": calculated_quote.get("vat_amount"),
             "total_cost": calculated_quote.get("total_cost"),
         }
@@ -69,36 +74,47 @@ class Quote():
             os.startfile(self.quote_output_file)
             return
         except PermissionError as e:
-            raise Exception(f"{e} Check if you have another open quote and close it or save it with a different name. Then try again.")
+            raise Exception(
+                f"{e} Check if you have another open quote and close it or save it with a different name. Then try again."
+            )
         except Exception as e:
-            raise Exception(f"Improperly configured settings. Check your folder settings: {e}")
+            raise Exception(
+                f"Improperly configured settings. Check your folder settings: {e}"
+            )
 
     def calculate_quote(self, quote_id):
         item_list = []
         subtotal = Money("0.00", NAD)
         vat_rate = self.vat_rate
-        quote_items = self.session.query(Product, QuotationItem).join(QuotationItem).filter(QuotationItem.quote_id == quote_id).all()
-        for product,item in quote_items:
+        quote_items = (
+            self.session.query(Product, QuotationItem)
+            .join(QuotationItem)
+            .filter(QuotationItem.quote_id == quote_id)
+            .all()
+        )
+        for product, item in quote_items:
             unit_price = Money(product.price, NAD)
-            total_price = unit_price*item.quantity
-            item_list.append([
-                product.product_name,
-                item.description,
-                item.quantity,
-                unit_price.amount,
-                total_price.amount,
-            ])
+            total_price = unit_price * item.quantity
+            item_list.append(
+                [
+                    product.product_name,
+                    item.description,
+                    item.quantity,
+                    unit_price.amount,
+                    total_price.amount,
+                ]
+            )
             subtotal += total_price
-        vat_amount = subtotal*vat_rate
-        total_cost = vat_amount+subtotal
+        vat_amount = subtotal * vat_rate
+        total_cost = vat_amount + subtotal
         vat_amount = str(vat_amount)
         subtotal = str(subtotal)
         total_cost = str(total_cost)
         calculated_quote = {
             "item_list": item_list,
             "subtotal": f"N${subtotal[3:]}",
-            "vat_rate": vat_rate, #f"{vat_rate:.2%}",
+            "vat_rate": vat_rate,  # f"{vat_rate:.2%}",
             "vat_amount": f"N${vat_amount[3:]}",
-            "total_cost": f"N${total_cost[3:]}"
+            "total_cost": f"N${total_cost[3:]}",
         }
         return calculated_quote

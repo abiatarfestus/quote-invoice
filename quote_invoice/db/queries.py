@@ -1,11 +1,15 @@
 from datetime import datetime
-from sqlalchemy import and_, or_, create_engine
+
+from sqlalchemy import and_, create_engine, or_
 from sqlalchemy.orm import sessionmaker
+
 # from . models import Customer, Order, OrderItem, Quotation, QuotationItem, Product
 from quote_invoice.db.operations import delete_settings
 
+
 def get_connection():
     return create_engine(f"sqlite:///app_database.db")
+
 
 # class DatabaseOps():
 engine = get_connection()

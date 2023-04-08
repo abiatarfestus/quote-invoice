@@ -1,27 +1,26 @@
 from tkinter import *
-from tkinter import ttk
-from tkinter import filedialog
-
+from tkinter import filedialog, ttk
 
 # filename = filedialog.askopenfilename()
 # filename = filedialog.asksaveasfilename()
 # dirname = filedialog.askdirectory()
 
-class UserSettingsTab():
+
+class UserSettingsTab:
     def __init__(self, session, parent_frame):
         self.session = session
-        self.parent_frame = parent_frame 
-        #-------------------------------------TOP FRAME-----------------------------------#
+        self.parent_frame = parent_frame
+        # -------------------------------------TOP FRAME-----------------------------------#
         # Frames:
         self.top_frame = ttk.Frame(
             self.parent_frame,
-            borderwidth=5, 
+            borderwidth=5,
             # relief="solid"
         )
         self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
         self.top_frame.rowconfigure(0, weight=1)
-        
+
         # Labels:
         self.heading_lbl = ttk.Label(
             self.top_frame,
@@ -30,13 +29,13 @@ class UserSettingsTab():
             style="heading2.TLabel",
         )
         self.heading_lbl.grid(row=0, sticky=(N, S, W, E))
-        #-------------------------------TOP FRAME ENDS--------------------------------------#
+        # -------------------------------TOP FRAME ENDS--------------------------------------#
 
-        #-------------------------------MID FRAME-------------------------------------------#
+        # -------------------------------MID FRAME-------------------------------------------#
         # Frames:
         self.mid_frame = ttk.Frame(
-            self.parent_frame, 
-            borderwidth=5, 
+            self.parent_frame,
+            borderwidth=5,
             # relief="solid"
         )
         self.mid_frame.grid(row=1, sticky=(N, W, E, S))
@@ -47,7 +46,7 @@ class UserSettingsTab():
             anchor=W,
             # style="heading.TLabel",
         )
-        self.id_lbl.grid(column=0, row=0, sticky=(W, ))
+        self.id_lbl.grid(column=0, row=0, sticky=(W,))
 
         self.type_lbl = ttk.Label(
             self.mid_frame,
@@ -55,7 +54,7 @@ class UserSettingsTab():
             anchor=W,
             # style="heading.TLabel",
         )
-        self.type_lbl.grid(column=0, row=1, sticky=(W, ))
+        self.type_lbl.grid(column=0, row=1, sticky=(W,))
 
         # Entries:
         self.quote_template_ent = ttk.Entry(
@@ -98,7 +97,7 @@ class UserSettingsTab():
 
         # Buttons:
         self.save_btn = ttk.Button(
-            self.mid_frame, 
+            self.mid_frame,
             text="Save",
             # style="home_btns.TButton",
             padding=5,
@@ -107,22 +106,22 @@ class UserSettingsTab():
         self.save_btn.grid(column=0, columnspan=2, row=2, pady=2, sticky=(N, S, E, W))
 
         self.cancel_btn = ttk.Button(
-            self.mid_frame, 
+            self.mid_frame,
             text="Cancel",
             # style="home_btns.TButton",
             padding=5,
             # command=self.view_customer_orders
         )
         self.cancel_btn.grid(column=2, columnspan=2, row=2, pady=2, sticky=(N, S, E, W))
-        
-        #-------------------------------MID FRAME ENDS---------------------------------------#
 
-        #-------------------------------BOTTOM FRAME-----------------------------------------#
+        # -------------------------------MID FRAME ENDS---------------------------------------#
+
+        # -------------------------------BOTTOM FRAME-----------------------------------------#
         # Frames:
         self.bottom_frame = ttk.Frame(
             self.parent_frame,
-            borderwidth=5, 
+            borderwidth=5,
             # relief="solid"
         )
         self.bottom_frame.grid(row=2, sticky=(N, W, E, S))
-        #-------------------------------BOTTOM FRAME ENDS------------------------------------#
+        # -------------------------------BOTTOM FRAME ENDS------------------------------------#

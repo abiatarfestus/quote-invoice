@@ -9,21 +9,21 @@
 # #         root.title("Quote & Invoice")
 
 # #         self.top_frame = ttk.Frame(
-# #             root, 
-# #             # padding="3 3 12 12", 
-# #             borderwidth=5, 
+# #             root,
+# #             # padding="3 3 12 12",
+# #             borderwidth=5,
 # #             # relief="solid"
 # #         )
 # #         self.mid_frame = ttk.Frame(
-# #             root, 
-# #             # padding="3 3 12 12", 
-# #             borderwidth=5, 
+# #             root,
+# #             # padding="3 3 12 12",
+# #             borderwidth=5,
 # #             relief="solid"
 # #         )
 # #         self.bottom_frame = ttk.Frame(
-# #             root, 
-# #             # padding="3 3 12 12", 
-# #             borderwidth=5, 
+# #             root,
+# #             # padding="3 3 12 12",
+# #             borderwidth=5,
 # #             # relief="solid"
 # #         )
 # #         self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
@@ -47,15 +47,14 @@
 # #         # ttk.Label(mainframe, text="is equivalent to").grid(column=1, row=2, sticky=E)
 # #         # ttk.Label(mainframe, text="meters").grid(column=3, row=2, sticky=W)
 
-        
 
 # #         # Styles
 # #         s = ttk.Style()
 # #         s.configure("home_btns.TButton", font=(None, 24))
 # #         s.configure("heading.TLabel", font=(None, 31))
 # #         s.configure(
-# #             "main_menu.TLabel", 
-# #             font=(None, 24), 
+# #             "main_menu.TLabel",
+# #             font=(None, 24),
 # #             background="blue",
 # #             foreground="white"
 # #         )
@@ -85,19 +84,19 @@
 # #             padding=26
 # #         )
 # #         self.customer_form_btn = ttk.Button(
-# #             self.mid_frame, 
+# #             self.mid_frame,
 # #             text="Customer Form",
 # #             style="home_btns.TButton",
 # #             padding=(15, 26)
 # #         )
 # #         self.quotations_btn = ttk.Button(
-# #             self.mid_frame, 
+# #             self.mid_frame,
 # #             text="Quotations",
 # #             style="home_btns.TButton",
 # #             padding=26
 # #         )
 # #         self.orders_invoies_btn = ttk.Button(
-# #             self.mid_frame, 
+# #             self.mid_frame,
 # #             text="Orders/Invoices",
 # #             style="home_btns.TButton",
 # #             padding=(15, 26)
@@ -134,9 +133,6 @@
 # #     #         self.meters.set(int(0.3048 * value * 10000.0 + 0.5)/10000.0)
 # #     #     except ValueError:
 # #     #         pass
-
-
-    
 
 
 # # from sqlalchemy import create_engine
@@ -272,14 +268,13 @@
 # #         self.print_all_data(USERS)
 
 
-
 # # def setup_customer_list_tab(notebook, parent_frame, session):
 # #         """Configure the customer list tab"""
 # #         #-------------------------------------TOP FRAME-----------------------------------#
 # #         # Frames:
 # #         top_frame = ttk.Frame(
 # #             parent_frame,
-# #             borderwidth=5, 
+# #             borderwidth=5,
 # #             relief="solid"
 # #         )
 # #         top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
@@ -299,8 +294,8 @@
 # #         #-------------------------------MID FRAME-------------------------------------------#
 # #         # Frames:
 # #         mid_frame = ttk.Frame(
-# #             parent_frame, 
-# #             borderwidth=5, 
+# #             parent_frame,
+# #             borderwidth=5,
 # #             relief="solid"
 # #         )
 # #         mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W, E, S))
@@ -308,7 +303,7 @@
 # #         mid_frame.columnconfigure(1, weight=1)
 # #         mid_frame.rowconfigure(0, weight=1)
 # #         mid_frame.rowconfigure(1, weight=1)
-        
+
 # #         # Treeviews:
 # #         tree = ttk.Treeview(mid_frame, show='headings', height=20)
 # #         tree.bind('<ButtonRelease-1>', select_record)
@@ -397,17 +392,17 @@
 # #         # Frames:
 # #         bottom_frame = ttk.Frame(
 # #             parent_frame,
-# #             borderwidth=5, 
+# #             borderwidth=5,
 # #             relief="solid"
 # #         )
 # #         bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
-        
+
 # #         # Entries:
 # #         search_ent = ttk.Entry(
 # #             bottom_frame,
 # #         )
 # #         search_ent.grid(column=3, row=1, sticky=(S, N, W, E))
-        
+
 # #         # Comboboxes:
 # #         search_option_cbx = ttk.Combobox(
 # #             bottom_frame,
@@ -425,14 +420,14 @@
 # #             command=view_customer
 # #         )
 # #         add_customer_btn = ttk.Button(
-# #             bottom_frame, 
+# #             bottom_frame,
 # #             text="Add New Customer",
 # #             # style="home_btns.TButton",
 # #             padding=(10, 21),
 # #             command=open_blank_customer_form
 # #         )
 # #         search_customer_btn = ttk.Button(
-# #             bottom_frame, 
+# #             bottom_frame,
 # #             text="Search Customer",
 # #             # style="home_btns.TButton",
 # #             padding=(10, 21),
@@ -442,7 +437,7 @@
 # #         add_customer_btn.grid(column=1, row=1, sticky=E)
 # #         search_customer_btn.grid(column=4, row=1, sticky=E)
 # #         #-------------------------------BOTTOM FRAME ENDS------------------------------------#
-        
+
 # #         selected_customer = None
 
 # #         def select_record(event):
@@ -450,7 +445,7 @@
 # #             print("Record selected")
 # #             record = tree.focus()
 # #             selected_customer = tree.item(record)
-        
+
 # #         def open_blank_customer_form():
 # #             customer_details.new_customer()
 # #         #     id_ent.state(["!disabled"])
@@ -469,7 +464,7 @@
 # #         #     since_ent.delete(0, END)
 # #         #     notes_txt.delete("1.0", END)
 # #             notebook.select(customer_frame)
-        
+
 # #         def view_customer():
 # #             print(f"SELECTED RECORD: {selected_customer}")
 # #             customer = selected_customer
@@ -606,7 +601,7 @@
 # #                     title='Error'
 # #                 )
 # #                     return error_message
-                
+
 
 # # def update_order(self):
 # #         order_id = self.order_id_ent.get()
@@ -636,9 +631,9 @@
 # #                 self.session,
 # #                 pk=order_id,
 # #                 # order_date=order_date,
-# #                 description=description, 
-# #                 # customer_id=customer_id, 
-# #                 is_paid=is_paid, 
+# #                 description=description,
+# #                 # customer_id=customer_id,
+# #                 is_paid=is_paid,
 # #                 notes=notes)
 # #         except Exception as e:
 # #             error_message = messagebox.showerror(
@@ -646,7 +641,7 @@
 # #             detail=e,
 # #             title='Error'
 # #         )
-# #             return error_message 
+# #             return error_message
 # #         if self.order_items_tree.get_children(): # If there are items on the list
 # #             items = []
 # #             item_ids = set()
@@ -669,7 +664,7 @@
 # #                 else:
 # #                     try:
 # #                         db.update_order_item(
-# #                             self.session, 
+# #                             self.session,
 # #                             pk=item["values"][1],
 # #                             quantity=item["values"][4],
 # #                             description=item["values"][3]
@@ -727,7 +722,7 @@
 # #                 title='Success'
 # #             )
 # #             return success_message
-        
+
 # # admin_user = session.query(User).filter_by(is_admin=True ).first()
 # #     if is_admin: # Check if a staff user is being changed to admin
 # #         if pk != admin_user.user_id:
@@ -790,9 +785,8 @@
 #         self.product_details_tab = self.setup_product_tab()
 #         if not self.is_authenticated:
 #             user = UserAuthentication(self.root, DB_PATH)
-            
 
-    
+
 #     def create_notebook(self):
 #         """Create a Notebook and Frames"""
 #         self.notebook = ttk.Notebook(self.root, style="notebook.TNotebook",)
@@ -816,7 +810,7 @@
 #         self.notebook.add(self.order_frame, text="Order Details")
 #         self.notebook.add(self.product_frame, text="Products & Services")
 #         self.notebook.add(self.report_frame, text="Reports")
-        
+
 #         # Grid Notebook
 #         self.notebook.grid(column=0, row=0, columnspan=2, rowspan=12, sticky=(N, W, E, S))
 
@@ -884,7 +878,7 @@
 #         self.report_frame.rowconfigure(0, weight=1)
 #         self.report_frame.rowconfigure(1, weight=1)
 #         self.report_frame.rowconfigure(2, weight=1)
-        
+
 
 #     def setup_home_tab(self):
 #         home_tab = HomeTab(self.root, self.home_frame)
@@ -898,29 +892,29 @@
 #             self.order_list_tab,
 #             session)
 #         return customer_details_tab
-    
+
 #     def setup_customer_list_tab(self):
 #         customer_list_tab = CustomerListTab(
-#             self.notebook, 
-#             self.customer_list_frame, 
-#             self.customer_details_tab, 
+#             self.notebook,
+#             self.customer_list_frame,
+#             self.customer_details_tab,
 #             session
 #         )
 #         return customer_list_tab
-    
+
 #     def setup_quote_tab(self):
 #         quote_details_tab = QuoteDetailsTab(
-#             self.notebook, 
-#             self.quotation_frame, 
+#             self.notebook,
+#             self.quotation_frame,
 #             self.order_details_tab,
 #             session)
 #         return quote_details_tab
-    
+
 #     def setup_quotation_list_tab(self):
 #         quotation_list_tab = QuotationListTab(
-#             self.notebook, 
-#             self.quotation_list_frame, 
-#             self.quote_details_tab, 
+#             self.notebook,
+#             self.quotation_list_frame,
+#             self.quote_details_tab,
 #             session
 #         )
 #         return quotation_list_tab
@@ -928,16 +922,16 @@
 #     def setup_order_tab(self):
 #         order_details_tab = OrderDetailsTab(self.notebook, self.order_frame, session)
 #         return order_details_tab
-    
+
 #     def setup_order_list_tab(self):
 #         order_list_tab = OrderListTab(
-#             self.notebook, 
-#             self.order_list_frame, 
-#             self.order_details_tab, 
+#             self.notebook,
+#             self.order_list_frame,
+#             self.order_details_tab,
 #             session
 #         )
 #         return order_list_tab
-    
+
 #     def setup_product_tab(self):
 #         product_details_tab = ProductDetailsTab(
 #             self.notebook,

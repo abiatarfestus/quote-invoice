@@ -1,15 +1,18 @@
 from tkinter import *
 from tkinter import ttk
+
+from .db.models import Base, get_connection
+
 # from main_window import MainWindow
 from .gui.main_window import MainWindow
-from .db.models import get_connection, Base
+
 
 def run():
     engine = get_connection()
     Base.metadata.create_all(engine)
-    
+
     root = Tk()
-    root.state('zoomed')
+    root.state("zoomed")
     # root.geometry("500x500")
 
     app = MainWindow(root)
