@@ -36,16 +36,6 @@ class HomeTab():
         #-------------------------------TOP FRAME ENDS--------------------------------------#
         
         #-------------------------------MID FRAME-------------------------------------------#
-        # self.mid_frame = ttk.Frame(
-        #     parent_frame, 
-        #     borderwidth=5, 
-        #     # relief="solid"
-        # )
-        # self.mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W, E, S))
-        # self.mid_frame.columnconfigure(0, weight=1)
-        # self.mid_frame.columnconfigure(1, weight=1)
-        # self.mid_frame.rowconfigure(0, weight=1)
-        # self.mid_frame.rowconfigure(1, weight=1)
 
         #-------------------------------MID FRAME ENDS---------------------------------------#
 
@@ -140,4 +130,4 @@ class HomeTab():
         self.parent.authenticated_user = None
         self.parent.authenticated_user_name.set("User: Logged Out")
         self.parent.login_out.set("Login")
-        user = UserAuthentication(self, DB_PATH)
+        user = UserAuthentication(self.parent, DB_PATH)

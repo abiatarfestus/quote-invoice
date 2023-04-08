@@ -9,7 +9,7 @@ def style():
     style.theme_use("flatly")
     style.configure(".", font=("Segoe UI", 10))
     style.configure("TNotebook.Tab", padding=10, font=("Segoe UI", 16))
-    style.configure("TButton", font=("Segoe UI", 15))
+    style.configure("TButton", font=("Segoe UI", 14))
     # style.configure("Danger.TButton", font=("Segoe UI", 15), foreground="Red")
     style.configure("heading.TLabel", font=("Segoe UI", 20))
     style.configure("heading2.TLabel", font=("Segoe UI", 14))

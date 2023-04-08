@@ -10,7 +10,7 @@ from quote_invoice.db.models import User
 from .register import UserRegistration
 
 Base = declarative_base()
-
+login_icon_path = r"quote_invoice\assets\icons8-login-rounded-48.png"
 
  
 
@@ -36,6 +36,8 @@ class UserAuthentication:
         self.db_path = db_path
         self.popup.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.popup.title("Login")
+        self.logo = PhotoImage(file=login_icon_path)
+        self.popup.iconphoto(False, self.logo)
         self.popup.grab_set()
         self.popup.resizable(False, False)
         self.admin_user = db.get_admin_user(self.session) # Get admin user from the database

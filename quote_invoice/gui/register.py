@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from quote_invoice.db.models import User
 
 Base = declarative_base()
-
+register_icon_path = r"quote_invoice\assets\icons8-sign-up-64.png"
 
 class UserRegistration:
     def __init__(self, parent, user_type="staff"):     
@@ -27,6 +27,8 @@ class UserRegistration:
         self.popup.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.popup.title("Register")
         self.popup.resizable(False, False)
+        self.logo = PhotoImage(file=register_icon_path)
+        self.popup.iconphoto(False, self.logo)
         self.popup.grab_set()
 
         # Labels:
