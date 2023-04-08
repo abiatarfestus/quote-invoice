@@ -78,12 +78,12 @@ class QuotationListTab():
         )
 
         # Format Our Columns
-        self.tree.column("ID", anchor=CENTER)
-        self.tree.column("Customer", anchor=W)
-        self.tree.column("Description", anchor=W)
-        self.tree.column("Quote Date", anchor=E)
-        self.tree.column("Accepted", anchor=CENTER)
-        self.tree.column("Closed", anchor=CENTER)
+        self.tree.column("ID", width=100, anchor=CENTER)
+        self.tree.column("Customer", width=300, anchor=W)
+        self.tree.column("Description", width=600, anchor=W)
+        self.tree.column("Quote Date", width=120, anchor=E)
+        self.tree.column("Accepted", width=100, anchor=CENTER)
+        self.tree.column("Closed", width=100, anchor=CENTER)
         self.tree.column("Notes", anchor=W)
 
         # Create Headings

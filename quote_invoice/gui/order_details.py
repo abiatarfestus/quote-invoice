@@ -122,22 +122,6 @@ class OrderDetailsTab():
         )
         self.notes_lbl.grid(column=3, row=0, sticky=(E, ))
 
-        # product_description_lbl = ttk.Label(
-        #     bottom_frame,
-        #     text="Product Description",
-        #     anchor=E,
-        #     # style="heading.TLabel",
-        # )
-        # product_description_lbl.grid(column=0, row=0, sticky=(W, ))
-
-        # total_lbl = ttk.Label(
-        #     mid_frame,
-        #     text="Total Cost:",
-        #     anchor=E,
-        #     # style="heading.TLabel",
-        # )
-        # total_lbl.grid(column=3, row=6, sticky=(N, S, W, E))
-
         self.order_amount = StringVar(value="Total Cost:\tN$0.00")
         self.amount_lbl = ttk.Label(
             self.mid_frame,

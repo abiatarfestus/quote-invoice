@@ -57,8 +57,8 @@ class App(Tk):
         self.customer_details_tab = self.setup_customer_tab()
         self.customer_list_tab = self.setup_customer_list_tab()
         self.product_details_tab = self.setup_product_tab()
-        if not self.is_authenticated:
-            user = UserAuthentication(self, DB_PATH)
+        # if not self.is_authenticated:
+        #     user = UserAuthentication(self, DB_PATH)
             
 
     

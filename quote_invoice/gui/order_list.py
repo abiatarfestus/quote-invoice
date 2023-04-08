@@ -78,9 +78,9 @@ class OrderListTab():
 
         # Format Our Columns
         self.tree.column("ID",  width=100, anchor=CENTER)
-        self.tree.column("Customer",  width=250, anchor=W)
+        self.tree.column("Customer",  width=300, anchor=W)
         self.tree.column("Description", width=600, anchor=W)
-        self.tree.column("Order Date",  width=100, anchor=E)
+        self.tree.column("Order Date",  width=120, anchor=E)
         self.tree.column("Paid", anchor=CENTER)
         # self.tree.column("Notes", anchor=W)
 

@@ -17,6 +17,7 @@ def style():
     style.configure("Treeview", font=("Segoe UI", 10), rowheight=20)
     style.configure("ErrorLabel.TLabel", foreground="Red")
     style.configure("BlueLabel.TLabel", foreground="Blue", font=("Segoe UI", 15))
+    style.configure("Treeview.Heading", font=("Segoe UI", 10, "bold")) # Modify the font of the headings
     # style.configure("txt.TEntry", font=("Segoe UI", 16))
     # style.configure("txt.TCombobox", font=("Segoe UI", 16))
     return style

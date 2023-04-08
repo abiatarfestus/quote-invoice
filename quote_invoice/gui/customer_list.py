@@ -77,11 +77,11 @@ class CustomerListTab():
         )
 
         # Format columns:
-        self.tree.column("ID", anchor=CENTER)
-        self.tree.column("Customer Name", anchor=W)
+        self.tree.column("ID", width=100, anchor=CENTER)
+        self.tree.column("Customer Name", width=300, anchor=W)
         self.tree.column("Town", anchor=W)
         self.tree.column("Phone", anchor=W)
-        self.tree.column("Email", anchor=W)
+        self.tree.column("Email", width=300, anchor=W)
         self.tree.column("Customer Since", anchor=E)
 
         # Add headings:

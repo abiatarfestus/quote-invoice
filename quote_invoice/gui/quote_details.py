@@ -122,16 +122,17 @@ class QuoteDetailsTab():
             anchor=E,
             style="txt.TLabel",
         )
-        self.notes_lbl.grid(column=3, row=0, sticky=(E, ))
+        self.notes_lbl.grid(column=5, row=0, sticky=(E, ))
         
         self.quote_amount = StringVar(value="Total Cost:\tN$0.00")
         self.amount_lbl = ttk.Label(
             self.mid_frame,
             textvariable=self.quote_amount,
+            # padding=5,
             anchor=E,
             style="txt.TLabel",
         )
-        self.amount_lbl.grid(column=7, row=6, sticky=(N, S, W, E))
+        self.amount_lbl.grid(column=6, columnspan=2, row=6, sticky=(N, S, W, E))
 
         # Entries:
         self.quote_id_ent = ttk.Entry(
@@ -219,7 +220,7 @@ class QuoteDetailsTab():
             padding=(0, 10),
             command=self.print_quote
         )
-        self.quote_preview_btn.grid(column=6, row=0, rowspan=2, sticky=(N, W, E, S))
+        self.quote_preview_btn.grid(column=6, columnspan=2, row=0, rowspan=2, sticky=(N, W, E, S))
 
         self.add_quote_btn = ttk.Button(
             self.mid_frame,
@@ -228,7 +229,7 @@ class QuoteDetailsTab():
             padding=10,
             command=self.open_blank_quote_form
         )
-        self.add_quote_btn.grid(column=6, row=2, rowspan=2, sticky=(N,W, E, S))
+        self.add_quote_btn.grid(column=6, columnspan=2, row=2, rowspan=2, sticky=(N,W, E, S))
 
         self.quote_save_update = StringVar(value="Save Quotation")
         self.quote_save_update_btn = ttk.Button(
