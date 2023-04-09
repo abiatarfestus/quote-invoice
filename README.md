@@ -76,7 +76,7 @@ This project was adapted from a Microsoft Access application I made for my colle
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+This project was built with, among others, the following frameworks/libraries.
 
 * [![Python][Python]][Python-url]
 * [![Sqlite][Sqlite]][Sqlite-url]
@@ -216,6 +216,20 @@ Project Link: [https://github.com/abiatarfestus/quote-invoice](https://github.co
 * [Font Awesome](https://fontawesome.com)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Contributing
+I welcome any and all contributions! Here are some ways you can get started:
+1. Report bugs: If you encounter any bugs, please let me know. Open up an issue and let me know the problem.
+2. Contribute code: If you are a developer and want to contribute, follow the instructions below to get started!
+3. Suggestions: If you don't want to code but have some awesome ideas, open up an issue explaining some updates or imporvements you would like to see!
+4. Documentation: If you see the need for some additional documentation, feel free to add some!
+
+## Instructions
+1. Fork this repository
+2. Clone the forked repository
+3. Add your contributions (code or documentation)
+4. Commit and push
+5. Wait for pull request to be merged
 
 
 
