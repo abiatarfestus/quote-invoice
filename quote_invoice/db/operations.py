@@ -628,12 +628,12 @@ def add_user(session, username, password, first_name, last_name, email, is_admin
     try:
         new_user = User(
             username=username,
-            password=password,
             first_name=first_name,
             last_name=last_name,
             email=email,
             is_admin=is_admin,
         )
+        new_user.set_password(password)
         session.add(new_user)
         session.commit()
         return new_user

@@ -88,16 +88,25 @@ class UserAuthentication:
 
         user = (
             self.session.query(User)
-            .filter_by(username=username, password=password)
+            .filter_by(username=username)
             .first()
         )
         if user:
-            self.parent.is_authenticated = True
-            self.parent.authenticated_user = user
-            self.parent.authenticated_user_name.set(f"User: {user.username}")
-            self.parent.login_out.set("Logout")
-            self.popup.destroy()
-            self.parent.grab_set()
+            if user.check_password(password):
+                self.parent.is_authenticated = True
+                self.parent.authenticated_user = user
+                self.parent.authenticated_user_name.set(f"User: {user.username}")
+                self.parent.login_out.set("Logout")
+                self.popup.destroy()
+                self.parent.grab_set()
+            else:
+                error_message = ttk.Label(
+                    self.popup,
+                    text="Incorrect username or password",
+                    style="ErrorLabel.TLabel",
+                    anchor=CENTER,
+                )
+                error_message.grid(column=1, columnspan=2, row=4, sticky=(E, W))
         else:
             error_message = ttk.Label(
                 self.popup,
@@ -110,7 +119,7 @@ class UserAuthentication:
     def register(self):
         self.popup.destroy()
         self.parent.grab_set()
-        user_registration = UserRegistration(self.parent, user_type="admin")
+        UserRegistration(self.parent, user_type="admin")
 
     def on_closing(self):
         if not messagebox.askyesno(

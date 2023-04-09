@@ -148,7 +148,7 @@ class UserRegistration:
             self.parent.login_out.set("Logout")
             self.popup.destroy()
             self.parent.grab_set()
-        except Exception as e:
+        except NameError as e:
             error_message = messagebox.showerror(
                 message="An error occured:", detail=e, title="Error"
             )

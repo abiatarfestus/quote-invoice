@@ -9,9 +9,10 @@ from sqlalchemy import (
     create_engine,
 )
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, validates
+from sqlalchemy.orm import relationship
 
-from quote_invoice.auth.password_validation import Password
+from quote_invoice.auth.password_validation import generate_password_hash, check_password_hash
+
 
 Base = declarative_base()
 
@@ -134,15 +135,17 @@ class User(Base):
     __tablename__ = "users"
     user_id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, nullable=False)
-    password = Column(Password, nullable=False)
+    password = Column(String)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email = Column(String, unique=True)
     is_admin = Column(Boolean)
 
-    @validates("password")
-    def _validate_password(self, key, password):
-        return getattr(type(self), key).type.validator(password)
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(password, self.password)
 
 
 # engine = get_connection()

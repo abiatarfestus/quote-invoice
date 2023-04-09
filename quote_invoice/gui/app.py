@@ -64,7 +64,7 @@ class App(Tk):
         self.customer_list_tab = self.setup_customer_list_tab()
         self.product_details_tab = self.setup_product_tab()
         # if not self.is_authenticated:
-        #     user = UserAuthentication(self, DB_PATH)
+        #     UserAuthentication(self, DB_PATH)
 
     def create_notebook(self):
         """Create a Notebook and Frames"""
