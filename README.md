@@ -1,23 +1,6 @@
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a name="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
 
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -31,10 +14,10 @@
 <br />
 <div align="center">
   <a href="https://github.com/abiatarfestus/quote-invoice">
-    <img src="quote_invoice/assets/main_logo.png" alt="Logo" width="80" height="80">
+    <img src="quote_invoice/assets/main_logo.png" alt="Logo" width="100" height="100">
   </a>
 
-  <h3 align="center">Quote & Invoce App</h3>
+  <h3 align="center">Quote & Invoice App</h3>
 
   <p align="center">
     A desktop application to keep track of your customers and generate quotes and invoices
@@ -228,7 +211,7 @@ Project Link: [https://github.com/abiatarfestus/quote-invoice](https://github.co
 
 * [Choose an Open Source License](https://choosealicense.com)
 * [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Img Shields](https://shields.io)
+* [Img Shields](https://dev.to/envoy_/150-badges-for-github-pnk)
 * [GitHub Pages](https://pages.github.com)
 * [Font Awesome](https://fontawesome.com)
 
@@ -240,18 +223,18 @@ Project Link: [https://github.com/abiatarfestus/quote-invoice](https://github.co
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/abiatarfestus/quote-invoice.svg?style=for-the-badge
 [contributors-url]: https://github.com/abiatarfestus/quote-invoice/contributors
-[forks-shield]: https://github.com/abiatarfestus/quote-invoice.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/abiatarfestus/quote-invoice.svg?style=for-the-badge
 [forks-url]: https://github.com/abiatarfestus/quote-invoice/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/abiatarfestus/quote-invoice.svg?style=for-the-badge
 [stars-url]: https://github.com/abiatarfestus/quote-invoice/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/abiatarfestus/quote-invoice.svg?style=for-the-badge
 [issues-url]: https://github.com/abiatarfestus/quote-invoice/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/abiatarfestus/quote-invoice.svg?style=for-the-badge
 [license-url]: https://github.com/abiatarfestus/quote-invoice/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/festus-abiatar-35b33b215/
 [product-screenshot]: quote_invoice/assets/screenshot.png
-[Python]: ttps://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
+[Python]: https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white
 [Python-url]: https://python.org/
 [Sqlite]: https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white
 [Sqlite-url]: https://sqlite.org/
