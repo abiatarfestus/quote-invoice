@@ -193,30 +193,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@abiatarfestus](https://twitter.com/abiatarfestus)
-
-Project Link: [https://github.com/abiatarfestus/quote-invoice](https://github.com/abiatarfestus/quote-invoice)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Img Shields](https://dev.to/envoy_/150-badges-for-github-pnk)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ## Contributing
 I welcome any and all contributions! Here are some ways you can get started:
 1. Report bugs: If you encounter any bugs, please let me know. Open up an issue and let me know the problem.
@@ -231,7 +207,28 @@ I welcome any and all contributions! Here are some ways you can get started:
 4. Commit and push
 5. Wait for pull request to be merged
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- CONTACT -->
+## Contact
+
+Your Name - [@abiatarfestus](https://twitter.com/abiatarfestus)
+
+Project Link: [https://github.com/abiatarfestus/quote-invoice](https://github.com/abiatarfestus/quote-invoice)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* [Choose an Open Source License](https://choosealicense.com)
+* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
+* [Img Shields](https://dev.to/envoy_/150-badges-for-github-pnk)
+* [GitHub Pages](https://pages.github.com)
+* [Font Awesome](https://fontawesome.com)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
