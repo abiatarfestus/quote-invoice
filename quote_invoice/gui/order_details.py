@@ -69,13 +69,13 @@ class OrderDetailsTab:
         self.mid_frame.columnconfigure(2, weight=1)
         self.mid_frame.columnconfigure(3, weight=1)
         self.mid_frame.columnconfigure(4, weight=1)
-        self.mid_frame.columnconfigure(5, weight=1)
+        # self.mid_frame.columnconfigure(5, weight=1)
         self.mid_frame.rowconfigure(0, weight=1)
         self.mid_frame.rowconfigure(1, weight=1)
         self.mid_frame.rowconfigure(2, weight=1)
         self.mid_frame.rowconfigure(3, weight=1)
         self.mid_frame.rowconfigure(4, weight=1)
-        self.mid_frame.rowconfigure(5, weight=1)
+        # self.mid_frame.rowconfigure(5, weight=1)
         self.mid_frame.rowconfigure(6, weight=1)
 
         for child in self.mid_frame.winfo_children():

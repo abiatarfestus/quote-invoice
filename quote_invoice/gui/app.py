@@ -50,6 +50,7 @@ class App(Tk):
         self.selected_quote = None
         self.selected_order = None
         self.state("zoomed")
+        self.minsize(1120, 650)
         self.logo = PhotoImage(file=LOGO_PATH)
         self.iconphoto(False, self.logo)
         self.style = style()
