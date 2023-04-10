@@ -68,7 +68,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-This project was adapted from a Microsoft Access application I made for my colleague's business. As part of my Python learning journe, i decided to convert the Access application to a desktop application using Python and its Tkinter module. The application has a number of features, which include storing and retrieving customer information, products and services, quotations and orders, as well as generating quotes and invoces based on quotations and orders saved in the database.
+This project was adapted from a Microsoft Access application I made for my colleague's business. As part of my Python learning journey, I decided to convert the Access application to a desktop application using Python and its Tkinter module. The application has a number of features, which include storing and retrieving customer information, products and services, quotations and orders, as well as generating quotes and invoices based on quotations and orders saved in the database.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
