@@ -95,73 +95,41 @@ class App(Tk):
 
         # Grid Notebook
         self.notebook.grid(
-            column=0, row=0, columnspan=2, rowspan=12, sticky=(N, W, E, S)
+            column=0, row=0, sticky=(N, W, E, S)
         )
 
     def configure_rows_columns(self):
         """Configure the rows and columns resizing behaviour"""
         # Root
         self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=1)
-        self.rowconfigure(2, weight=1)
-        self.rowconfigure(3, weight=1)
-        self.rowconfigure(4, weight=1)
 
         self.home_frame.columnconfigure(0, weight=1)
-        self.home_frame.columnconfigure(1, weight=1)
         self.home_frame.rowconfigure(0, weight=1)
-        self.home_frame.rowconfigure(1, weight=1)
-        self.home_frame.rowconfigure(2, weight=1)
 
         self.customer_list_frame.columnconfigure(0, weight=1)
-        self.customer_list_frame.columnconfigure(1, weight=1)
         self.customer_list_frame.rowconfigure(0, weight=1)
-        self.customer_list_frame.rowconfigure(1, weight=1)
-        self.customer_list_frame.rowconfigure(2, weight=1)
 
         self.customer_frame.columnconfigure(0, weight=1)
-        self.customer_frame.columnconfigure(1, weight=1)
         self.customer_frame.rowconfigure(0, weight=1)
-        self.customer_frame.rowconfigure(1, weight=1)
-        self.customer_frame.rowconfigure(2, weight=1)
 
         self.quotation_list_frame.columnconfigure(0, weight=1)
-        self.quotation_list_frame.columnconfigure(1, weight=1)
         self.quotation_list_frame.rowconfigure(0, weight=1)
-        self.quotation_list_frame.rowconfigure(1, weight=1)
-        self.quotation_list_frame.rowconfigure(2, weight=1)
 
         self.quotation_frame.columnconfigure(0, weight=1)
-        self.quotation_frame.columnconfigure(1, weight=1)
         self.quotation_frame.rowconfigure(0, weight=1)
-        self.quotation_frame.rowconfigure(1, weight=1)
-        self.quotation_frame.rowconfigure(2, weight=1)
 
         self.order_list_frame.columnconfigure(0, weight=1)
-        self.order_list_frame.columnconfigure(1, weight=1)
         self.order_list_frame.rowconfigure(0, weight=1)
-        self.order_list_frame.rowconfigure(1, weight=1)
-        self.order_list_frame.rowconfigure(2, weight=1)
 
         self.order_frame.columnconfigure(0, weight=1)
-        self.order_frame.columnconfigure(1, weight=1)
         self.order_frame.rowconfigure(0, weight=1)
-        self.order_frame.rowconfigure(1, weight=1)
-        self.order_frame.rowconfigure(2, weight=1)
 
         self.product_frame.columnconfigure(0, weight=1)
-        self.product_frame.columnconfigure(1, weight=1)
         self.product_frame.rowconfigure(0, weight=1)
-        self.product_frame.rowconfigure(1, weight=1)
-        self.product_frame.rowconfigure(2, weight=1)
 
         self.report_frame.columnconfigure(0, weight=1)
-        self.report_frame.columnconfigure(1, weight=1)
         self.report_frame.rowconfigure(0, weight=1)
-        self.report_frame.rowconfigure(1, weight=1)
-        self.report_frame.rowconfigure(2, weight=1)
 
     def setup_home_tab(self):
         home_tab = HomeTab(self, self.home_frame)

@@ -21,7 +21,7 @@ class CustomerDetailsTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        self.top_frame.grid(column=0, row=0, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
         self.top_frame.rowconfigure(0, weight=1)
 
@@ -38,11 +38,13 @@ class CustomerDetailsTab:
         # -------------------------------MID FRAME-------------------------------------------#
         # Frames:
         self.mid_frame = ttk.Frame(parent_frame, borderwidth=5, relief="solid")
-        self.mid_frame.grid(column=0, row=1, columnspan=3, sticky=(N, W, E, S))
-        self.mid_frame.columnconfigure(0, weight=5)
+        self.mid_frame.grid(column=0, row=1, sticky=(N, W, E, S))
+        self.mid_frame.columnconfigure(0, weight=1)
         self.mid_frame.columnconfigure(1, weight=1)
         self.mid_frame.columnconfigure(2, weight=1)
         self.mid_frame.columnconfigure(3, weight=1)
+        self.mid_frame.columnconfigure(4, weight=1)
+        self.mid_frame.columnconfigure(5, weight=1)
         self.mid_frame.rowconfigure(0, weight=1)
         self.mid_frame.rowconfigure(1, weight=1)
         self.mid_frame.rowconfigure(2, weight=1)
@@ -155,7 +157,7 @@ class CustomerDetailsTab:
             anchor=E,
             style="txt.TLabel",
         )
-        self.notes_lbl.grid(column=4, columnspan=4, row=0, sticky=(E,))
+        self.notes_lbl.grid(column=5, row=0, sticky=(E,W,N,S))
 
         # Entries:
         self.id_ent = ttk.Entry(
@@ -285,7 +287,7 @@ class CustomerDetailsTab:
             padding=5,
             command=self.create_or_update_customer,
         )
-        self.save_btn.grid(column=0, columnspan=5, row=12, sticky=(E, W))
+        self.save_btn.grid(column=0, columnspan=6, row=12, sticky=(E, W))
 
         self.new_customer_btn = ttk.Button(
             self.mid_frame,

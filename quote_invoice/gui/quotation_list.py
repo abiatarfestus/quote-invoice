@@ -18,7 +18,7 @@ class QuotationListTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        self.top_frame.grid(column=0, row=0, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
         self.top_frame.rowconfigure(0, weight=1)
 
@@ -35,11 +35,11 @@ class QuotationListTab:
 
         # -------------------------------MID FRAME-------------------------------------------#
         self.mid_frame = ttk.Frame(parent_frame, borderwidth=5, relief="solid")
-        self.mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W, E, S))
+        self.mid_frame.grid(column=0, row=1, sticky=(N, W, E, S))
         self.mid_frame.columnconfigure(0, weight=1)
-        self.mid_frame.columnconfigure(1, weight=1)
+        # self.mid_frame.columnconfigure(1, weight=1)
         self.mid_frame.rowconfigure(0, weight=1)
-        self.mid_frame.rowconfigure(1, weight=1)
+        # self.mid_frame.rowconfigure(1, weight=1)
 
         # Treeviews:
         self.tree = ttk.Treeview(self.mid_frame, show="headings", height=20)
@@ -53,7 +53,7 @@ class QuotationListTab:
             self.mid_frame, orient=HORIZONTAL, command=self.tree.xview
         )
         y_scroll.grid(column=1, row=0, sticky=(N, S, W, E))
-        x_scroll.grid(column=0, row=1, sticky=(E, W))
+        x_scroll.grid(column=0, row=1, sticky=(N, S, W, E))
         self.tree["yscrollcommand"] = y_scroll.set
         self.tree["xscrollcommand"] = x_scroll.set
 
@@ -113,7 +113,13 @@ class QuotationListTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
+        self.bottom_frame.grid(column=0, row=2, sticky=(N, W, E, S))
+        self.bottom_frame.columnconfigure(0, weight=1)
+        self.bottom_frame.columnconfigure(1, weight=1)
+        self.bottom_frame.columnconfigure(2, weight=3)
+        self.bottom_frame.columnconfigure(3, weight=2)
+        self.bottom_frame.columnconfigure(4, weight=1)
+        self.bottom_frame.rowconfigure(0, weight=1)
 
         # Entries
         self.quote_search_ent = ttk.Entry(
@@ -137,7 +143,7 @@ class QuotationListTab:
             padding=21,
             command=self.view_quotation,
         )
-        self.open_quotation_btn.grid(column=0, row=1, sticky=E)
+        self.open_quotation_btn.grid(column=0, row=1, sticky=(S, N, W, E))
 
         self.add_quotation_btn = ttk.Button(
             self.bottom_frame,
@@ -146,7 +152,7 @@ class QuotationListTab:
             padding=(10, 21),
             command=self.open_blank_quote_form,
         )
-        self.add_quotation_btn.grid(column=1, row=1, sticky=E)
+        self.add_quotation_btn.grid(column=1, row=1, sticky=(S, N, W, E))
 
         self.search_quotation_btn = ttk.Button(
             self.bottom_frame,
@@ -155,7 +161,7 @@ class QuotationListTab:
             padding=(10, 21),
             command=self.search_quotation,
         )
-        self.search_quotation_btn.grid(column=4, row=1, sticky=E)
+        self.search_quotation_btn.grid(column=4, row=1, sticky=(S, N, W, E))
 
         for child in self.bottom_frame.winfo_children():
             child.grid_configure(padx=2, pady=2)

@@ -16,7 +16,7 @@ class ProductDetailsTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        self.top_frame.grid(column=0, row=0, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
         self.top_frame.rowconfigure(0, weight=1)
 
@@ -37,7 +37,22 @@ class ProductDetailsTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.mid_frame.grid(column=0, row=1, columnspan=2, sticky=(S, N, W, E))
+        self.mid_frame.grid(column=0, row=1, sticky=(S, N, W, E))
+        self.mid_frame.columnconfigure(0, weight=1)
+        self.mid_frame.columnconfigure(1, weight=1)
+        self.mid_frame.columnconfigure(2, weight=1)
+        self.mid_frame.columnconfigure(3, weight=1)
+        self.mid_frame.columnconfigure(4, weight=1)
+        self.mid_frame.columnconfigure(5, weight=1)
+        self.mid_frame.columnconfigure(6, weight=1)
+        self.mid_frame.columnconfigure(7, weight=1)
+        self.mid_frame.columnconfigure(8, weight=1)
+        self.mid_frame.columnconfigure(9, weight=1)
+        self.mid_frame.columnconfigure(10, weight=1)
+        self.mid_frame.columnconfigure(11, weight=1)
+        self.mid_frame.columnconfigure(12, weight=1)
+        self.mid_frame.rowconfigure(0, weight=1)
+        self.mid_frame.rowconfigure(1, weight=1)
 
         # Entries:
         self.search_ent = ttk.Entry(
@@ -64,7 +79,7 @@ class ProductDetailsTab:
             padding=(10, 21),
             command=self.search_product,
         )
-        self.search_btn.grid(column=11, row=2, pady=2, padx=2, sticky=(S, N, W, E))
+        self.search_btn.grid(column=11, columnspan=2, row=2, pady=2, padx=2, sticky=(S, N, W, E))
 
         # Treeviews:
         self.products_tree = ttk.Treeview(self.mid_frame, show="headings", height=10)
@@ -121,7 +136,7 @@ class ProductDetailsTab:
             self.mid_frame, orient=HORIZONTAL, command=self.products_tree.xview
         )
         y_scroll.grid(column=12, row=0, sticky=(N, S))
-        x_scroll.grid(column=0, columnspan=12, row=1, sticky=(E, W))
+        x_scroll.grid(column=0, columnspan=13, row=1, sticky=(E, W))
         self.products_tree["yscrollcommand"] = y_scroll.set
         self.products_tree["xscrollcommand"] = x_scroll.set
 
@@ -133,7 +148,7 @@ class ProductDetailsTab:
         # -------------------------------BOTTOM FRAME----------------------------------------#
         # Frames:
         self.bottom_frame = ttk.Frame(parent_frame, borderwidth=5, relief="solid")
-        self.bottom_frame.grid(column=0, row=2, columnspan=3, sticky=(N, W, E, S))
+        self.bottom_frame.grid(column=0, row=2, sticky=(N, W, E, S))
         self.bottom_frame.columnconfigure(0, weight=5)
         self.bottom_frame.columnconfigure(1, weight=1)
         self.bottom_frame.columnconfigure(2, weight=1)

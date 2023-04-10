@@ -43,7 +43,7 @@ class QuoteDetailsTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        self.top_frame.grid(column=0, row=0, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
         self.top_frame.rowconfigure(0, weight=1)
 
@@ -54,7 +54,7 @@ class QuoteDetailsTab:
             anchor="center",
             style="heading.TLabel",
         )
-        self.heading_lbl.grid(row=0, sticky=(N, S, W, E))
+        self.heading_lbl.grid(column=0, row=0, sticky=(N, S, W, E))
         # -------------------------------TOP FRAME ENDS--------------------------------------#
 
         # -------------------------------MID FRAME-------------------------------------------#
@@ -64,7 +64,7 @@ class QuoteDetailsTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W, E, S))
+        self.mid_frame.grid(column=0, row=1, sticky=(N, W, E, S))
         self.mid_frame.columnconfigure(0, weight=1)
         self.mid_frame.columnconfigure(1, weight=1)
         self.mid_frame.columnconfigure(2, weight=1)
@@ -342,8 +342,8 @@ class QuoteDetailsTab:
         x_scroll = ttk.Scrollbar(
             self.mid_frame, orient=HORIZONTAL, command=self.quote_items_tree.xview
         )
-        y_scroll.grid(column=8, row=4, sticky=(N, S, W))
-        x_scroll.grid(column=0, columnspan=8, row=5, sticky=(E, W))
+        y_scroll.grid(column=8, row=4, sticky=(N, S, W, E))
+        x_scroll.grid(column=0, columnspan=8, row=5, sticky=(N, S, W, E))
         self.quote_items_tree["yscrollcommand"] = y_scroll.set
         self.quote_items_tree["xscrollcommand"] = x_scroll.set
 
@@ -358,11 +358,13 @@ class QuoteDetailsTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E))
-        self.bottom_frame.columnconfigure(0, weight=1)
-        self.bottom_frame.columnconfigure(1, weight=1)
+        self.bottom_frame.grid(column=0, row=2, sticky=(N, S, W, E))
+        self.bottom_frame.columnconfigure(0, weight=2)
+        self.bottom_frame.columnconfigure(1, weight=2)
         self.bottom_frame.columnconfigure(2, weight=1)
+        self.bottom_frame.columnconfigure(3, weight=1)
         self.bottom_frame.rowconfigure(0, weight=1)
+        self.bottom_frame.rowconfigure(2, weight=1)
 
         # Labels:
         self.input_product_lbl = ttk.Label(

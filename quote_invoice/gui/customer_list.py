@@ -19,7 +19,7 @@ class CustomerListTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        self.top_frame.grid(column=0, row=0, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
         self.top_frame.rowconfigure(0, weight=1)
 
@@ -36,11 +36,11 @@ class CustomerListTab:
         # -------------------------------MID FRAME-------------------------------------------#
         # Frames:
         self.mid_frame = ttk.Frame(parent_frame, borderwidth=5, relief="solid")
-        self.mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W, E, S))
+        self.mid_frame.grid(column=0, row=1, sticky=(N, W, E, S))
         self.mid_frame.columnconfigure(0, weight=1)
-        self.mid_frame.columnconfigure(1, weight=1)
+        # self.mid_frame.columnconfigure(1, weight=1)
         self.mid_frame.rowconfigure(0, weight=1)
-        self.mid_frame.rowconfigure(1, weight=1)
+        # self.mid_frame.rowconfigure(1, weight=1)
 
         # Treeviews:
         self.tree = ttk.Treeview(self.mid_frame, show="headings", height=20)
@@ -101,7 +101,7 @@ class CustomerListTab:
             self.mid_frame, orient=HORIZONTAL, command=self.tree.xview
         )
         y_scroll.grid(column=1, row=0, sticky=(N, S, W, E))
-        x_scroll.grid(column=0, row=1, sticky=(E, W))
+        x_scroll.grid(column=0, row=1, sticky=(N, S, W, E))
         self.tree["yscrollcommand"] = y_scroll.set
         self.tree["xscrollcommand"] = x_scroll.set
 
@@ -116,13 +116,20 @@ class CustomerListTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E, S))
+        self.bottom_frame.grid(column=0, row=2, sticky=(N, W, E, S))
+        self.bottom_frame.columnconfigure(0, weight=1)
+        self.bottom_frame.columnconfigure(1, weight=1)
+        self.bottom_frame.columnconfigure(2, weight=3)
+        self.bottom_frame.columnconfigure(3, weight=2)
+        self.bottom_frame.columnconfigure(4, weight=1)
+        self.bottom_frame.rowconfigure(0, weight=1)
+        # self.bottom_frame.rowconfigure(1, weight=1)
 
         # Entries:
         self.search_ent = ttk.Entry(
             self.bottom_frame,
         )
-        self.search_ent.grid(column=3, row=1, sticky=(S, N, W, E))
+        self.search_ent.grid(column=3, row=0, sticky=(S, N, W, E))
 
         # Comboboxes:
         self.search_option_cbx = ttk.Combobox(
@@ -130,7 +137,7 @@ class CustomerListTab:
             width=38,
             values=("Customer ID", "Other Variables"),
         )
-        self.search_option_cbx.grid(column=2, row=1, padx=2, sticky=(S, N, W, E))
+        self.search_option_cbx.grid(column=2, row=0, padx=2, sticky=(S, N, W, E))
 
         # Buttons:
         self.open_customer_btn = ttk.Button(
@@ -154,9 +161,9 @@ class CustomerListTab:
             padding=(10, 21),
             command=self.search_customer,
         )
-        self.open_customer_btn.grid(column=0, row=1, sticky=E)
-        self.add_customer_btn.grid(column=1, row=1, sticky=E)
-        self.search_customer_btn.grid(column=4, row=1, sticky=E)
+        self.open_customer_btn.grid(column=0, row=0, sticky=(S, N, W, E))
+        self.add_customer_btn.grid(column=1, row=0, sticky=(S, N, W, E))
+        self.search_customer_btn.grid(column=4, row=0, sticky=(S, N, W, E))
 
         for child in self.bottom_frame.winfo_children():
             child.grid_configure(padx=2, pady=2)

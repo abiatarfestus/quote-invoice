@@ -42,7 +42,7 @@ class OrderDetailsTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        self.top_frame.grid(column=0, row=0, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
         self.top_frame.rowconfigure(0, weight=1)
 
@@ -63,7 +63,7 @@ class OrderDetailsTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.mid_frame.grid(column=0, row=1, columnspan=2, sticky=(N, W, E, S))
+        self.mid_frame.grid(column=0, row=1, sticky=(N, W, E, S))
         self.mid_frame.columnconfigure(0, weight=1)
         self.mid_frame.columnconfigure(1, weight=1)
         self.mid_frame.columnconfigure(2, weight=1)
@@ -88,7 +88,7 @@ class OrderDetailsTab:
             anchor=W,
             style="txt.TLabel",
         )
-        self.id_lbl.grid(column=0, row=0, sticky=(W,))
+        self.id_lbl.grid(column=0, row=0, sticky=(N, W, E, S))
 
         self.date_lbl = ttk.Label(
             self.mid_frame,
@@ -96,7 +96,7 @@ class OrderDetailsTab:
             anchor=W,
             style="txt.TLabel",
         )
-        self.date_lbl.grid(column=0, row=1, sticky=(W,))
+        self.date_lbl.grid(column=0, row=1, sticky=(N, W, E, S))
 
         self.order_description_lbl = ttk.Label(
             self.mid_frame,
@@ -104,7 +104,7 @@ class OrderDetailsTab:
             anchor=W,
             style="txt.TLabel",
         )
-        self.order_description_lbl.grid(column=0, row=2, sticky=(W,))
+        self.order_description_lbl.grid(column=0, row=2, sticky=(N, W, E, S))
 
         self.customer_lbl = ttk.Label(
             self.mid_frame,
@@ -112,7 +112,7 @@ class OrderDetailsTab:
             anchor=W,
             style="txt.TLabel",
         )
-        self.customer_lbl.grid(column=0, row=3, sticky=(W,))
+        self.customer_lbl.grid(column=0, row=3, sticky=(N, W, E, S))
 
         self.notes_lbl = ttk.Label(
             self.mid_frame,
@@ -120,7 +120,7 @@ class OrderDetailsTab:
             anchor=E,
             style="txt.TLabel",
         )
-        self.notes_lbl.grid(column=3, row=0, sticky=(E,))
+        self.notes_lbl.grid(column=3, row=0, sticky=(N, W, E, S))
 
         self.order_amount = StringVar(value="Total Cost:\tN$0.00")
         self.amount_lbl = ttk.Label(
@@ -314,8 +314,8 @@ class OrderDetailsTab:
         x_scroll = ttk.Scrollbar(
             self.mid_frame, orient=HORIZONTAL, command=self.order_items_tree.xview
         )
-        y_scroll.grid(column=5, row=4, sticky=(N, S, W))
-        x_scroll.grid(column=0, columnspan=5, row=5, sticky=(E, W))
+        y_scroll.grid(column=5, row=4, sticky=(N, W, E, S))
+        x_scroll.grid(column=0, columnspan=5, row=5, sticky=(N, W, E, S))
         self.order_items_tree["yscrollcommand"] = y_scroll.set
         self.order_items_tree["xscrollcommand"] = x_scroll.set
 
@@ -330,11 +330,13 @@ class OrderDetailsTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(N, W, E))
-        self.bottom_frame.columnconfigure(0, weight=1)
-        self.bottom_frame.columnconfigure(1, weight=1)
+        self.bottom_frame.grid(column=0, row=2, sticky=(N, W, E, S))
+        self.bottom_frame.columnconfigure(0, weight=2)
+        self.bottom_frame.columnconfigure(1, weight=2)
         self.bottom_frame.columnconfigure(2, weight=1)
+        self.bottom_frame.columnconfigure(3, weight=1)
         self.bottom_frame.rowconfigure(0, weight=1)
+        self.bottom_frame.rowconfigure(1, weight=1)
 
         # Labels:
         self.input_product_lbl = ttk.Label(

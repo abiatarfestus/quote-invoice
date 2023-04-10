@@ -20,7 +20,7 @@ class HomeTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.top_frame.grid(column=0, row=0, columnspan=2, sticky=(N, W, E, S))
+        self.top_frame.grid(column=0, row=0, sticky=(N, W, E, S))
         self.top_frame.columnconfigure(0, weight=1)
         self.top_frame.rowconfigure(0, weight=1)
 
@@ -45,7 +45,7 @@ class HomeTab:
             borderwidth=5,
             # relief="solid"
         )
-        self.bottom_frame.grid(column=0, row=2, columnspan=2, sticky=(W, E, S))
+        self.bottom_frame.grid(column=0, row=1, sticky=(W, E, S))
         self.bottom_frame.columnconfigure(0, weight=1)
         self.bottom_frame.columnconfigure(1, weight=1)
         self.bottom_frame.columnconfigure(2, weight=1)
@@ -60,7 +60,7 @@ class HomeTab:
             anchor="w",
             style="BlueLabel.TLabel",
         )
-        self.user_lbl.grid(column=0, row=0, sticky=(W))
+        self.user_lbl.grid(column=0, row=0, sticky=(W,E))
 
         self.creator_lbl = ttk.Label(
             self.bottom_frame,
