@@ -56,7 +56,7 @@ class HomeTab:
         # Labels:
         self.user_lbl = ttk.Label(
             self.bottom_frame,
-            textvariable=self.parent.authenticated_user_name,
+            textvariable=self.parent.auth_data["user_name"],
             anchor="w",
             style="BlueLabel.TLabel",
         )
@@ -72,7 +72,7 @@ class HomeTab:
         # Buttons:
         self.login_logout_btn = ttk.Button(
             self.bottom_frame,
-            textvariable=self.parent.login_out,
+            textvariable=self.parent.auth_data["button_text"],
             # style="Danger.TButton",
             command=self.logout
             # padding=(15, 26)
@@ -124,8 +124,8 @@ class HomeTab:
         self.parent.destroy()
 
     def logout(self):
-        self.parent.is_authenticated = False
-        self.parent.authenticated_user = None
-        self.parent.authenticated_user_name.set("User: Logged Out")
-        self.parent.login_out.set("Login")
+        self.parent.auth_data["is_authenticated"] = False
+        self.parent.auth_data["user"] = None
+        self.parent.auth_data["user_name"].set("User: Logged Out")
+        self.parent.auth_data["button_text"].set("Login")
         user = UserAuthentication(self.parent, DB_PATH)

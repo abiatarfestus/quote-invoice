@@ -111,8 +111,8 @@ class ProductDetailsTab:
         self.products_tree.column("ID", width=50, anchor=CENTER)
         self.products_tree.column("SKU", width=100, anchor=CENTER)
         self.products_tree.column("Barcode", width=100, anchor=CENTER)
-        self.products_tree.column("Product Name", width=200, anchor=W)
-        self.products_tree.column("Description", width=600, anchor=W)
+        self.products_tree.column("Product Name", width=150, anchor=W)
+        self.products_tree.column("Description", width=550, anchor=W)
         self.products_tree.column("Price", width=100, anchor=E)
         self.products_tree.column("Quantity", width=100, anchor=CENTER)
         self.products_tree.column("Taxable", width=50, anchor=CENTER)
@@ -359,7 +359,7 @@ class ProductDetailsTab:
                     product.description,
                     f"N${product.price}",
                     product.quantity,
-                    # product.taxable
+                    product.is_taxable
                 ),
             )
 
@@ -392,9 +392,9 @@ class ProductDetailsTab:
             try:
                 db.add_product(
                     self.session,
-                    sku=self.sku_ent.get(),
-                    barcode=self.barcode_ent.get(),
-                    product_name=self.product_name_ent.get(),
+                    sku=self.sku_ent.get().strip(),
+                    barcode=self.barcode_ent.get().strip(),
+                    product_name=self.product_name_ent.get().strip().title(),
                     description=self.description_ent.get(),
                     price=self.price_ent.get(),
                     quantity=self.quantity_ent.get(),
@@ -418,9 +418,9 @@ class ProductDetailsTab:
                 db.update_product(
                     self.session,
                     pk=product.product_id,
-                    sku=self.sku_ent.get(),
-                    barcode=self.barcode_ent.get(),
-                    product_name=self.product_name_ent.get(),
+                    sku=self.sku_ent.get().strip(),
+                    barcode=self.barcode_ent.get().strip(),
+                    product_name=self.product_name_ent.get().strip().title(),
                     description=self.description_ent.get(),
                     price=self.price_ent.get(),
                     quantity=self.quantity_ent.get(),

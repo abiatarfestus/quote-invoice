@@ -93,10 +93,10 @@ class UserAuthentication:
         )
         if user:
             if user.check_password(password):
-                self.parent.is_authenticated = True
-                self.parent.authenticated_user = user
-                self.parent.authenticated_user_name.set(f"User: {user.username}")
-                self.parent.login_out.set("Logout")
+                self.parent.auth_data["is_authenticated"] = True
+                self.parent.auth_data["user"] = user
+                self.parent.auth_data["user_name"].set(f"User: {user.username}")
+                self.parent.auth_data["button_text"].set("Logout")
                 self.popup.destroy()
                 self.parent.grab_set()
             else:

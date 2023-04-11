@@ -142,10 +142,10 @@ class UserRegistration:
                 is_admin=is_admin,
             )
             messagebox.showinfo(message="User successfully added!", title="Success")
-            self.parent.is_authenticated = True
-            self.parent.authenticated_user = new_user
-            self.parent.authenticated_user_name.set(f"User: {new_user.username}")
-            self.parent.login_out.set("Logout")
+            self.parent.auth_data["is_authenticated"] = True
+            self.parent.auth_data["user"] = new_user
+            self.parent.auth_data["user_name"].set(f"User: {new_user.username}")
+            self.parent.auth_data["button_text"].set("Logout")
             self.popup.destroy()
             self.parent.grab_set()
         except NameError as e:
