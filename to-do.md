@@ -41,3 +41,4 @@ entity person
 - [ ] Where to calculate Tax?/ Add VAT to Product table
 - [ ] Prefix for invoice/quote number (add it to settings)
 - [ ] Change some if statements to asserts 
+- [ ] Add search option labels

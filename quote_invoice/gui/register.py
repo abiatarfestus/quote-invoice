@@ -36,7 +36,7 @@ class UserRegistration:
         # Labels:
         self.register_lbl = ttk.Label(
             self.popup,
-            text="User Registration",
+            text="Admin User Registration",
             anchor="center",
             style="heading2.TLabel",
         )
