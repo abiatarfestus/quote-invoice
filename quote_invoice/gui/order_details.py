@@ -1,3 +1,4 @@
+import os
 from datetime import date, datetime
 from tkinter import *
 from tkinter import messagebox, ttk
@@ -215,7 +216,7 @@ class OrderDetailsTab:
         # Buttons:
         self.order_preview_btn = ttk.Button(
             self.mid_frame,
-            text="Print/Preview Order",
+            text="Print/Preview Invoice",
             style="btns.TButton",
             padding=(0, 10),
             command=self.print_invoice,
@@ -872,12 +873,20 @@ class OrderDetailsTab:
         try:
             order_id = int(self.order_id_ent.get())
         except ValueError as e:
-            error_message = messagebox.showerror(
-                message="Invalid Order ID.",
-                detail="Please ensure that there is an open order.",
-                title="Error",
-            )
-            return error_message
+            if not messagebox.askyesno(
+                message="No open order was detected. Would you like to open the default invoice template instead?",
+                icon="question",
+                title="Invalid Order ID",
+            ):
+                return
+            else:
+                try:
+                    os.startfile("invoice_template.docx")
+                except PermissionError as e:
+                    raise Exception(
+                        f"{e} Check if the template is already open and try again."
+                    )
+                return
         invoice_template = Invoice(self.session, order_id)
         try:
             invoice_template.generate_invoice_preview()

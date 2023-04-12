@@ -1,3 +1,4 @@
+import os
 from tkinter import *
 from tkinter import messagebox, ttk
 
@@ -5,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from quote_invoice.common.constants import DB_PATH
+from quote_invoice.common.constants import DB_PATH, HELP_ICON_PATH
 from quote_invoice.db import operations as db
 from quote_invoice.db.models import User
 
@@ -36,6 +37,7 @@ class UserAuthentication:
         self.popup.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.popup.title("Login")
         self.logo = PhotoImage(file=login_icon_path)
+        self.help = PhotoImage(file=HELP_ICON_PATH)
         self.popup.iconphoto(False, self.logo)
         self.popup.grab_set()
         self.popup.resizable(False, False)
@@ -50,7 +52,7 @@ class UserAuthentication:
             anchor="center",
             style="heading2.TLabel",
         )
-        self.login_lbl.grid(column=1, columnspan=3, row=0, sticky=(N, S, W, E))
+        self.login_lbl.grid(column=1, columnspan=2, row=0, sticky=(N, S, W, E))
 
         self.username_lbl = ttk.Label(self.popup, text="Username:", anchor=W)
         self.username_lbl.grid(column=0, row=1, sticky=(N, S, W, E))
@@ -67,6 +69,15 @@ class UserAuthentication:
         self.password_ent.grid(column=1, columnspan=2, row=2, sticky=(N, S, E, W))
 
         # Buttons:
+        self.help_btn = ttk.Button(
+            self.popup,
+            image=self.help,
+            padding=5,
+            command=lambda: os.startfile("Help.pdf"),
+            style="Help.TButton",
+        )
+        self.help_btn.grid(column=2, row=0, sticky=E)
+
         self.login_btn = ttk.Button(
             self.popup, text="Login", padding=5, command=self.login
         )
@@ -86,11 +97,7 @@ class UserAuthentication:
         username = self.username_ent.get()
         password = self.password_ent.get()
 
-        user = (
-            self.session.query(User)
-            .filter_by(username=username)
-            .first()
-        )
+        user = self.session.query(User).filter_by(username=username).first()
         if user:
             if user.check_password(password):
                 self.parent.auth_data["is_authenticated"] = True

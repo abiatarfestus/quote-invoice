@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from quote_invoice.common.constants import DB_PATH, LOGO_PATH
+
 # from quote_invoice.data import db_data
 from quote_invoice.db.models import Base, get_connection
 
@@ -37,10 +38,10 @@ class App(Tk):
     def __init__(self):
         super().__init__()
         self.auth_data = {
-            "is_authenticated":False,
-            "user":None,
-            "user_name":StringVar(),
-            "button_text":StringVar(),
+            "is_authenticated": False,
+            "user": None,
+            "user_name": StringVar(),
+            "button_text": StringVar(),
         }
         self.auth_data["button_text"].set("Login")
         self.auth_data["user_name"].set("User: Logged Out")
@@ -97,9 +98,7 @@ class App(Tk):
         self.notebook.add(self.report_frame, text="Reports")
 
         # Grid Notebook
-        self.notebook.grid(
-            column=0, row=0, sticky=(N, W, E, S)
-        )
+        self.notebook.grid(column=0, row=0, sticky=(N, W, E, S))
 
     def configure_rows_columns(self):
         """Configure the rows and columns resizing behaviour"""

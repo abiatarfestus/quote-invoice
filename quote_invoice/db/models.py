@@ -11,8 +11,10 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-from quote_invoice.auth.password_validation import generate_password_hash, check_password_hash
-
+from quote_invoice.auth.password_validation import (
+    check_password_hash,
+    generate_password_hash,
+)
 
 Base = declarative_base()
 

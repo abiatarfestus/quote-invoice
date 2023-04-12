@@ -1,3 +1,4 @@
+import os
 from datetime import date, datetime
 from tkinter import *
 from tkinter import messagebox, ttk
@@ -50,7 +51,7 @@ class QuoteDetailsTab:
         # Labels:
         self.heading_lbl = ttk.Label(
             self.top_frame,
-            text="Quotation Details",
+            text="Quote Details",
             anchor="center",
             style="heading.TLabel",
         )
@@ -918,12 +919,20 @@ class QuoteDetailsTab:
         try:
             quote_id = int(self.quote_id_ent.get())
         except ValueError as e:
-            error_message = messagebox.showerror(
-                message="Invalid Quote ID.",
-                detail="Please ensure that there is an open quotation.",
-                title="Error",
-            )
-            return error_message
+            if not messagebox.askyesno(
+                message="No open quotation was detected. Would you like to open the default quotation template instead?",
+                icon="question",
+                title="Invalid Quote ID",
+            ):
+                return
+            else:
+                try:
+                    os.startfile("quote_template.docx")
+                except PermissionError as e:
+                    raise Exception(
+                        f"{e} Check if the template is already open and try again."
+                    )
+                return
         quote_template = Quote(self.session, quote_id)
         try:
             quote_template.generate_quote_preview()

@@ -157,7 +157,7 @@ class CustomerDetailsTab:
             anchor=E,
             style="txt.TLabel",
         )
-        self.notes_lbl.grid(column=5, row=0, sticky=(E,W,N,S))
+        self.notes_lbl.grid(column=5, row=0, sticky=(E, W, N, S))
 
         # Entries:
         self.id_ent = ttk.Entry(

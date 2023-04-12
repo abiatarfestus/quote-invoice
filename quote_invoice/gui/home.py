@@ -1,3 +1,4 @@
+import os
 from tkinter import *
 from tkinter import messagebox, ttk
 
@@ -60,7 +61,7 @@ class HomeTab:
             anchor="w",
             style="BlueLabel.TLabel",
         )
-        self.user_lbl.grid(column=0, row=0, sticky=(W,E))
+        self.user_lbl.grid(column=0, row=0, sticky=(W, E))
 
         self.creator_lbl = ttk.Label(
             self.bottom_frame,
@@ -84,6 +85,7 @@ class HomeTab:
             self.bottom_frame,
             text="Help",
             style="btns.TButton",
+            command=lambda: os.startfile("Help.pdf")
             # padding=(15, 26)
         )
         # self.help_btn.state(["disabled"])

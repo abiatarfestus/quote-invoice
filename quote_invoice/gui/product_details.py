@@ -79,7 +79,9 @@ class ProductDetailsTab:
             padding=(10, 21),
             command=self.search_product,
         )
-        self.search_btn.grid(column=11, columnspan=2, row=2, pady=2, padx=2, sticky=(S, N, W, E))
+        self.search_btn.grid(
+            column=11, columnspan=2, row=2, pady=2, padx=2, sticky=(S, N, W, E)
+        )
 
         # Treeviews:
         self.products_tree = ttk.Treeview(self.mid_frame, show="headings", height=10)
@@ -359,7 +361,7 @@ class ProductDetailsTab:
                     product.description,
                     f"N${product.price}",
                     product.quantity,
-                    product.is_taxable
+                    product.is_taxable,
                 ),
             )
 
