@@ -1,3 +1,4 @@
 - [ ] Comment out auto data popilation
 - [ ] Delete database
 - [ ] Activate login prompt on-start
+- [ ] Add version tag and release
