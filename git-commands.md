@@ -209,3 +209,21 @@ git branch -a
 - Open Diff
 - p4v Merge - http://git-scm.com/book/en/Customizing-Git-Git-Configuration#External-Merge-and-Diff-Tools
 - Webstorm
+
+### Git Tags
+- Git supports two types of tags: lightweight and annotated
+
+#### Annotated Tags
+Creating an annotated tag in Git is simple. The easiest way is to specify -a when you run the tag command
+- `git tag -a v1.4 -m "my version 1.4"`
+- View a tag along with its commit: `git show v1.4`
+
+#### Annotated Tags
+To create a lightweight tag, don’t supply any of the -a, -s, or -m
+- 
+- List tags: `git tag`
+- List tags matching a certain pattern: `git tag -l "v1.8.5*"`
+- Sharing a tag to remote repo: `git push origin <tagname>`
+- Sharing more/all tags: `git push origin --tags`
+- Delete a tag locally: `git tag -d <tagname>`
+- Delete a tag on remote repo: `git push origin --delete <tagname>`

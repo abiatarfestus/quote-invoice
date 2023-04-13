@@ -134,12 +134,12 @@ _For more examples, please refer to the [Documentation](https://github.com/abiat
 
 - [ ] Add unique constrations to quotations
 - [ ] Add clumn attributes (unique, nullable, auto_add_date)
-- [ ] Review the update methods
-- [ ] Wrap data display/insertion on the treeview into a function for reuse by search function
-- [ ] Wrap clear treeview into a method for access by all search methods
+- [x] Review the update methods
+- [x] Wrap data display/insertion on the treeview into a function for reuse by search function
+- [x] Wrap clear treeview into a method for access by all search methods
 - [ ] Limit number of list items diplayed in the list views
 - [ ] Add option for adding items not in the product table (de-link foreignkey)
-- [ ] Quote/OrderItem description defaults to associated product description, but can be modified
+- [x] Quote/OrderItem description defaults to associated product description, but can be modified
 - [ ] Change if quote_id and product_id: to if not quote_id or not product_id: and return error message
 - [ ] Show info message on print("THE SELECTED PRODUCT IS ALREADY ON THE QUOTATION") but continue with next item
 - [ ] Check if product is in stock 

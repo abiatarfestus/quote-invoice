@@ -2,3 +2,4 @@
 - [ ] Delete database
 - [ ] Activate login prompt on-start
 - [ ] Add version tag and release
+- [ ] Update version in title and elsewhere

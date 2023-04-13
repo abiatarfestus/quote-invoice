@@ -45,7 +45,7 @@ class App(Tk):
         }
         self.auth_data["button_text"].set("Login")
         self.auth_data["user_name"].set("User: Logged Out")
-        self.title("Quote & Invoice")
+        self.title("Quote & Invoice 0.1.0-Beta")
         self.option_add("*tearOff", FALSE)
         self.selected_customer = None
         self.selected_quotation = None
@@ -67,8 +67,8 @@ class App(Tk):
         self.customer_details_tab = self.setup_customer_tab()
         self.customer_list_tab = self.setup_customer_list_tab()
         self.product_details_tab = self.setup_product_tab()
-        # if not self.auth_data["is_authenticated"]:
-        #     UserAuthentication(self, DB_PATH)
+        if not self.auth_data["is_authenticated"]:
+            UserAuthentication(self, DB_PATH)
 
     def create_notebook(self):
         """Create a Notebook and Frames"""
