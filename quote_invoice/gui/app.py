@@ -45,7 +45,7 @@ class App(Tk):
         }
         self.auth_data["button_text"].set("Login")
         self.auth_data["user_name"].set("User: Logged Out")
-        self.title("Quote & Invoice 0.1.0-Beta")
+        self.title("Quote & Invoice v0.1.0-Beta")
         self.option_add("*tearOff", FALSE)
         self.selected_customer = None
         self.selected_quotation = None

@@ -22,7 +22,7 @@ class Invoice:
         self.settings = get_settings(self.session)
         self.default_settings = False
         if self.settings and self.settings.invoice_template:
-            self.vat_rate = float(self.settings.vat_rate) / 100.0
+            self.vat_rate = float(self.settings.vat_rate)
             # self.invoice_validity = int(self.settings.invoice_validity)
             self.invoice_template = self.settings.invoice_template
             self.invoice_output_folder = self.settings.invoice_output_folder
@@ -110,16 +110,19 @@ class Invoice:
                 ]
             )
             subtotal += total_price
-        vat_amount = subtotal * vat_rate
+        vat_amount = subtotal * (vat_rate/100)
         total_cost = vat_amount + subtotal
-        vat_amount = str(vat_amount)
-        subtotal = str(subtotal)
-        total_cost = str(total_cost)
+        # vat_amount = str(vat_amount)
+        # subtotal = str(subtotal)
+        # total_cost = str(total_cost)
         calculated_order = {
             "item_list": item_list,
-            "subtotal": f"N${subtotal[3:]}",
+            # "subtotal": f"N${subtotal[3:]}",
+            "subtotal": f"N${subtotal.amount}",
             "vat_rate": vat_rate,  # f"{vat_rate:.2%}",
-            "vat_amount": f"N${vat_amount[3:]}",
-            "total_cost": f"N${total_cost[3:]}",
+            # "vat_amount": f"N${vat_amount[3:]}",
+            "vat_amount": f"N${vat_amount.amount:.2f}",
+            # "total_cost": f"N${total_cost[3:]}",
+            "total_cost": f"N${total_cost.amount:.2f}"
         }
         return calculated_order

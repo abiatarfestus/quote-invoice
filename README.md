@@ -163,6 +163,9 @@ _For more examples, please refer to the [Documentation](https://github.com/abiat
 - [ ] Where to calculate Tax?/ Add VAT to Product table
 - [ ] Prefix for invoice/quote number (add it to settings)
 - [ ] Change some if statements to asserts 
+- [ ] Trigger buttons with enter
+- [ ] Refresh pages on new data entry
+- [ ] Add data validation to all data entry forms
 
 See the [open issues](https://github.com/abiatarfestus/quote-invoice/issues) for a full list of proposed features (and known issues).
 

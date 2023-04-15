@@ -11,14 +11,14 @@ from quote_invoice.db.operations import get_settings
 
 
 class Quote:
-    def __init__(self, session, quote_id, templates_dir="", output_dir=""):
+    def __init__(self, session, quote_id):
         self.session = session
         self.quote_id = quote_id
         self.quote = db.get_quotations(self.session, pk=quote_id)
         self.settings = get_settings(self.session)
         self.default_settings = False
         if self.settings and self.settings.quote_template:
-            self.vat_rate = float(self.settings.vat_rate) / 100.0
+            self.vat_rate = float(self.settings.vat_rate)
             self.quote_validity = int(self.settings.quote_validity)
             self.quote_template = self.settings.quote_template
             self.quote_output_folder = self.settings.quote_output_folder
@@ -105,16 +105,19 @@ class Quote:
                 ]
             )
             subtotal += total_price
-        vat_amount = subtotal * vat_rate
+        vat_amount = subtotal * (vat_rate/100)
         total_cost = vat_amount + subtotal
-        vat_amount = str(vat_amount)
-        subtotal = str(subtotal)
-        total_cost = str(total_cost)
+        # vat_amount = str(vat_amount)
+        # subtotal = str(subtotal)
+        # total_cost = str(total_cost)
         calculated_quote = {
             "item_list": item_list,
-            "subtotal": f"N${subtotal[3:]}",
+            # "subtotal": f"N${subtotal[3:]}",
+            "subtotal": f"N${subtotal.amount}",
             "vat_rate": vat_rate,  # f"{vat_rate:.2%}",
-            "vat_amount": f"N${vat_amount[3:]}",
-            "total_cost": f"N${total_cost[3:]}",
+            # "vat_amount": f"N${vat_amount[3:]}",
+            "vat_amount": f"N${vat_amount.amount:.2f}",
+            # "total_cost": f"N${total_cost[3:]}",
+            "total_cost": f"N${total_cost.amount:.2f}",
         }
         return calculated_quote

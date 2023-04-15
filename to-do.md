@@ -42,3 +42,10 @@ entity person
 - [ ] Prefix for invoice/quote number (add it to settings)
 - [ ] Change some if statements to asserts 
 - [ ] Add search option labels
+- [ ] change input field for product price and quantity on entry form
+- [ ] Trigger buttons with enter
+- [ ] Refresh pages on new data entry
+- [ ] Add data validation to all data entry forms
+- [ ] Repopulate product entry form with data from db upon save/update
+- [ ] Fix vat updating from settings
+- [ ] Fix vat & total decimal points
